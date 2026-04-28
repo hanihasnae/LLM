@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarbonIQ — Paramètres</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .panneau-droit { display:none; }
+    .main { margin-right:0; width:85%; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:var(--espace-md); padding-bottom:var(--espace-lg); margin-bottom:var(--espace-xl); border-bottom:1px solid var(--bordure); }
+    .topbar__titre { font-size:var(--taille-grand); font-weight:700; color:var(--texte); }
+    .topbar__sous-titre { font-size:var(--taille-petit); color:var(--texte-discret); margin-top:3px; }
+    .topbar__droite { display:flex; align-items:center; gap:var(--espace-sm); }
+    .sidebar__logo { display:flex; align-items:center; gap:var(--espace-sm); padding-bottom:var(--espace-lg); margin-bottom:var(--espace-sm); border-bottom:1px solid var(--bordure); }
+    .sidebar__logo-emoji { font-size:22px; }
+    .sidebar__logo-nom { font-size:var(--taille-moyen); font-weight:700; color:var(--texte); }
+    .sidebar__logo-sous { font-family:var(--police-chiffre); font-size:var(--taille-petit); color:var(--texte-discret); }
+    .sidebar__section-titre { font-family:var(--police-chiffre); font-size:10px; color:var(--texte-tres-discret); text-transform:uppercase; letter-spacing:0.12em; padding:var(--espace-lg) var(--espace-sm) var(--espace-xs); }
+    .sidebar__footer { margin-top:auto; padding-top:var(--espace-lg); border-top:1px solid var(--bordure); }
+    .sidebar__footer-entreprise { font-size:var(--taille-normal); font-weight:600; color:var(--texte); margin-bottom:var(--espace-xs); }
+    .sidebar__footer-statut { display:flex; align-items:center; gap:var(--espace-xs); font-family:var(--police-chiffre); font-size:var(--taille-petit); color:var(--texte-discret); }
+    .point-vert { width:7px; height:7px; border-radius:50%; background:var(--vert); animation:pulse 2s infinite; }
+
+    /* Grille 2 colonnes pour certaines sections */
+    .grille-2 { display:grid; grid-template-columns:1fr 1fr; gap:var(--espace-md); margin-bottom:var(--espace-md); }
+
+    /* Champ API key : texte masqué par défaut */
+    .champ-api { font-family:var(--police-chiffre); letter-spacing:0.1em; }
+
+    /* Ligne dans le tableau des facteurs : rendue éditable par JS */
+    .cellule-editable input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px dashed var(--bordure);
+      color: var(--vert);
+      font-family: var(--police-chiffre);
+      font-size: var(--taille-normal);
+      width: 70px;
+      text-align: right;
+      outline: none;
+      padding: 2px 4px;
+    }
+    .cellule-editable input:focus {
+      border-bottom-color: var(--vert);
+      background: #1a382820;
+    }
+
+    /* Statut connexion DB */
+    .statut-db {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--espace-xs);
+      font-family: var(--police-chiffre);
+      font-size: var(--taille-petit);
+      padding: 4px 12px;
+      border-radius: var(--arrondi-rond);
+      border: 1px solid var(--bordure);
+    }
+    .statut-db--ok    { border-color: var(--vert);   color: var(--vert);   background: #1a382820; }
+    .statut-db--err   { border-color: var(--rouge);  color: var(--rouge);  background: #ff456010; }
+    .statut-db--test  { border-color: var(--orange); color: var(--orange); background: #f7816610; }
+
+    /* Bouton sauvegarder qui change d'état */
+    .btn-sauvegarde-ok { background: var(--vert) !important; }
+
+    /* Section API key : bouton oeil pour afficher/masquer */
+    .champ-avec-btn { display:flex; gap:var(--espace-sm); align-items:center; }
+    .champ-avec-btn .champ { flex:1; }
+    .btn-oeil {
+      background: var(--fond-carte); border: 1px solid var(--bordure); border-radius: var(--arrondi-sm);
+      color: var(--texte-discret); cursor: pointer; padding: 0 var(--espace-sm);
+      font-size: var(--taille-normal); transition: var(--transition); white-space:nowrap;
+    }
+    .btn-oeil:hover { border-color:var(--vert); color:var(--vert); }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar__logo">
+    <span class="sidebar__logo-emoji">🌿</span>
+    <div><div class="sidebar__logo-nom">CarbonIQ</div><div class="sidebar__logo-sous">MRV Platform</div></div>
+  </div>
+  <nav>
+    <div class="sidebar__section-titre">Principal</div>
+    <a class="sidebar__lien" href="../index.html">📊 Dashboard</a>
+    <a class="sidebar__lien" href="activites.html">⚡ Activités</a>
+    <a class="sidebar__lien" href="alertes.html" style="justify-content:space-between;"><span>🔔 Alertes</span><span class="badge badge-error">2</span></a>
+    <div class="sidebar__section-titre">Données</div>
+    <a class="sidebar__lien" href="import_pdf.html">📄 Import PDF</a>
+    <div class="sidebar__section-titre">Conformité</div>
+    <a class="sidebar__lien" href="conformite.html">🛡️ Conformité CBAM</a>
+    <a class="sidebar__lien" href="rapports.html">📋 Rapports</a>
+    <div class="sidebar__section-titre">Système</div>
+    <a class="sidebar__lien sidebar__lien--actif" href="parametres.html">⚙️ Paramètres</a>
+  </nav>
+  <div class="sidebar__footer">
+    <div class="sidebar__footer-entreprise">Acier Plus SAS</div>
+    <div class="sidebar__footer-statut"><span class="point-vert"></span> API connectée</div>
+  </div>
+</aside>
+
+<main class="main">
+
+  <header class="topbar">
+    <div>
+      <h1 class="topbar__titre">⚙️ Paramètres</h1>
+      <p class="topbar__sous-titre">Configuration de l'entreprise, de l'API et des facteurs d'émission</p>
+    </div>
+    <div class="topbar__droite">
+      <!--
+        Ce bouton sauvegarde tous les champs.
+        Il change de couleur (vert) quand la sauvegarde réussit.
+      -->
+      <button class="btn btn-primaire" id="btn-sauvegarder" onclick="toutSauvegarder()">
+        💾 Sauvegarder tout
+      </button>
+    </div>
+  </header>
+
+
+  <!-- Section 1 : Infos entreprise + Section 2 : Clés API -->
+  <div class="grille-2">
+
+    <!-- Infos entreprise -->
+    <div class="carte">
+      <div class="carte__entete">
+        <div class="carte__titre">🏭 Informations entreprise</div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:var(--espace-md);">
+
+        <div class="groupe-champ">
+          <label class="label" for="param-nom">Nom de l'entreprise</label>
+          <input type="text" id="param-nom" class="champ" value="Acier Plus SAS">
+        </div>
+
+        <div class="groupe-champ">
+          <label class="label" for="param-siret">SIRET</label>
+          <input type="text" id="param-siret" class="champ" value="123 456 789 00012"
+                 style="font-family:var(--police-chiffre);">
+        </div>
+
+        <div class="groupe-champ">
+          <label class="label" for="param-secteur">Secteur d'activité</label>
+          <select id="param-secteur" class="champ">
+            <option value="acier" selected>Acier / Sidérurgie</option>
+            <option value="ciment">Ciment / Béton</option>
+            <option value="aluminium">Aluminium</option>
+            <option value="engrais">Engrais / Chimie</option>
+            <option value="electricite">Électricité</option>
+            <option value="hydrogene">Hydrogène</option>
+          </select>
+        </div>
+
+        <div class="groupe-champ">
+          <label class="label" for="param-pays">Pays d'exploitation</label>
+          <select id="param-pays" class="champ">
+            <option value="FR" selected>🇫🇷 France</option>
+            <option value="DE">🇩🇪 Allemagne</option>
+            <option value="BE">🇧🇪 Belgique</option>
+            <option value="ES">🇪🇸 Espagne</option>
+            <option value="IT">🇮🇹 Italie</option>
+          </select>
+        </div>
+
+        <div class="groupe-champ">
+          <label class="label" for="param-contact">Email de contact</label>
+          <input type="email" id="param-contact" class="champ" value="compliance@acierplus.fr">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Clés API -->
+    <div class="carte">
+      <div class="carte__entete">
+        <div class="carte__titre">🔑 Clés API</div>
+        <div class="carte__sous-titre">Masquées par défaut pour la sécurité</div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:var(--espace-md);">
+
+        <!-- Groq API key -->
+        <div class="groupe-champ">
+          <label class="label" for="cle-groq">Groq API Key (LLM)</label>
+          <div class="champ-avec-btn">
+            <!--
+              type="password" masque le texte avec des points •••
+              Le bouton "oeil" permet de basculer entre password et text.
+            -->
+            <input type="password" id="cle-groq" class="champ champ-api"
+                   value="gsk_demo1234567890abcdefghijklmnop"
+                   placeholder="gsk_...">
+            <button class="btn-oeil" onclick="basculerVisibilite('cle-groq', this)">👁 Afficher</button>
+          </div>
+          <div style="font-size:var(--taille-petit); color:var(--texte-discret); margin-top:4px;">
+            Utilisée pour l'analyse IA des documents et le chatbot
+          </div>
+        </div>
+
+        <!-- API FastAPI -->
+        <div class="groupe-champ">
+          <label class="label" for="api-url">URL de l'API FastAPI</label>
+          <input type="text" id="api-url" class="champ champ-api"
+                 value="http://localhost:8000"
+                 placeholder="http://localhost:8000">
+          <div style="font-size:var(--taille-petit); color:var(--texte-discret); margin-top:4px;">
+            Adresse du backend Python (ne pas modifier en production)
+          </div>
+        </div>
+
+        <!-- Clé ADEME -->
+        <div class="groupe-champ">
+          <label class="label" for="cle-ademe">Clé ADEME Base Carbone</label>
+          <div class="champ-avec-btn">
+            <input type="password" id="cle-ademe" class="champ champ-api"
+                   value="ademe_key_abc123xyz"
+                   placeholder="ademe_...">
+            <button class="btn-oeil" onclick="basculerVisibilite('cle-ademe', this)">👁 Afficher</button>
+          </div>
+          <div style="font-size:var(--taille-petit); color:var(--texte-discret); margin-top:4px;">
+            Pour récupérer automatiquement les facteurs d'émission officiels
+          </div>
+        </div>
+
+        <!-- Webhook alertes -->
+        <div class="groupe-champ">
+          <label class="label" for="webhook-alertes">Webhook alertes (Slack / Teams)</label>
+          <input type="text" id="webhook-alertes" class="champ champ-api"
+                 value=""
+                 placeholder="https://hooks.slack.com/...">
+          <div style="font-size:var(--taille-petit); color:var(--texte-discret); margin-top:4px;">
+            Optionnel · Recevoir les alertes critiques sur Slack ou Teams
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- Section 3 : Facteurs d'émission éditables -->
+  <div class="carte" style="margin-bottom:var(--espace-md);">
+    <div class="carte__entete">
+      <div class="carte__titre">📊 Facteurs d'émission</div>
+      <div class="carte__sous-titre">Cliquez sur une valeur pour la modifier · Source : ADEME 2026</div>
+    </div>
+
+    <div class="tableau-conteneur">
+      <table class="tableau">
+        <thead>
+          <tr>
+            <th>Source d'émission</th>
+            <th>Scope</th>
+            <th>Unité</th>
+            <th class="cellule-chiffre">Facteur (kg CO₂ / unité)</th>
+            <th>Source officielle</th>
+            <th>Dernière MAJ</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-facteurs">
+          <!-- Rempli par JavaScript -->
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:var(--espace-md); display:flex; gap:var(--espace-sm);">
+      <button class="btn btn-contour" onclick="reinitialiserFacteurs()">↩ Réinitialiser ADEME 2026</button>
+      <button class="btn btn-primaire" onclick="sauvegarderFacteurs()">💾 Sauvegarder les facteurs</button>
+    </div>
+  </div>
+
+
+  <!-- Section 4 : Connexion base de données -->
+  <div class="carte">
+    <div class="carte__entete">
+      <div class="carte__titre">🗄️ Connexion base de données</div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--espace-md);">
+
+      <div style="display:flex; flex-direction:column; gap:var(--espace-md);">
+
+        <div class="groupe-champ">
+          <label class="label" for="db-host">Hôte (Host)</label>
+          <input type="text" id="db-host" class="champ champ-api" value="localhost">
+        </div>
+
+        <div class="groupe-champ">
+          <label class="label" for="db-port">Port</label>
+          <input type="number" id="db-port" class="champ champ-api" value="5432">
+        </div>
+
+        <div class="groupe-champ">
+          <label class="label" for="db-nom">Nom de la base</label>
+          <input type="text" id="db-nom" class="champ champ-api" value="carboniq_db">
+        </div>
+
+        <div class="groupe-champ">
+          <label class="label" for="db-user">Utilisateur</label>
+          <input type="text" id="db-user" class="champ champ-api" value="carboniq_user">
+        </div>
+
+        <div class="groupe-champ">
+          <label class="label" for="db-pass">Mot de passe</label>
+          <div class="champ-avec-btn">
+            <input type="password" id="db-pass" class="champ champ-api" value="motdepasse123">
+            <button class="btn-oeil" onclick="basculerVisibilite('db-pass', this)">👁 Afficher</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Statut connexion + bouton test -->
+      <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; gap:var(--espace-lg); text-align:center;">
+
+        <div>
+          <div style="font-size:48px; margin-bottom:var(--espace-sm);">🗄️</div>
+          <div style="font-size:var(--taille-petit); color:var(--texte-discret); margin-bottom:var(--espace-md);">
+            État de la connexion PostgreSQL
+          </div>
+
+          <!-- Statut affiché ici, mis à jour par JS -->
+          <div id="statut-db" class="statut-db statut-db--ok">
+            <span class="point-vert"></span> Connectée · 12ms
+          </div>
+        </div>
+
+        <!--
+          Ce bouton appelle l'API pour tester la connexion.
+          Dans un vrai projet : fetch('http://localhost:8000/db-status')
+        -->
+        <button class="btn btn-contour" style="width:100%;" onclick="testerConnexion()">
+          🔄 Tester la connexion
+        </button>
+
+        <div style="font-size:var(--taille-petit); color:var(--texte-discret);">
+          PostgreSQL 15 · Base principale<br>
+          <span style="font-family:var(--police-chiffre);">localhost:5432/carboniq_db</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* ──────────────────────────────────────────────────
+   DONNÉES — Facteurs d'émission ADEME 2026
+   Ces valeurs correspondent aux références officielles.
+──────────────────────────────────────────────────── */
+var facteurs = [
+  { source: 'Charbon',      scope: 'Scope 1', unite: 't',   valeur: 2.34,  source_officielle: 'ADEME 2026', maj: '2026-01-15' },
+  { source: 'Gaz naturel',  scope: 'Scope 1', unite: 'm³',  valeur: 1.80,  source_officielle: 'ADEME 2026', maj: '2026-01-15' },
+  { source: 'Fuel lourd',   scope: 'Scope 1', unite: 'L',   valeur: 2.65,  source_officielle: 'ADEME 2026', maj: '2026-01-15' },
+  { source: 'Électricité',  scope: 'Scope 2', unite: 'kWh', valeur: 0.385, source_officielle: 'ADEME 2026', maj: '2026-04-18' },
+  { source: 'Transport',    scope: 'Scope 3', unite: 'km',  valeur: 0.12,  source_officielle: 'ADEME 2026', maj: '2026-01-15' }
+];
+
+// Copie pour pouvoir réinitialiser
+var facteursOriginaux = JSON.parse(JSON.stringify(facteurs));
+
+
+/* ──────────────────────────────────────────────────
+   REMPLIR LE TABLEAU DES FACTEURS
+──────────────────────────────────────────────────── */
+function remplirFacteurs() {
+  var tbody = document.getElementById('tbody-facteurs');
+  tbody.innerHTML = '';
+
+  facteurs.forEach(function(f, index) {
+    var badgeScope = f.scope === 'Scope 1'
+      ? 'badge-warn' : f.scope === 'Scope 2' ? 'badge-ok' : 'badge-error';
+
+    var dateMaj = new Date(f.maj).toLocaleDateString('fr-FR', {
+      day: '2-digit', month: 'short', year: 'numeric'
+    });
+
+    tbody.innerHTML +=
+      '<tr>' +
+        '<td style="font-weight:600;">' + f.source + '</td>' +
+        '<td><span class="badge ' + badgeScope + '">' + f.scope + '</span></td>' +
+        '<td style="font-family:var(--police-chiffre); color:var(--texte-discret);">' + f.unite + '</td>' +
+        /*
+          La cellule valeur contient un <input> pour pouvoir modifier le facteur.
+          onchange = met à jour le tableau JS quand l'utilisateur change la valeur.
+        */
+        '<td class="cellule-chiffre cellule-editable">' +
+          '<input type="number" step="0.001" value="' + f.valeur + '" ' +
+                 'onchange="modifierFacteur(' + index + ', this.value)">' +
+        '</td>' +
+        '<td style="font-size:var(--taille-petit); color:var(--texte-discret);">' + f.source_officielle + '</td>' +
+        '<td style="font-size:var(--taille-petit); color:var(--texte-discret);">' + dateMaj + '</td>' +
+      '</tr>';
+  });
+}
+
+
+/* ──────────────────────────────────────────────────
+   MODIFIER UN FACTEUR
+──────────────────────────────────────────────────── */
+function modifierFacteur(index, nouvelleValeur) {
+  facteurs[index].valeur = parseFloat(nouvelleValeur);
+  facteurs[index].maj = new Date().toISOString().slice(0, 10);
+}
+
+
+/* ──────────────────────────────────────────────────
+   RÉINITIALISER AUX VALEURS ADEME
+──────────────────────────────────────────────────── */
+function reinitialiserFacteurs() {
+  if (confirm('Réinitialiser tous les facteurs aux valeurs ADEME 2026 ?')) {
+    facteurs = JSON.parse(JSON.stringify(facteursOriginaux));
+    remplirFacteurs();
+  }
+}
+
+
+/* ──────────────────────────────────────────────────
+   SAUVEGARDER LES FACTEURS (simulation)
+   Dans un vrai projet : fetch('http://localhost:8000/emission-factors', { method:'PUT', body: JSON.stringify(facteurs) })
+──────────────────────────────────────────────────── */
+function sauvegarderFacteurs() {
+  alert('✅ Facteurs sauvegardés !\n\nDans la version finale, les valeurs sont envoyées à l\'API FastAPI.');
+}
+
+
+/* ──────────────────────────────────────────────────
+   AFFICHER / MASQUER une clé API
+   Bascule entre type="password" et type="text"
+──────────────────────────────────────────────────── */
+function basculerVisibilite(idChamp, bouton) {
+  var champ = document.getElementById(idChamp);
+
+  if (champ.type === 'password') {
+    champ.type = 'text';
+    bouton.textContent = '🙈 Masquer';
+  } else {
+    champ.type = 'password';
+    bouton.textContent = '👁 Afficher';
+  }
+}
+
+
+/* ──────────────────────────────────────────────────
+   TESTER LA CONNEXION DB (simulation)
+   Dans un vrai projet : fetch('http://localhost:8000/db-status')
+──────────────────────────────────────────────────── */
+function testerConnexion() {
+  var statut = document.getElementById('statut-db');
+
+  // Affiche "test en cours"
+  statut.className = 'statut-db statut-db--test';
+  statut.innerHTML = '⟳ Test en cours...';
+
+  // Simule une réponse après 1.5 secondes
+  setTimeout(function() {
+    var latence = Math.floor(Math.random() * 20) + 5;  // entre 5 et 25ms
+    statut.className = 'statut-db statut-db--ok';
+    statut.innerHTML = '<span class="point-vert"></span> Connectée · ' + latence + 'ms';
+  }, 1500);
+}
+
+
+/* ──────────────────────────────────────────────────
+   TOUT SAUVEGARDER (bouton en haut à droite)
+──────────────────────────────────────────────────── */
+function toutSauvegarder() {
+  var btn = document.getElementById('btn-sauvegarder');
+
+  btn.textContent = '⟳ Sauvegarde...';
+  btn.disabled = true;
+
+  setTimeout(function() {
+    btn.textContent = '✅ Sauvegardé !';
+    btn.classList.add('btn-sauvegarde-ok');
+
+    // Remet le bouton à l'état normal après 2 secondes
+    setTimeout(function() {
+      btn.textContent = '💾 Sauvegarder tout';
+      btn.classList.remove('btn-sauvegarde-ok');
+      btn.disabled = false;
+    }, 2000);
+  }, 1200);
+}
+
+
+// Remplit le tableau des facteurs au chargement
+remplirFacteurs();
+</script>
+
+</body>
+</html>

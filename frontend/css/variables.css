@@ -1,0 +1,113 @@
+/* ============================================================
+   VARIABLES CSS — Dashboard Empreinte Carbone
+
+   Les variables CSS permettent de définir des valeurs une seule
+   fois et de les réutiliser partout dans le projet.
+   Syntaxe : --nom-variable: valeur;
+   Utilisation : color: var(--nom-variable);
+   ============================================================ */
+
+:root {
+
+  /* ----------------------------------------------------------
+     COULEURS DE FOND
+     Du plus sombre (page) au plus clair (cartes)
+  ---------------------------------------------------------- */
+  --fond-page:     #091413;   /* fond général, presque noir */
+  --fond-carte:    #0f2018;   /* fond des cartes */
+  --fond-survol:   #132619;   /* quand on passe la souris sur une carte */
+
+  /* ----------------------------------------------------------
+     COULEURS DES BORDURES
+  ---------------------------------------------------------- */
+  --bordure:        #1a3828;  /* bordure normale */
+  --bordure-forte:  #245038;  /* bordure mise en avant */
+  --bordure-focus:  #3fb950;  /* bordure quand un champ est sélectionné */
+
+  /* ----------------------------------------------------------
+     COULEURS PRINCIPALES (palette verte = positif / neutre)
+  ---------------------------------------------------------- */
+  --vert:           #3fb950;  /* vert principal, actions, indicateurs OK */
+  --vert-clair:     #B0E4CC;  /* textes et badges verts clairs */
+  --vert-lueur:     #3fb95033;/* halo vert (effet glow, très transparent) */
+
+  /* ----------------------------------------------------------
+     COULEURS D'ALERTE (orange = avertissement, rouge = danger)
+  ---------------------------------------------------------- */
+  --orange:         #f78166;  /* avertissement */
+  --rouge:          #ff4560;  /* danger / dépassement */
+  --orange-fond:    #f7816622;/* fond orange transparent pour les badges */
+  --rouge-fond:     #ff456022;/* fond rouge transparent pour les badges */
+
+  /* ----------------------------------------------------------
+     COULEURS DE TEXTE
+  ---------------------------------------------------------- */
+  --texte:          #e6edf3;  /* texte principal, bien lisible */
+  --texte-discret:  #7a9e8a;  /* texte secondaire, labels, sous-titres */
+  --texte-tres-discret: #4a6a58; /* texte très atténué, ex: placeholders */
+
+  /* ----------------------------------------------------------
+     POLICES — 100% hors ligne, aucun lien internet
+
+     Segoe UI    → ressemble à IBM Plex Sans : propre, moderne,
+                   très lisible. Installée par défaut sur Windows.
+
+     Consolas    → ressemble à IBM Plex Mono : monospace claire,
+                   chiffres bien alignés. Installée sur Windows.
+
+     Les polices après la virgule sont des filets de sécurité
+     si Segoe UI ou Consolas n'est pas disponible (ex: Linux, Mac).
+  ---------------------------------------------------------- */
+  --police-texte:   'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --police-chiffre: 'Consolas', 'Cascadia Code', 'Courier New', monospace;
+
+  /* ----------------------------------------------------------
+     TAILLES DE TEXTE
+  ---------------------------------------------------------- */
+  --taille-petit:   0.75rem;   /* 12px — labels, légendes */
+  --taille-normal:  0.875rem;  /* 14px — texte courant */
+  --taille-moyen:   1rem;      /* 16px — texte important */
+  --taille-grand:   1.375rem;  /* 22px — sous-titres */
+  --taille-titre:   1.75rem;   /* 28px — titres de section */
+  --taille-hero:    2.25rem;   /* 36px — grand KPI affiché */
+
+  /* ----------------------------------------------------------
+     ESPACEMENTS
+     Utilisés pour padding, margin, gap…
+  ---------------------------------------------------------- */
+  --espace-xs:  0.25rem;   /*  4px */
+  --espace-sm:  0.5rem;    /*  8px */
+  --espace-md:  1rem;      /* 16px */
+  --espace-lg:  1.5rem;    /* 24px */
+  --espace-xl:  2rem;      /* 32px */
+  --espace-2xl: 3rem;      /* 48px */
+
+  /* ----------------------------------------------------------
+     ARRONDIS DES COINS (border-radius)
+  ---------------------------------------------------------- */
+  --arrondi-sm:   4px;     /* léger arrondi, ex: badges */
+  --arrondi-md:   8px;     /* cartes, boutons */
+  --arrondi-lg:   12px;    /* grandes cartes */
+  --arrondi-rond: 9999px;  /* cercle ou pilule */
+
+  /* ----------------------------------------------------------
+     OMBRES
+     Donnent de la profondeur aux éléments
+  ---------------------------------------------------------- */
+  --ombre-carte:  0 4px 12px #00000060, inset 0 1px 0 #1a382880;
+  --ombre-lueur-verte: 0 0 16px #3fb95033, 0 0 4px #3fb95066;
+  --ombre-lueur-rouge: 0 0 16px #ff456033, 0 0 4px #ff456066;
+
+  /* ----------------------------------------------------------
+     TRANSITIONS (animations fluides au survol)
+     ex: transition: var(--transition);
+  ---------------------------------------------------------- */
+  --transition: 200ms ease-in-out;
+
+  /* ----------------------------------------------------------
+     MISE EN PAGE GÉNÉRALE
+  ---------------------------------------------------------- */
+  --largeur-sidebar:    240px;   /* largeur du menu latéral */
+  --hauteur-topbar:     56px;    /* hauteur de la barre du haut */
+  --largeur-max:        1440px;  /* largeur maximale du contenu */
+}

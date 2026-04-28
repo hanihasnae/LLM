@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarbonIQ — Alertes</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .panneau-droit { display:none; }
+    .main { margin-right:0; width:85%; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:var(--espace-md); padding-bottom:var(--espace-lg); margin-bottom:var(--espace-xl); border-bottom:1px solid var(--bordure); }
+    .topbar__titre { font-size:var(--taille-grand); font-weight:700; color:var(--texte); }
+    .topbar__sous-titre { font-size:var(--taille-petit); color:var(--texte-discret); margin-top:3px; }
+    .topbar__droite { display:flex; align-items:center; gap:var(--espace-sm); }
+    .sidebar__logo { display:flex; align-items:center; gap:var(--espace-sm); padding-bottom:var(--espace-lg); margin-bottom:var(--espace-sm); border-bottom:1px solid var(--bordure); }
+    .sidebar__logo-emoji { font-size:22px; }
+    .sidebar__logo-nom { font-size:var(--taille-moyen); font-weight:700; color:var(--texte); }
+    .sidebar__logo-sous { font-family:var(--police-chiffre); font-size:var(--taille-petit); color:var(--texte-discret); }
+    .sidebar__section-titre { font-family:var(--police-chiffre); font-size:10px; color:var(--texte-tres-discret); text-transform:uppercase; letter-spacing:0.12em; padding:var(--espace-lg) var(--espace-sm) var(--espace-xs); }
+    .sidebar__footer { margin-top:auto; padding-top:var(--espace-lg); border-top:1px solid var(--bordure); }
+    .sidebar__footer-entreprise { font-size:var(--taille-normal); font-weight:600; color:var(--texte); margin-bottom:var(--espace-xs); }
+    .sidebar__footer-statut { display:flex; align-items:center; gap:var(--espace-xs); font-family:var(--police-chiffre); font-size:var(--taille-petit); color:var(--texte-discret); }
+    .point-vert { width:7px; height:7px; border-radius:50%; background:var(--vert); animation:pulse 2s infinite; }
+
+    /* Boutons filtre */
+    .filtres { display:flex; gap:var(--espace-sm); margin-bottom:var(--espace-lg); flex-wrap:wrap; }
+    .filtre-btn {
+      background:transparent; border:1px solid var(--bordure); border-radius:var(--arrondi-rond);
+      color:var(--texte-discret); font-family:var(--police-texte); font-size:var(--taille-petit);
+      padding:5px var(--espace-md); cursor:pointer; transition:var(--transition);
+    }
+    .filtre-btn:hover { border-color:var(--vert); color:var(--vert); }
+    .filtre-btn--actif { background:var(--vert-lueur); border-color:var(--vert); color:var(--vert); }
+
+    /* Alerte masquée par le filtre */
+    .alerte-item { margin-bottom:var(--espace-md); }
+    .alerte-item.masquee { display:none; }
+
+    /* Bloc explication IA sous chaque alerte */
+    .explication-ia {
+      background:#1a382820; border-left:2px solid var(--vert);
+      border-radius:0 var(--arrondi-md) var(--arrondi-md) 0;
+      padding:var(--espace-sm) var(--espace-md);
+      margin-top:var(--espace-sm);
+      font-size:var(--taille-petit); color:var(--texte-discret);
+    }
+    .explication-ia strong { color:var(--vert-clair); }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar__logo">
+    <span class="sidebar__logo-emoji">🌿</span>
+    <div><div class="sidebar__logo-nom">CarbonIQ</div><div class="sidebar__logo-sous">MRV Platform</div></div>
+  </div>
+  <nav>
+    <div class="sidebar__section-titre">Principal</div>
+    <a class="sidebar__lien" href="../index.html">📊 Dashboard</a>
+    <a class="sidebar__lien" href="activites.html">⚡ Activités</a>
+    <a class="sidebar__lien sidebar__lien--actif" href="alertes.html" style="justify-content:space-between;"><span>🔔 Alertes</span><span class="badge badge-error">2</span></a>
+    <div class="sidebar__section-titre">Données</div>
+    <a class="sidebar__lien" href="import_pdf.html">📄 Import PDF</a>
+    <div class="sidebar__section-titre">Conformité</div>
+    <a class="sidebar__lien" href="conformite.html">🛡️ Conformité CBAM</a>
+    <a class="sidebar__lien" href="rapports.html">📋 Rapports</a>
+    <div class="sidebar__section-titre">Système</div>
+    <a class="sidebar__lien" href="parametres.html">⚙️ Paramètres</a>
+  </nav>
+  <div class="sidebar__footer">
+    <div class="sidebar__footer-entreprise">Acier Plus SAS</div>
+    <div class="sidebar__footer-statut"><span class="point-vert"></span> API connectée</div>
+  </div>
+</aside>
+
+<main class="main">
+
+  <header class="topbar">
+    <div>
+      <h1 class="topbar__titre">🔔 Alertes</h1>
+      <p class="topbar__sous-titre">Surveillance en temps réel · 3 alertes actives</p>
+    </div>
+    <div class="topbar__droite">
+      <span class="badge badge-error">2 critiques</span>
+      <span class="badge badge-warn">1 attention</span>
+    </div>
+  </header>
+
+
+  <!-- Boutons de filtre -->
+  <!--
+    data-filtre = la valeur que JS va comparer aux alertes.
+    "tous" affiche tout, les autres filtrent par gravité.
+  -->
+  <div class="filtres">
+    <button class="filtre-btn filtre-btn--actif" data-filtre="tous" onclick="filtrer(this)">
+      🔵 Toutes (4)
+    </button>
+    <button class="filtre-btn" data-filtre="critique" onclick="filtrer(this)">
+      🔴 Critique (2)
+    </button>
+    <button class="filtre-btn" data-filtre="attention" onclick="filtrer(this)">
+      🟠 Attention (1)
+    </button>
+    <button class="filtre-btn" data-filtre="info" onclick="filtrer(this)">
+      🔵 Info (1)
+    </button>
+  </div>
+
+
+  <!-- ── ALERTES ──────────────────────────────────── -->
+
+  <!-- Alerte 1 : critique -->
+  <div class="alerte-item" data-gravite="critique">
+    <div class="alerte alerte--erreur">
+      <div class="alerte__icone">🔴</div>
+      <div style="flex:1;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="alerte__titre">Dépassement seuil CBAM — Scope 2</div>
+          <span class="badge badge-error">Critique</span>
+        </div>
+        <div class="alerte__description">
+          Les émissions Scope 2 (3 280 tCO₂) dépassent votre objectif mensuel de 15%.
+          Ce dépassement doit être déclaré à l'autorité compétente sous 30 jours.
+        </div>
+        <div class="alerte__heure">il y a 2 heures · Source : calcul automatique</div>
+        <div class="explication-ia">
+          <strong>🤖 Analyse IA :</strong> Ce dépassement est probablement lié à la
+          hausse de production de la semaine 3. Je recommande d'auditer la consommation
+          électrique du Four à arc et d'envisager un glissement vers des heures creuses.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alerte 2 : critique -->
+  <div class="alerte-item" data-gravite="critique">
+    <div class="alerte alerte--erreur">
+      <div class="alerte__icone">🔴</div>
+      <div style="flex:1;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="alerte__titre">Facture énergie non traitée — Février 2026</div>
+          <span class="badge badge-error">Critique</span>
+        </div>
+        <div class="alerte__description">
+          Aucune activité Scope 2 n'a été enregistrée pour février 2026.
+          Le rapport mensuel sera incomplet si non corrigé avant le 5 mars.
+        </div>
+        <div class="alerte__heure">il y a 1 jour · Source : vérification automatique</div>
+        <div class="explication-ia">
+          <strong>🤖 Analyse IA :</strong> Importez la facture d'électricité de février
+          via l'onglet "Import PDF". Je peux extraire automatiquement les kWh consommés
+          et calculer le CO₂ correspondant.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alerte 3 : attention -->
+  <div class="alerte-item" data-gravite="attention">
+    <div class="alerte alerte--warn">
+      <div class="alerte__icone">⚠️</div>
+      <div style="flex:1;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="alerte__titre">Données Scope 3 incomplètes</div>
+          <span class="badge badge-warn">Attention</span>
+        </div>
+        <div class="alerte__description">
+          Les activités transport de décembre 2025 et janvier 2026 ne sont pas renseignées.
+          Cela affecte votre score de traçabilité CBAM (actuellement 78%).
+        </div>
+        <div class="alerte__heure">il y a 3 jours · Source : audit données</div>
+        <div class="explication-ia">
+          <strong>🤖 Analyse IA :</strong> Contactez vos 3 principaux transporteurs
+          (DHL, DB Schenker, TLR) pour obtenir leurs rapports CO₂.
+          Chaque rapport ajoutera ~3 points à votre score de traçabilité.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alerte 4 : info -->
+  <div class="alerte-item" data-gravite="info">
+    <div class="alerte alerte--info">
+      <div class="alerte__icone">ℹ️</div>
+      <div style="flex:1;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="alerte__titre">Mise à jour facteurs d'émission ADEME 2026</div>
+          <span class="badge badge-ok">Info</span>
+        </div>
+        <div class="alerte__description">
+          Les nouveaux facteurs d'émission ADEME 2026 sont disponibles.
+          Mise à jour recommandée pour maintenir la conformité MRV.
+        </div>
+        <div class="alerte__heure">il y a 5 jours · Source : ADEME base carbone</div>
+        <div class="explication-ia">
+          <strong>🤖 Analyse IA :</strong> Le facteur électricité passe de 0.400 à 0.385 kg CO₂/kWh
+          (mix renouvelable en hausse). Cela réduira vos émissions Scope 2 de ~3.75%
+          sans changement de comportement.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* ──────────────────────────────────────────────────
+   FILTRE PAR GRAVITÉ
+   Quand on clique un bouton, on affiche/cache les alertes
+   selon leur attribut data-gravite.
+──────────────────────────────────────────────────── */
+function filtrer(boutonClique) {
+  var filtre = boutonClique.getAttribute('data-filtre');
+
+  // Met à jour le style des boutons
+  document.querySelectorAll('.filtre-btn').forEach(function(btn) {
+    btn.classList.remove('filtre-btn--actif');
+  });
+  boutonClique.classList.add('filtre-btn--actif');
+
+  // Affiche ou cache chaque alerte
+  document.querySelectorAll('.alerte-item').forEach(function(item) {
+    if (filtre === 'tous' || item.getAttribute('data-gravite') === filtre) {
+      item.classList.remove('masquee');   // affiche
+    } else {
+      item.classList.add('masquee');      // cache
+    }
+  });
+}
+</script>
+
+</body>
+</html>

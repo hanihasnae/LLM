@@ -1,0 +1,210 @@
+/* ============================================================
+   LAYOUT.CSS — Structure générale du dashboard
+
+   Ce fichier s'occupe uniquement de la mise en page :
+   où est la sidebar, où est le contenu, comment ils s'organisent.
+   Les couleurs viennent de variables.css
+   ============================================================ */
+
+/* On importe d'abord les variables pour pouvoir les utiliser ici */
+@import './variables.css';
+
+
+/* ============================================================
+   BASE — Paramètres généraux de la page
+   ============================================================ */
+
+/* Supprime les marges/paddings par défaut du navigateur */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* le padding ne fait plus grossir les éléments */
+}
+
+/* Le body est le conteneur de TOUTE la page */
+body {
+  display: flex;            /* les 3 colonnes se mettent côte à côte */
+  min-height: 100vh;        /* occupe au moins toute la hauteur de l'écran */
+  background: var(--fond-page);
+  color: var(--texte);
+  font-family: var(--police-texte);
+  font-size: var(--taille-normal);
+  line-height: 1.5;
+}
+
+
+/* ============================================================
+   SIDEBAR — Menu de gauche (15% de la largeur)
+   ============================================================ */
+
+.sidebar {
+  width: 15%;
+  min-width: 180px;         /* ne rétrécit pas en dessous de 180px */
+  height: 100vh;            /* prend toute la hauteur de l'écran */
+  position: fixed;          /* reste fixe quand on scroll le contenu */
+  top: 0;
+  left: 0;
+
+  background: var(--fond-carte);
+  border-right: 1px solid var(--bordure);
+
+  display: flex;
+  flex-direction: column;   /* les éléments internes s'empilent verticalement */
+  padding: var(--espace-lg);
+  overflow-y: auto;         /* scrollbar si le menu est trop long */
+}
+
+/* Logo / titre en haut de la sidebar */
+.sidebar__logo {
+  font-family: var(--police-chiffre);
+  font-size: var(--taille-moyen);
+  color: var(--vert);
+  padding-bottom: var(--espace-lg);
+  border-bottom: 1px solid var(--bordure);
+  margin-bottom: var(--espace-lg);
+  letter-spacing: 0.05em;
+}
+
+/* Un lien de navigation dans la sidebar */
+.sidebar__lien {
+  display: flex;
+  align-items: center;
+  gap: var(--espace-sm);
+  padding: var(--espace-sm) var(--espace-md);
+  border-radius: var(--arrondi-md);
+  color: var(--texte-discret);
+  text-decoration: none;
+  font-size: var(--taille-normal);
+  transition: var(--transition);
+}
+
+/* Au survol et quand le lien est actif */
+.sidebar__lien:hover,
+.sidebar__lien--actif {
+  background: var(--fond-survol);
+  color: var(--texte);
+  border-left: 2px solid var(--vert);
+}
+
+
+/* ============================================================
+   CONTENU PRINCIPAL — Zone centrale (55% de la largeur)
+   ============================================================ */
+
+.main {
+  width: 65%;
+  margin-left: 15%;         /* décalé à droite pour laisser place à la sidebar */
+  margin-right: calc(20% + 20px);        /* décalé à gauche pour laisser place au panneau droit */
+  min-height: 100vh;
+  padding: var(--espace-xl) var(--espace-lg);
+  overflow-y: auto;
+}
+
+/* Titre de section dans le contenu principal */
+.main__titre {
+  font-size: var(--taille-titre);
+  color: var(--texte);
+  font-weight: 600;
+  margin-bottom: var(--espace-xs);
+}
+
+/* Sous-titre ou description */
+.main__sous-titre {
+  font-size: var(--taille-normal);
+  color: var(--texte-discret);
+  margin-bottom: var(--espace-xl);
+}
+
+/* Grille pour placer les cartes KPI côte à côte */
+.grille-kpi {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 colonnes égales */
+  gap: var(--espace-md);
+  margin-bottom: var(--espace-xl);
+}
+
+/* Grille pour les graphiques (2 colonnes) */
+.grille-graphiques {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--espace-md);
+}
+
+
+/* ============================================================
+   PANNEAU DROIT — Infos complémentaires (30% de la largeur)
+   ============================================================ */
+
+.panneau-droit {
+  width: 20%;
+  height: 100vh;
+  position: fixed;          /* reste fixe comme la sidebar */
+  top: 0;
+  right:20px;
+
+  background: var(--fond-carte);
+  border-left: 1px solid var(--bordure);
+
+  display: flex;
+  flex-direction: column;
+  padding: var(--espace-lg);
+  overflow-y: auto;
+}
+
+/* Titre d'une section dans le panneau droit */
+.panneau-droit__titre {
+  font-size: var(--taille-petit);
+  color: var(--texte-discret);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--espace-md);
+}
+
+
+/* ============================================================
+   RESPONSIVE — Adaptation sur petits écrans (mobile / tablette)
+
+   En dessous de 900px :
+   - La sidebar disparaît (on économise la place)
+   - Le panneau droit passe en bas
+   - Le contenu prend toute la largeur
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+  body {
+    flex-direction: column; /* les blocs s'empilent verticalement */
+  }
+
+  /* Cache la sidebar sur mobile */
+  .sidebar {
+    display: none;
+  }
+
+  /* Le contenu prend toute la largeur */
+  .main {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding: var(--espace-md);
+  }
+
+  /* Le panneau droit passe en bas, plus fixe */
+  .panneau-droit {
+    position: static;       /* n'est plus fixe, suit le scroll normal */
+    width: 100%;
+    height: auto;
+    border-left: none;
+    border-top: 1px solid var(--bordure);
+  }
+
+  /* Sur mobile, 1 seule colonne pour les KPI */
+  .grille-kpi {
+    grid-template-columns: 1fr;
+  }
+
+  /* Sur mobile, 1 seule colonne pour les graphiques */
+  .grille-graphiques {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarbonIQ — MRV Platform</title>
+
+  <!-- Nos 3 fichiers CSS (l'ordre est important : variables en premier) -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <style>
+    /*
+      Ce bloc <style> ajoute les quelques règles qui ne sont
+      pas encore dans nos fichiers CSS.
+    */
+
+    /* ── Barre du haut (topbar) ────────────────── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--espace-md);
+      padding-bottom: var(--espace-lg);
+      margin-bottom: var(--espace-xl);
+      border-bottom: 1px solid var(--bordure);
+    }
+    .topbar__titre {
+      font-size: var(--taille-grand);
+      font-weight: 700;
+      color: var(--texte);
+    }
+    .topbar__sous-titre {
+      font-size: var(--taille-petit);
+      color: var(--texte-discret);
+      margin-top: 3px;
+    }
+    .topbar__droite {
+      display: flex;
+      align-items: center;
+      gap: var(--espace-sm);
+      flex-wrap: wrap;
+    }
+
+    /* ── Titre de section dans la sidebar ──────── */
+    .sidebar__section-titre {
+      font-family: var(--police-chiffre);
+      font-size: 10px;
+      color: var(--texte-tres-discret);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: var(--espace-lg) var(--espace-sm) var(--espace-xs);
+    }
+
+    /* ── Logo de la sidebar ─────────────────────── */
+    .sidebar__logo {
+      display: flex;
+      align-items: center;
+      gap: var(--espace-sm);
+      padding-bottom: var(--espace-lg);
+      margin-bottom: var(--espace-sm);
+      border-bottom: 1px solid var(--bordure);
+    }
+    .sidebar__logo-emoji { font-size: 22px; }
+    .sidebar__logo-nom   { font-size: var(--taille-moyen); font-weight: 700; color: var(--texte); }
+    .sidebar__logo-sous  { font-family: var(--police-chiffre); font-size: var(--taille-petit); color: var(--texte-discret); }
+
+    /* ── Pied de la sidebar ─────────────────────── */
+    .sidebar__footer {
+      margin-top: auto;        /* pousse le footer tout en bas */
+      padding-top: var(--espace-lg);
+      border-top: 1px solid var(--bordure);
+    }
+    .sidebar__footer-entreprise {
+      font-size: var(--taille-normal);
+      font-weight: 600;
+      color: var(--texte);
+      margin-bottom: var(--espace-xs);
+    }
+    .sidebar__footer-statut {
+      display: flex;
+      align-items: center;
+      gap: var(--espace-xs);
+      font-family: var(--police-chiffre);
+      font-size: var(--taille-petit);
+      color: var(--texte-discret);
+    }
+    .point-vert {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--vert);
+      animation: pulse 2s infinite;
+    }
+
+    /* ── Système de pages ───────────────────────── */
+    /* Toutes les pages sont cachées par défaut */
+    .page { display: none; }
+    /* La page active est visible */
+    .page--active { display: block; }
+
+    /* ── Sous-unité sous le chiffre d'une KPI card ── */
+    .kpi__sous-unite {
+      font-size: var(--taille-petit);
+      color: var(--texte-discret);
+      margin-top: 4px;
+    }
+
+    /* ── Onglets de période du graphique ────────── */
+    #onglets-periode {
+      display: flex;
+      gap: var(--espace-xs);
+    }
+    /* Onglet actuellement sélectionné : fond vert discret + bordure verte */
+    .onglet-actif {
+      background: var(--vert-lueur) !important;
+      border-color: var(--vert) !important;
+      color: var(--vert) !important;
+    }
+
+    /* ════════════════════════════════════════════
+       PANNEAU DROIT — Styles spécifiques
+       Préfixe "pdr-" pour éviter toute confusion
+    ════════════════════════════════════════════ */
+
+    /* Séparateur entre les deux blocs */
+    .pdr-separateur {
+      border: none;
+      border-top: 1px solid var(--bordure);
+      margin: var(--espace-md) 0;
+    }
+
+    /* Titre de bloc (ex: "📄 Analyser une facture") */
+    .pdr-titre {
+      font-family: var(--police-chiffre);
+      font-size: var(--taille-petit);
+      color: var(--texte-discret);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--espace-md);
+    }
+
+    /* ── Zone de drop PDF ──────────────────────── */
+    .pdr-upload {
+      border: 1px dashed var(--bordure);
+      border-radius: var(--arrondi-md);
+      padding: var(--espace-md) var(--espace-sm);
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: var(--espace-sm);
+    }
+    .pdr-upload:hover {
+      border-color: var(--vert);
+      background: var(--vert-lueur);
+    }
+    .pdr-upload__icone { font-size: 28px; margin-bottom: var(--espace-xs); }
+    .pdr-upload__texte { font-size: var(--taille-normal); color: var(--texte); }
+    .pdr-upload__sous  { font-size: var(--taille-petit);  color: var(--texte-discret); margin-top: 2px; }
+
+    /* Barre de progression de l'upload */
+    .pdr-barre-conteneur {
+      background: #1a3828;
+      border-radius: var(--arrondi-rond);
+      height: 4px;
+      overflow: hidden;
+      margin: var(--espace-sm) 0 var(--espace-xs);
+    }
+    .pdr-barre {
+      height: 100%;
+      background: var(--vert);
+      width: 0%;
+      transition: width 150ms ease;
+    }
+    .pdr-statut {
+      font-family: var(--police-chiffre);
+      font-size: var(--taille-petit);
+      color: var(--texte-discret);
+    }
+
+    /* Mini tableau de résultat d'extraction */
+    .pdr-mini-tableau {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--taille-petit);
+      margin-top: var(--espace-sm);
+    }
+    .pdr-mini-tableau td {
+      padding: 4px var(--espace-xs);
+      border-bottom: 1px solid var(--bordure);
+    }
+    .pdr-mini-tableau td:first-child { color: var(--texte-discret); }
+    .pdr-mini-tableau td:last-child  {
+      color: var(--texte);
+      font-family: var(--police-chiffre);
+      text-align: right;
+    }
+
+    /* ── Chat IA ────────────────────────────────── */
+    .pdr-chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--espace-md);
+    }
+
+    /* Zone des messages : hauteur fixe, scroll vertical */
+    .pdr-messages {
+      height: 200px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--espace-sm);
+      margin-bottom: var(--espace-sm);
+      padding-right: 2px;
+    }
+    /* Cache la scrollbar visuellement (mais elle reste fonctionnelle) */
+    .pdr-messages::-webkit-scrollbar { width: 3px; }
+    .pdr-messages::-webkit-scrollbar-thumb { background: var(--bordure); border-radius: 2px; }
+
+    /* Bulle de message de base */
+    .pdr-msg {
+      font-size: var(--taille-petit);
+      line-height: 1.5;
+      padding: var(--espace-sm) var(--espace-md);
+      border-radius: var(--arrondi-md);
+      max-width: 92%;
+    }
+    /* Bulle IA : à gauche, fond vert sombre */
+    .pdr-msg--ia {
+      background: #1a3828;
+      color: var(--texte);
+      align-self: flex-start;
+      border-bottom-left-radius: 2px;
+    }
+    /* Bulle utilisateur : à droite, fond vert vif, texte sombre */
+    .pdr-msg--user {
+      background: var(--vert);
+      color: #091413;
+      align-self: flex-end;
+      font-weight: 500;
+      border-bottom-right-radius: 2px;
+    }
+
+    /* Boutons suggestions rapides (forme pilule) */
+    .pdr-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--espace-xs);
+      margin-bottom: var(--espace-sm);
+    }
+    .pdr-pill {
+      background: transparent;
+      border: 1px solid var(--bordure);
+      border-radius: var(--arrondi-rond);
+      color: var(--texte-discret);
+      font-family: var(--police-texte);
+      font-size: 10px;
+      padding: 3px var(--espace-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .pdr-pill:hover {
+      border-color: var(--vert);
+      color: var(--vert);
+      background: var(--vert-lueur);
+    }
+
+    /* Zone input + bouton envoyer */
+    .pdr-input-zone {
+      display: flex;
+      gap: var(--espace-xs);
+    }
+    .pdr-input {
+      flex: 1;   /* prend tout l'espace restant */
+      background: var(--fond-page);
+      border: 1px solid var(--bordure);
+      border-radius: var(--arrondi-md);
+      padding: 6px var(--espace-sm);
+      color: var(--texte);
+      font-size: var(--taille-petit);
+      font-family: var(--police-texte);
+      outline: none;
+      transition: var(--transition);
+    }
+    .pdr-input:focus { border-color: var(--vert); }
+    .pdr-input::placeholder { color: var(--texte-tres-discret); }
+    .pdr-btn-envoyer {
+      width: 32px;
+      height: 32px;
+      background: var(--vert);
+      color: var(--fond-page);
+      border: none;
+      border-radius: var(--arrondi-md);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+    .pdr-btn-envoyer:hover { opacity: 0.85; }
+  </style>
+</head>
+
+<body>
+
+<!-- ════════════════════════════════════════════════
+     SIDEBAR — Menu de gauche, fixe
+════════════════════════════════════════════════ -->
+<aside class="sidebar">
+
+  <!-- Logo -->
+  <div class="sidebar__logo">
+    <span class="sidebar__logo-emoji">🌿</span>
+    <div>
+      <div class="sidebar__logo-nom">CarbonIQ</div>
+      <div class="sidebar__logo-sous">MRV Platform</div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+
+    <div class="sidebar__section-titre">Principal</div>
+
+    <!-- data-page="dashboard" indique à JS quelle page ouvrir -->
+    <a class="sidebar__lien sidebar__lien--actif" data-page="dashboard" href="#">
+      📊 Dashboard
+    </a>
+    <a class="sidebar__lien" data-page="activites" href="#">
+      ⚡ Activités
+    </a>
+    <!-- Le badge rouge "2" indique le nombre d'alertes non lues -->
+    <a class="sidebar__lien" data-page="alertes" href="#"
+       style="justify-content: space-between;">
+      <span>🔔 Alertes</span>
+      <span class="badge badge-error">2</span>
+    </a>
+
+    <div class="sidebar__section-titre">Données</div>
+
+    <a class="sidebar__lien" data-page="import" href="#">
+      📄 Import PDF
+    </a>
+
+    <div class="sidebar__section-titre">Conformité</div>
+
+    <a class="sidebar__lien" data-page="cbam" href="#">
+      🛡️ Conformité CBAM
+    </a>
+    <a class="sidebar__lien" data-page="rapports" href="#">
+      📋 Rapports
+    </a>
+
+    <div class="sidebar__section-titre">Système</div>
+
+    <a class="sidebar__lien" data-page="parametres" href="#">
+      ⚙️ Paramètres
+    </a>
+
+  </nav>
+
+  <!-- Pied de la sidebar -->
+  <div class="sidebar__footer">
+    <div class="sidebar__footer-entreprise">Acier Plus SAS</div>
+    <div class="sidebar__footer-statut">
+      <span class="point-vert"></span>
+      API connectée
+    </div>
+  </div>
+
+</aside>
+
+
+<!-- ════════════════════════════════════════════════
+     CONTENU PRINCIPAL — Zone centrale, défile
+════════════════════════════════════════════════ -->
+<main class="main">
+
+  <!-- Barre du haut : titre + actions -->
+  <header class="topbar">
+    <div>
+      <h1 class="topbar__titre" id="titre-page">Tableau de bord 🌿</h1>
+      <p class="topbar__sous-titre">Données en temps réel · 2026</p>
+    </div>
+    <div class="topbar__droite">
+      <span class="badge badge-ok">
+        <span class="badge__point"></span>
+        CBAM CONFORME ✅
+      </span>
+      <button class="btn btn-contour" id="btn-actualiser" onclick="actualiser()">
+        ↻ Actualiser
+      </button>
+    </div>
+  </header>
+
+
+  <!-- ══ PAGE : DASHBOARD ════════════════════════ -->
+  <section id="page-dashboard" class="page page--active">
+
+
+    <!-- ─── SECTION 1 : 4 cartes KPI ───────────────
+         On passe à 4 colonnes avec un style inline
+         (grille-kpi en a 3 par défaut dans layout.css)
+    ──────────────────────────────────────────────── -->
+    <div class="grille-kpi" style="grid-template-columns: repeat(4, 1fr);">
+
+      <!-- Carte 1 : Total des émissions (verte) -->
+      <div class="kpi kpi--vert">
+        <!-- id="kpi-trend" : JS peut changer cette valeur plus tard -->
+        <div class="kpi__badge kpi__badge--baisse" id="kpi-trend">↘ &minus;2.1%</div>
+        <div class="kpi__label">Émissions totales</div>
+        <!-- id="kpi-total" : JS peut mettre à jour ce chiffre -->
+        <div class="kpi__valeur" id="kpi-total">12 450</div>
+        <div class="kpi__sous-unite">tonnes CO₂e</div>
+      </div>
+
+      <!-- Carte 2 : Scope 1 — émissions directes (orange) -->
+      <div class="kpi kpi--orange">
+        <div class="kpi__label">Scope 1 — Direct</div>
+        <div class="kpi__valeur" id="kpi-scope1">7 800</div>
+        <div class="kpi__sous-unite">fuel + gaz naturel</div>
+      </div>
+
+      <!-- Carte 3 : Scope 2 — électricité (bleue) -->
+      <div class="kpi kpi--bleu">
+        <div class="kpi__label">Scope 2 — Électricité</div>
+        <div class="kpi__valeur" id="kpi-scope2">3 280</div>
+        <div class="kpi__sous-unite">réseau électrique</div>
+      </div>
+
+      <!-- Carte 4 : Score de conformité CBAM -->
+      <div class="kpi kpi--vert">
+        <div class="kpi__label">Score CBAM</div>
+        <!-- vert-clair pour différencier visuellement de la carte 1 -->
+        <div class="kpi__valeur" id="kpi-score" style="color:var(--vert-clair);">87</div>
+        <div style="margin-top:var(--espace-sm);">
+          <span class="badge badge-ok">CONFORME</span>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ─── SECTION 2 : Graphique ligne ─────────────
+         Grande carte avec 4 onglets de période
+    ──────────────────────────────────────────────── -->
+    <div class="carte" style="margin-bottom:var(--espace-md);">
+
+      <div class="carte__entete">
+        <div>
+          <div class="carte__titre">📈 Évolution des émissions</div>
+          <div class="carte__sous-titre">Scope 1 (orange) · Scope 2 (bleu)</div>
+        </div>
+
+        <!--
+          Onglets de période.
+          data-periode = valeur lue par JS pour changer les données.
+          Le premier est actif par défaut (.onglet-actif).
+        -->
+        <div id="onglets-periode">
+          <button class="btn btn-contour onglet-actif" data-periode="7J">7J</button>
+          <button class="btn btn-contour" data-periode="1M">1M</button>
+          <button class="btn btn-contour" data-periode="3M">3M</button>
+          <button class="btn btn-contour" data-periode="6M">6M</button>
+        </div>
+      </div>
+
+      <!-- Zone de dessin du graphique ligne (géré par Chart.js) -->
+      <canvas id="chartEmissions" height="110"></canvas>
+
+    </div>
+
+
+    <!-- ─── SECTION 3 : Donut + Tableau ─────────────
+         2 colonnes : donut à gauche (1 part),
+         tableau à droite (1.6 parts = plus large)
+    ──────────────────────────────────────────────── -->
+    <div style="display:grid; grid-template-columns:1fr 1.6fr; gap:var(--espace-md);">
+
+      <!-- Donut : part de chaque source d'émission -->
+      <div class="carte">
+        <div class="carte__entete">
+          <div class="carte__titre">Répartition par source</div>
+        </div>
+        <canvas id="chartSource"></canvas>
+      </div>
+
+      <!-- Tableau : 5 dernières activités en temps réel -->
+      <div class="carte">
+        <div class="carte__entete">
+          <div class="carte__titre">Flux en direct</div>
+          <!-- badge avec point animé = indicateur "live" -->
+          <span class="badge badge-ok"><span class="badge__point"></span>Live</span>
+        </div>
+        <div class="tableau-conteneur">
+          <table class="tableau">
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>Quantité</th>
+                <th>Date</th>
+                <th class="cellule-chiffre">CO₂ (t)</th>
+                <th>Statut</th>
+              </tr>
+            </thead>
+            <!--
+              tbody vide — JavaScript le remplit automatiquement
+              au chargement de la page (voir section JS plus bas)
+            -->
+            <tbody id="flux-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ══ PAGE : ACTIVITÉS ════════════════════════ -->
+  <section id="page-activites" class="page">
+
+    <!-- Formulaire d'ajout -->
+    <div class="carte" style="margin-bottom:var(--espace-md);">
+      <div class="carte__entete">
+        <div class="carte__titre">➕ Ajouter une activité</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr) auto;gap:var(--espace-sm);align-items:end;">
+        <div>
+          <label style="display:block;font-size:11px;color:var(--texte-discret);margin-bottom:4px;">Source</label>
+          <select id="act-source" onchange="updateUnite()" style="width:100%;background:var(--fond-carte);color:var(--texte);border:1px solid var(--bordure);border-radius:6px;padding:8px 10px;font-family:Consolas;font-size:13px;">
+            <option value="electricity">Électricité</option>
+            <option value="fuel">Fuel</option>
+            <option value="gas">Gaz naturel</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;color:var(--texte-discret);margin-bottom:4px;">Quantité</label>
+          <input id="act-quantite" type="number" min="0" step="any" placeholder="ex: 1500"
+            style="width:100%;background:var(--fond-carte);color:var(--texte);border:1px solid var(--bordure);border-radius:6px;padding:8px 10px;font-family:Consolas;font-size:13px;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;color:var(--texte-discret);margin-bottom:4px;">Unité</label>
+          <input id="act-unite" type="text" readonly
+            style="width:100%;background:var(--fond-survol);color:var(--texte-discret);border:1px solid var(--bordure);border-radius:6px;padding:8px 10px;font-family:Consolas;font-size:13px;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;color:var(--texte-discret);margin-bottom:4px;">Date</label>
+          <input id="act-date" type="date"
+            style="width:100%;background:var(--fond-carte);color:var(--texte);border:1px solid var(--bordure);border-radius:6px;padding:8px 10px;font-family:Consolas;font-size:13px;box-sizing:border-box;">
+        </div>
+        <button class="btn btn-primaire" onclick="ajouterActivite()">💾 Ajouter</button>
+      </div>
+    </div>
+
+    <!-- Tableau des activités -->
+    <div class="carte">
+      <div class="carte__entete">
+        <div class="carte__titre">Activités enregistrées</div>
+        <span class="badge badge-ok" id="act-count">— lignes</span>
+      </div>
+      <div class="tableau-conteneur">
+        <table class="tableau">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Source</th>
+              <th>Quantité</th>
+              <th>Unité</th>
+              <th>Date</th>
+              <th class="cellule-chiffre">CO₂ (kg)</th>
+              <th>Scope</th>
+            </tr>
+          </thead>
+          <tbody id="activites-tbody">
+            <tr><td colspan="7" style="text-align:center;color:var(--texte-discret);padding:20px;">Chargement...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ══ PAGE : ALERTES ═════════════════════════ -->
+  <section id="page-alertes" class="page">
+
+    <div class="alerte alerte--erreur">
+      <div class="alerte__icone">🔴</div>
+      <div>
+        <div class="alerte__titre">Dépassement seuil CBAM</div>
+        <div class="alerte__description">
+          Les émissions Scope 2 dépassent la limite réglementaire de 15%
+        </div>
+        <div class="alerte__heure">il y a 2 heures</div>
+      </div>
+    </div>
+
+    <div class="alerte alerte--warn">
+      <div class="alerte__icone">⚠️</div>
+      <div>
+        <div class="alerte__titre">Données manquantes — Scope 3</div>
+        <div class="alerte__description">
+          Les activités transport de décembre ne sont pas renseignées
+        </div>
+        <div class="alerte__heure">il y a 1 jour</div>
+      </div>
+    </div>
+
+    <div class="alerte alerte--info">
+      <div class="alerte__icone">ℹ️</div>
+      <div>
+        <div class="alerte__titre">Facteurs d'émission mis à jour</div>
+        <div class="alerte__description">
+          Les nouveaux facteurs ADEME 2026 sont disponibles
+        </div>
+        <div class="alerte__heure">il y a 3 jours</div>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ══ PAGE : IMPORT PDF ══════════════════════ -->
+  <section id="page-import" class="page">
+    <div class="carte">
+      <div class="carte__entete">
+        <div class="carte__titre">Importer des données</div>
+        <div class="carte__sous-titre">PDF · CSV · XLSX — max 10 MB</div>
+      </div>
+
+      <!-- Zone de drop — géré par importInitZone() -->
+      <div class="upload" id="zone-upload">
+        <div class="upload__icone">📄</div>
+        <div class="upload__texte">Glisser un fichier ici ou cliquer pour parcourir</div>
+        <div class="upload__sous-texte">Formats acceptés : PDF, CSV, XLSX</div>
+        <div class="upload__progression" id="conteneur-barre" style="display:none; margin-top:16px;">
+          <div class="upload__barre" id="barre-upload"></div>
+        </div>
+        <div id="import-statut" style="font-family:Consolas;font-size:12px;color:var(--texte-discret);margin-top:8px;display:none;"></div>
+      </div>
+
+      <!-- Input fichier invisible -->
+      <input type="file" id="fichier-input" accept=".pdf" style="display:none;">
+
+      <!-- Résultat de l'extraction — rempli dynamiquement -->
+      <div id="import-resultat" style="display:none; margin-top:var(--espace-md);"></div>
+    </div>
+  </section>
+
+
+  <!-- ══ PAGE : CONFORMITÉ CBAM ════════════════ -->
+  <section id="page-cbam" class="page">
+    <div class="carte">
+      <div class="carte__entete">
+        <div class="carte__titre">Conformité CBAM</div>
+        <div class="carte__sous-titre">Règlement UE 2023/956 — Carbon Border Adjustment</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:var(--espace-md); margin-bottom:var(--espace-lg);">
+        <span class="badge badge-ok"><span class="badge__point"></span>Conforme</span>
+        <span style="color:var(--texte-discret); font-size:var(--taille-petit);">
+          Dernière vérification : 22 avril 2026
+        </span>
+      </div>
+      <p style="color:var(--texte-discret);">
+        Votre installation respecte les seuils d'émissions CBAM pour les secteurs acier et aluminium.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ══ PAGE : RAPPORTS ═══════════════════════ -->
+  <section id="page-rapports" class="page">
+    <div class="carte">
+      <div class="carte__entete">
+        <div class="carte__titre">Rapports générés</div>
+        <button class="btn btn-primaire">+ Nouveau rapport</button>
+      </div>
+      <p style="color:var(--texte-discret);">Aucun rapport disponible pour le moment.</p>
+    </div>
+  </section>
+
+
+  <!-- ══ PAGE : PARAMÈTRES ═════════════════════ -->
+  <section id="page-parametres" class="page">
+    <div class="carte">
+      <div class="carte__entete">
+        <div class="carte__titre">Paramètres de l'installation</div>
+      </div>
+
+      <div class="groupe-champ">
+        <label class="label" for="champ-entreprise">Nom de l'entreprise</label>
+        <input type="text" id="champ-entreprise" class="champ" value="Acier Plus SAS">
+      </div>
+
+      <div class="groupe-champ">
+        <label class="label" for="champ-annee">Année de référence</label>
+        <input type="number" id="champ-annee" class="champ" value="2024">
+      </div>
+
+      <div class="groupe-champ">
+        <label class="label" for="champ-seuil">Seuil d'alerte (tCO₂)</label>
+        <input type="number" id="champ-seuil" class="champ" value="15000">
+      </div>
+
+      <div class="groupe-champ">
+        <label class="label" for="champ-secteur">Secteur industriel</label>
+        <select id="champ-secteur" class="champ">
+          <option>Acier et fer</option>
+          <option>Aluminium</option>
+          <option>Ciment</option>
+          <option>Chimie</option>
+          <option>Engrais</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primaire">Enregistrer les modifications</button>
+    </div>
+  </section>
+
+</main>
+
+
+<!-- ════════════════════════════════════════════════
+     PANNEAU DROIT — Chat IA
+════════════════════════════════════════════════ -->
+<aside class="panneau-droit">
+
+  <!-- ══ Chat IA ════════════════════════ -->
+
+  <!-- Header : nom + badge statut -->
+  <div class="pdr-chat-header">
+    <span class="pdr-titre" style="margin-bottom:0;">🤖 Assistant CarbonIQ</span>
+    <span class="badge badge-ok"><span class="badge__point"></span>LLM actif</span>
+  </div>
+
+  <!--
+    Zone de messages scrollable.
+    Les bulles IA sont à gauche (.pdr-msg--ia)
+    Les bulles utilisateur sont à droite (.pdr-msg--user)
+  -->
+  <div class="pdr-messages" id="pdr-messages">
+
+    <!-- Message de bienvenue de l'IA -->
+    <div class="pdr-msg pdr-msg--ia">
+      Bonjour ! Je suis prêt à analyser vos données carbone.
+      Uploadez une facture ou posez-moi une question.
+    </div>
+
+  </div>
+
+  <!-- Suggestions rapides : clic = message pré-rempli envoyé -->
+  <div class="pdr-suggestions">
+    <button class="pdr-pill" onclick="envoyerSuggestion('Suis-je conforme CBAM ?')">
+      Suis-je conforme CBAM ?
+    </button>
+    <button class="pdr-pill" onclick="envoyerSuggestion('Analyse ce mois')">
+      Analyse ce mois
+    </button>
+    <button class="pdr-pill" onclick="envoyerSuggestion('Réduire mes émissions')">
+      Réduire mes émissions
+    </button>
+  </div>
+
+  <!-- Zone de saisie : input texte + bouton → -->
+  <div class="pdr-input-zone">
+    <input type="text" id="pdr-input" class="pdr-input"
+           placeholder="Posez une question...">
+    <button class="pdr-btn-envoyer" onclick="envoyerMessage()">→</button>
+  </div>
+
+
+</aside>
+
+
+<!-- ════════════════════════════════════════════════
+     SCRIPTS — JavaScript à la fin du fichier
+     (on attend que tout le HTML soit chargé)
+════════════════════════════════════════════════ -->
+
+<!-- Chart.js — bibliothèque de graphiques (fichier local) -->
+<script src="js/chart.umd.min.js"></script>
+
+<!--
+  dashboard.js charge les vraies données depuis l'API.
+  type="module" est obligatoire pour que "import" fonctionne.
+  Il est chargé APRÈS chart.umd.min.js car il en a besoin.
+-->
+<script type="module" src="js/dashboard.js"></script>
+
+<script>
+/* ──────────────────────────────────────────────────
+   1. NAVIGATION ENTRE PAGES
+   Quand on clique un lien du menu :
+   a) on cache toutes les sections
+   b) on enlève la surbrillance de tous les liens
+   c) on affiche seulement la bonne section
+   d) on met le bon lien en surbrillance
+────────────────────────────────────────────────── */
+
+// Sélectionne tous les liens du menu qui ont "data-page"
+var liens = document.querySelectorAll('.sidebar__lien[data-page]');
+// Sélectionne toutes les sections de page
+var pages = document.querySelectorAll('.page');
+// Le titre en haut à gauche
+var titrePage = document.getElementById('titre-page');
+
+// Un dictionnaire : nom de page → titre affiché
+var titres = {
+  dashboard:  'Tableau de bord 🌿',
+  activites:  'Activités ⚡',
+  alertes:    'Alertes 🔔',
+  import:     'Import de données 📄',
+  cbam:       'Conformité CBAM 🛡️',
+  rapports:   'Rapports 📋',
+  parametres: 'Paramètres ⚙️'
+};
+
+// Fonction principale : change la page affichée
+function allerPage(nomPage) {
+  // Cache toutes les pages
+  pages.forEach(function(p) { p.classList.remove('page--active'); });
+  // Enlève la surbrillance de tous les liens
+  liens.forEach(function(l) { l.classList.remove('sidebar__lien--actif'); });
+
+  // Affiche la bonne page
+  var cible = document.getElementById('page-' + nomPage);
+  if (cible) cible.classList.add('page--active');
+
+  // Met le bon lien en surbrillance
+  var lienActif = document.querySelector('[data-page="' + nomPage + '"]');
+  if (lienActif) lienActif.classList.add('sidebar__lien--actif');
+
+  // Met à jour le titre
+  if (titres[nomPage]) titrePage.textContent = titres[nomPage];
+
+  if (nomPage === 'activites') chargerActivites();
+}
+
+// Branche chaque lien du menu sur allerPage()
+liens.forEach(function(lien) {
+  lien.addEventListener('click', function(e) {
+    e.preventDefault();             // empêche le # d'apparaître dans l'URL
+    allerPage(this.dataset.page);   // dataset.page lit l'attribut data-page
+  });
+});
+
+
+/* ──────────────────────────────────────────────────
+   2. GRAPHIQUE LIGNE — Évolution des émissions
+   Deux lignes : Scope 1 (orange) et Scope 2 (bleu)
+   Les données changent selon l'onglet sélectionné.
+────────────────────────────────────────────────── */
+
+// Données pour chaque période (labels = axe X, scope1/scope2 = valeurs)
+
+
+/* ──────────────────────────────────────────────────
+   3. GRAPHIQUE DONUT — Répartition par source
+────────────────────────────────────────────────── */
+
+
+/* ──────────────────────────────────────────────────
+   4. TABLEAU "FLUX EN DIRECT" — Rempli par JS
+   On crée les lignes du tableau ici plutôt qu'en HTML
+   pour pouvoir les mettre à jour facilement plus tard.
+────────────────────────────────────────────────── */
+
+// Les 5 dernières activités (données statiques pour l'instant)
+
+
+/* ──────────────────────────────────────────────────
+   4. UPLOAD — Simule une barre de progression
+   (en vrai, ce serait une vraie requête vers un serveur)
+────────────────────────────────────────────────── */
+function simulerUpload() {
+  var barre      = document.getElementById('barre-upload');
+  var conteneur  = document.getElementById('conteneur-barre');
+  var avancement = 0;
+
+  conteneur.style.display = 'block';  // affiche la barre
+
+  // setInterval appelle la fonction toutes les 60ms
+  var intervalle = setInterval(function() {
+    avancement += 5;
+    barre.style.width = avancement + '%';
+
+    if (avancement >= 100) {
+      clearInterval(intervalle);       // arrête la boucle
+      setTimeout(function() {
+        conteneur.style.display = 'none';
+        barre.style.width = '0%';
+        alert('✅ Fichier importé avec succès !');
+      }, 400);
+    }
+  }, 60);
+}
+
+
+/* ──────────────────────────────────────────────────
+   5. ACTUALISER — Simule un rechargement des données
+────────────────────────────────────────────────── */
+function actualiser() {
+  var btn = document.getElementById('btn-actualiser');
+  btn.textContent = '↻ Chargement…';
+  btn.disabled = true;
+
+  // setTimeout exécute une fonction après un délai (ici 1.5 secondes)
+  setTimeout(function() {
+    btn.textContent = '↻ Actualiser';
+    btn.disabled = false;
+  }, 1500);
+}
+
+
+/* ──────────────────────────────────────────────────
+   6. UPLOAD PANNEAU DROIT — Barre de progression
+   Simule le traitement d'un PDF (extraction de données)
+────────────────────────────────────────────────── */
+function pdrUpload() {
+  var progression = document.getElementById('pdr-progression');
+  var barre       = document.getElementById('pdr-barre');
+  var resultat    = document.getElementById('pdr-resultat');
+  var avancement  = 0;
+
+  // Affiche la barre, cache le résultat précédent
+  progression.style.display = 'block';
+  resultat.style.display    = 'none';
+
+  // Avance la barre toutes les 50ms jusqu'à 100%
+  var intervalle = setInterval(function() {
+    avancement += 4;
+    barre.style.width = avancement + '%';
+
+    if (avancement >= 100) {
+      clearInterval(intervalle);
+      // 300ms après 100% : cache la barre, affiche le résultat
+      setTimeout(function() {
+        progression.style.display = 'none';
+        resultat.style.display    = 'block';
+      }, 300);
+    }
+  }, 50);
+}
+
+
+/* ──────────────────────────────────────────────────
+   7. CHAT IA — Panneau droit
+   Simule un assistant qui répond aux questions carbone
+────────────────────────────────────────────────── */
+
+// Réponses pré-écrites de l'IA (elles défilent en boucle)
+var reponsesIA = [
+  'Vos émissions totales de mars 2026 sont 12 450 tCO₂e, en baisse de 2.1% vs février.',
+  'Je détecte un pic d\'émissions le jeudi. Vérifiez la production de votre Four 1 ce jour-là.',
+  'Votre score CBAM est 87/100. Vous êtes conforme, mais le Scope 2 mérite votre attention.',
+  'Pour réduire vos émissions, commencez par optimiser le Four 1 qui représente 42% du Scope 1.',
+  'Le charbon représente 42% de vos émissions. Une substitution partielle par gaz peut réduire cela significativement.'
+];
+var indexIA = 0;  // compteur pour alterner les réponses
+
+// Ajoute une bulle dans la zone de messages
+function ajouterBulle(texte, type) {
+  var zone  = document.getElementById('pdr-messages');
+  var bulle = document.createElement('div');
+  bulle.className  = 'pdr-msg pdr-msg--' + type;  // 'ia' ou 'user'
+  bulle.textContent = texte;
+  zone.appendChild(bulle);
+  zone.scrollTop = zone.scrollHeight;  // descend automatiquement en bas
+}
+
+// Envoie le message tapé dans l'input
+function envoyerMessage() {
+  var input = document.getElementById('pdr-input');
+  var texte = input.value.trim();
+  if (!texte) return;           // ne fait rien si le champ est vide
+
+  ajouterBulle(texte, 'user'); // affiche la bulle utilisateur
+  input.value = '';             // vide le champ
+
+  // L'IA répond après 800ms (simule un temps de traitement)
+  setTimeout(function() {
+    ajouterBulle(reponsesIA[indexIA % reponsesIA.length], 'ia');
+    indexIA++;
+  }, 800);
+}
+
+// Clic sur une suggestion = remplit l'input et envoie
+function envoyerSuggestion(texte) {
+  document.getElementById('pdr-input').value = texte;
+  envoyerMessage();
+}
+
+// Appuyer sur Entrée = envoyer (comme un vrai chat)
+document.getElementById('pdr-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') envoyerMessage();
+});
+
+
+/* ──────────────────────────────────────────────────
+   PAGE ACTIVITÉS — Formulaire + tableau dynamique
+────────────────────────────────────────────────── */
+
+// Met à jour l'unité selon la source choisie
+function updateUnite() {
+  var source = document.getElementById('act-source').value;
+  var unites = { electricity: 'kWh', fuel: 'litres', gas: 'm3' };
+  document.getElementById('act-unite').value = unites[source] || '';
+}
+
+// Envoie une nouvelle activité à l'API puis recharge le tableau
+async function ajouterActivite() {
+  var source   = document.getElementById('act-source').value;
+  var quantite = parseFloat(document.getElementById('act-quantite').value);
+  var unite    = document.getElementById('act-unite').value;
+  var date     = document.getElementById('act-date').value;
+
+  if (!quantite || !date) { alert('Veuillez remplir la quantité et la date.'); return; }
+
+  var reponse = await fetch('http://localhost:8000/activities', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ source: source, quantity: quantite, unit: unite, date: date })
+  });
+
+  if (reponse.ok) {
+    document.getElementById('act-quantite').value = '';
+    chargerActivites();
+  } else {
+    alert('Erreur lors de l\'ajout.');
+  }
+}
+
+// Charge les activités depuis /activities et /emissions, fusionne par id
+async function chargerActivites() {
+  var tbody = document.getElementById('activites-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--texte-discret);padding:20px;">Chargement...</td></tr>';
+
+  var [repAct, repEm] = await Promise.all([
+    fetch('http://localhost:8000/activities'),
+    fetch('http://localhost:8000/emissions')
+  ]);
+
+  if (!repAct.ok || !repEm.ok) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#f78166;padding:20px;">Erreur de chargement</td></tr>';
+    return;
+  }
+
+  var dataAct = await repAct.json();
+  var dataEm  = await repEm.json();
+
+  var activites = dataAct.data || [];
+  var emissions = dataEm.activities || [];
+
+  // Index des émissions par id d'activité pour fusion rapide
+  var emMap = {};
+  emissions.forEach(function(e) { emMap[e.id] = e; });
+
+  var compteur = document.getElementById('act-count');
+  if (compteur) compteur.textContent = activites.length + ' ligne' + (activites.length > 1 ? 's' : '');
+
+  if (activites.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--texte-discret);padding:20px;">Aucune activité enregistrée</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = '';
+  activites.forEach(function(a) {
+    var em     = emMap[a.id] || {};
+    var co2Kg  = parseFloat(em.co2_kg) || 0;
+    var scope  = em.scope != null ? 'Scope ' + em.scope : '—';
+    var dateF  = a.date ? new Date(a.date).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+    tbody.innerHTML +=
+      '<tr>' +
+        '<td style="font-family:Consolas;color:var(--texte-discret)">' + a.id + '</td>' +
+        '<td>' + (a.source ?? '—') + '</td>' +
+        '<td style="font-family:Consolas">' + (a.quantity ?? '—') + '</td>' +
+        '<td style="font-family:Consolas">' + (a.unit ?? '—') + '</td>' +
+        '<td>' + dateF + '</td>' +
+        '<td class="cellule-chiffre" style="color:#3fb950;font-family:Consolas">' + co2Kg.toLocaleString('fr-FR') + '</td>' +
+        '<td><span class="badge ' + (em.scope === 1 ? 'badge-warn' : 'badge-ok') + '">' + scope + '</span></td>' +
+      '</tr>';
+  });
+}
+
+// Initialise l'unité et la date par défaut au chargement
+updateUnite();
+document.getElementById('act-date').value = new Date().toISOString().split('T')[0];
+
+
+/* ──────────────────────────────────────────────────
+   PAGE IMPORT — Upload réel vers /upload-pdf
+────────────────────────────────────────────────── */
+
+async function importTraiterFichier(fichier) {
+  if (!fichier) return;
+
+  var barre     = document.getElementById('barre-upload');
+  var conteneur = document.getElementById('conteneur-barre');
+  var statut    = document.getElementById('import-statut');
+  var resultat  = document.getElementById('import-resultat');
+
+  // Affiche la barre de progression
+  conteneur.style.display = 'block';
+  statut.style.display    = 'block';
+  resultat.style.display  = 'none';
+  barre.style.width = '20%';
+  statut.textContent = 'Lecture du fichier...';
+
+  var formData = new FormData();
+  formData.append('fichier', fichier);
+
+  try {
+    barre.style.width  = '50%';
+    statut.textContent = 'Envoi vers l\'API...';
+
+    var reponse = await fetch('http://localhost:8000/upload-pdf', {
+      method: 'POST',
+      body: formData
+    });
+
+    barre.style.width  = '85%';
+    statut.textContent = 'Analyse LLM en cours...';
+
+    if (!reponse.ok) {
+      var err = await reponse.json();
+      throw new Error(err.detail || 'Erreur serveur ' + reponse.status);
+    }
+
+    var data = await reponse.json();
+    barre.style.width  = '100%';
+    statut.textContent = 'Extraction terminée !';
+
+    setTimeout(function() {
+      conteneur.style.display = 'none';
+      statut.style.display    = 'none';
+      barre.style.width       = '0%';
+      importAfficherResultat(data.donnees_extraites, fichier.name);
+    }, 500);
+
+  } catch (e) {
+    conteneur.style.display = 'none';
+    statut.style.display    = 'none';
+    resultat.style.display  = 'block';
+    resultat.innerHTML =
+      '<div style="background:rgba(247,129,102,0.08);border:1px solid rgba(247,129,102,0.2);' +
+      'border-radius:8px;padding:16px;color:#f78166;font-family:Consolas;font-size:13px;">' +
+      '❌ Erreur : ' + e.message +
+      '<div style="margin-top:8px;"><button onclick="document.getElementById(\'import-resultat\').style.display=\'none\'" ' +
+      'class="btn btn-contour" style="font-size:12px;">Réessayer</button></div></div>';
+  }
+}
+
+function importAfficherResultat(d, nomFichier) {
+  var resultat = document.getElementById('import-resultat');
+  resultat.style.display = 'block';
+
+  // Confiance faible = le LLM n'a pas trouvé de facture énergétique valide
+  if (d.confiance === 'faible') {
+    resultat.innerHTML =
+      '<div style="background:rgba(255,69,96,0.07);border:1px solid rgba(255,69,96,0.25);' +
+      'border-radius:10px;padding:20px;text-align:center;">' +
+        '<div style="font-size:28px;margin-bottom:10px;">⚠️</div>' +
+        '<div style="color:#ff4560;font-weight:600;font-size:14px;margin-bottom:6px;">' +
+          'Fichier non reconnu comme facture énergétique' +
+        '</div>' +
+        '<div style="color:var(--texte-discret);font-size:12px;font-family:Consolas;margin-bottom:16px;">' +
+          nomFichier +
+        '</div>' +
+        '<div style="color:var(--texte-discret);font-size:12px;line-height:1.6;">' +
+          'Le document ne contient pas les données attendues.<br>' +
+          'Importez une facture (électricité, gaz ou fuel).' +
+        '</div>' +
+        '<button class="btn btn-contour" style="margin-top:14px;font-size:12px;" ' +
+          'onclick="document.getElementById(\'import-resultat\').style.display=\'none\'">Fermer</button>' +
+      '</div>';
+    return;
+  }
+
+  var facteurs = { electricity: 0.625, fuel: 3.24, gas: 2.02 };
+  var co2_kg   = d.quantite ? (d.quantite * (facteurs[d.type_energie] || 0)).toFixed(2) : '—';
+  var couleur  = d.confiance === 'haute' ? '#3fb950' : '#f78166';
+
+  resultat.innerHTML =
+    '<div style="border-top:1px solid var(--bordure);padding-top:var(--espace-md);">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">' +
+        '<span class="badge badge-ok">✅ Extraction réussie — ' + nomFichier + '</span>' +
+        '<span style="font-size:11px;color:' + couleur + ';font-family:Consolas;">Confiance : ' + d.confiance + '</span>' +
+      '</div>' +
+      '<table class="pdr-mini-tableau" style="font-size:13px;">' +
+        '<tr><td>Fournisseur</td><td>' + (d.fournisseur || '—') + '</td></tr>' +
+        '<tr><td>Type énergie</td><td>' + (d.type_energie || '—') + '</td></tr>' +
+        '<tr><td>Quantité</td><td style="color:#3fb950;font-weight:600;">' + (d.quantite || '—') + ' ' + (d.unite || '') + '</td></tr>' +
+        '<tr><td>Date facture</td><td>' + (d.date_facture || '—') + '</td></tr>' +
+        '<tr><td>Montant</td><td>' + (d.montant_dh || '—') + ' DH</td></tr>' +
+        '<tr><td>CO₂ estimé</td><td style="color:#3fb950;font-weight:600;">' + co2_kg + ' kg</td></tr>' +
+      '</table>' +
+      '<div style="display:flex;gap:8px;margin-top:var(--espace-md);">' +
+        '<button class="btn btn-primaire" style="flex:1;" ' +
+          'onclick="importValider(' + JSON.stringify(d).replace(/"/g, '&quot;') + ')">💾 Valider et enregistrer</button>' +
+        '<button class="btn btn-contour" style="padding:8px 12px;" ' +
+          'onclick="document.getElementById(\'import-resultat\').style.display=\'none\'">✕</button>' +
+      '</div>' +
+    '</div>';
+}
+
+async function importValider(donnees) {
+  var btn = event.target;
+  btn.textContent = '⏳ Enregistrement...';
+  btn.disabled = true;
+
+  try {
+    var reponse = await fetch('http://localhost:8000/valider-extraction', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(donnees)
+    });
+    var data = await reponse.json();
+    if (!reponse.ok) throw new Error(data.detail || 'Erreur serveur');
+
+    document.getElementById('import-resultat').innerHTML =
+      '<div style="background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.2);' +
+      'border-radius:8px;padding:16px;font-family:Consolas;font-size:13px;color:#3fb950;">' +
+      '✅ Enregistré avec succès !<br>' +
+      'CO₂ calculé : <strong>' + data.co2_kg + ' kg</strong> (' + data.co2_tonnes + ' t)' +
+      '</div>';
+
+  } catch (e) {
+    btn.textContent = '💾 Valider et enregistrer';
+    btn.disabled = false;
+    alert('❌ Erreur : ' + e.message);
+  }
+}
+
+// Initialise la zone d'upload de la page import (clic + drag-and-drop)
+function importInitZone() {
+  var zone  = document.getElementById('zone-upload');
+  var input = document.getElementById('fichier-input');
+  if (!zone || !input) return;
+
+  zone.addEventListener('click', function() { input.click(); });
+
+  input.addEventListener('change', function() {
+    if (input.files[0]) importTraiterFichier(input.files[0]);
+    input.value = '';
+  });
+
+  zone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    zone.classList.add('upload--survol');
+  });
+  zone.addEventListener('dragleave', function() {
+    zone.classList.remove('upload--survol');
+  });
+  zone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    zone.classList.remove('upload--survol');
+    var fichier = e.dataTransfer.files[0];
+    if (fichier) importTraiterFichier(fichier);
+  });
+}
+
+importInitZone();
+</script>
+
+</body>
+</html>

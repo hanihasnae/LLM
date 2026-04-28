@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarbonIQ — Rapports</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .panneau-droit { display:none; }
+    .main { margin-right:0; width:85%; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:var(--espace-md); padding-bottom:var(--espace-lg); margin-bottom:var(--espace-xl); border-bottom:1px solid var(--bordure); }
+    .topbar__titre { font-size:var(--taille-grand); font-weight:700; color:var(--texte); }
+    .topbar__sous-titre { font-size:var(--taille-petit); color:var(--texte-discret); margin-top:3px; }
+    .topbar__droite { display:flex; align-items:center; gap:var(--espace-sm); }
+    .sidebar__logo { display:flex; align-items:center; gap:var(--espace-sm); padding-bottom:var(--espace-lg); margin-bottom:var(--espace-sm); border-bottom:1px solid var(--bordure); }
+    .sidebar__logo-emoji { font-size:22px; }
+    .sidebar__logo-nom { font-size:var(--taille-moyen); font-weight:700; color:var(--texte); }
+    .sidebar__logo-sous { font-family:var(--police-chiffre); font-size:var(--taille-petit); color:var(--texte-discret); }
+    .sidebar__section-titre { font-family:var(--police-chiffre); font-size:10px; color:var(--texte-tres-discret); text-transform:uppercase; letter-spacing:0.12em; padding:var(--espace-lg) var(--espace-sm) var(--espace-xs); }
+    .sidebar__footer { margin-top:auto; padding-top:var(--espace-lg); border-top:1px solid var(--bordure); }
+    .sidebar__footer-entreprise { font-size:var(--taille-normal); font-weight:600; color:var(--texte); margin-bottom:var(--espace-xs); }
+    .sidebar__footer-statut { display:flex; align-items:center; gap:var(--espace-xs); font-family:var(--police-chiffre); font-size:var(--taille-petit); color:var(--texte-discret); }
+    .point-vert { width:7px; height:7px; border-radius:50%; background:var(--vert); animation:pulse 2s infinite; }
+
+    /* Grille 3 KPI */
+    .grille-kpi-rapports {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--espace-md);
+      margin-bottom: var(--espace-md);
+    }
+
+    /* Checklist */
+    .checklist { display:flex; flex-direction:column; gap:var(--espace-sm); }
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: var(--espace-md);
+      padding: var(--espace-sm) var(--espace-md);
+      background: var(--fond-carte);
+      border: 1px solid var(--bordure);
+      border-radius: var(--arrondi-md);
+    }
+    .checklist-item__icone { font-size:18px; flex-shrink:0; }
+    .checklist-item__texte { flex:1; font-size:var(--taille-normal); color:var(--texte); }
+    .checklist-item__detail { font-size:var(--taille-petit); color:var(--texte-discret); margin-top:2px; }
+
+    /* Zone générer */
+    .zone-generer {
+      display: flex; flex-direction: column;
+      align-items: center; gap: var(--espace-md);
+      padding: var(--espace-xl); text-align: center;
+    }
+    .zone-generer__titre { font-size:var(--taille-moyen); font-weight:700; color:var(--texte); }
+    .zone-generer__sous { font-size:var(--taille-petit); color:var(--texte-discret); }
+
+    /* Message succès */
+    .msg-succes {
+      display: none;
+      background: #1a382820;
+      border: 1px solid var(--vert);
+      border-radius: var(--arrondi-md);
+      padding: var(--espace-md);
+      color: var(--vert-clair);
+      font-size: var(--taille-petit);
+      text-align: center;
+      margin-top: var(--espace-sm);
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar__logo">
+    <span class="sidebar__logo-emoji">🌿</span>
+    <div><div class="sidebar__logo-nom">CarbonIQ</div><div class="sidebar__logo-sous">MRV Platform</div></div>
+  </div>
+  <nav>
+    <div class="sidebar__section-titre">Principal</div>
+    <a class="sidebar__lien" href="../index.html">📊 Dashboard</a>
+    <a class="sidebar__lien" href="activites.html">⚡ Activités</a>
+    <a class="sidebar__lien" href="alertes.html" style="justify-content:space-between;"><span>🔔 Alertes</span><span class="badge badge-error">2</span></a>
+    <div class="sidebar__section-titre">Données</div>
+    <a class="sidebar__lien" href="import_pdf.html">📄 Import PDF</a>
+    <div class="sidebar__section-titre">Conformité</div>
+    <a class="sidebar__lien" href="conformite.html">🛡️ Conformité CBAM</a>
+    <a class="sidebar__lien sidebar__lien--actif" href="rapports.html">📋 Rapports</a>
+    <div class="sidebar__section-titre">Système</div>
+    <a class="sidebar__lien" href="parametres.html">⚙️ Paramètres</a>
+  </nav>
+  <div class="sidebar__footer">
+    <div class="sidebar__footer-entreprise">Acier Plus SAS</div>
+    <div class="sidebar__footer-statut"><span class="point-vert"></span> API connectée</div>
+  </div>
+</aside>
+
+<main class="main">
+
+  <header class="topbar">
+    <div>
+      <h1 class="topbar__titre">📋 Rapports</h1>
+      <p class="topbar__sous-titre">Génération et historique des rapports CBAM · 2026</p>
+    </div>
+    <div class="topbar__droite">
+      <span class="badge badge-ok"><span class="badge__point"></span>CBAM CONFORME ✅</span>
+    </div>
+  </header>
+
+
+  <!-- 3 KPI résumé -->
+  <div class="grille-kpi-rapports">
+    <div class="kpi kpi--vert">
+      <div class="kpi__label">Rapports générés</div>
+      <div class="kpi__valeur">12</div>
+      <div class="kpi__sous">depuis Jan 2026</div>
+    </div>
+    <div class="kpi kpi--bleu">
+      <div class="kpi__label">Dernier rapport</div>
+      <div class="kpi__valeur" style="font-size:1.4rem;">22 avr. 2026</div>
+      <div class="kpi__sous">T1 2026 · CBAM</div>
+    </div>
+    <div class="kpi kpi--orange">
+      <div class="kpi__label">Prochain rapport</div>
+      <div class="kpi__valeur" style="font-size:1.4rem;">30 mai 2026</div>
+      <div class="kpi__sous">T2 2026 · Échéance légale</div>
+    </div>
+  </div>
+
+
+  <!-- Checklist + Génération -->
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--espace-md); margin-bottom:var(--espace-md);">
+
+    <div class="carte">
+      <div class="carte__entete">
+        <div class="carte__titre">Checklist avant génération</div>
+        <div class="carte__sous-titre">Tous les éléments doivent être ✅</div>
+      </div>
+      <div class="checklist">
+
+        <div class="checklist-item">
+          <div class="checklist-item__icone">✅</div>
+          <div>
+            <div class="checklist-item__texte">Données Scope 1 complètes</div>
+            <div class="checklist-item__detail">7 800 tCO₂ · 100% des activités saisies</div>
+          </div>
+        </div>
+
+        <div class="checklist-item">
+          <div class="checklist-item__icone">✅</div>
+          <div>
+            <div class="checklist-item__texte">Données Scope 2 complètes</div>
+            <div class="checklist-item__detail">3 280 tCO₂ · Factures importées</div>
+          </div>
+        </div>
+
+        <div class="checklist-item">
+          <div class="checklist-item__icone">🔧</div>
+          <div>
+            <div class="checklist-item__texte">Données Scope 3 partielles</div>
+            <div class="checklist-item__detail">1 370 tCO₂ · Transport déc. 2025 manquant</div>
+          </div>
+        </div>
+
+        <div class="checklist-item">
+          <div class="checklist-item__icone">✅</div>
+          <div>
+            <div class="checklist-item__texte">Facteurs ADEME à jour</div>
+            <div class="checklist-item__detail">Version 2026 · Mise à jour il y a 3 jours</div>
+          </div>
+        </div>
+
+        <div class="checklist-item">
+          <div class="checklist-item__icone">✅</div>
+          <div>
+            <div class="checklist-item__texte">Score CBAM suffisant</div>
+            <div class="checklist-item__detail">87/100 · Seuil minimum : 70</div>
+          </div>
+        </div>
+
+        <div class="checklist-item">
+          <div class="checklist-item__icone">🔧</div>
+          <div>
+            <div class="checklist-item__texte">Vérification tierce partie</div>
+            <div class="checklist-item__detail">Auditeur externe non encore désigné</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="carte">
+      <div class="carte__entete">
+        <div class="carte__titre">Générer un rapport</div>
+        <div class="carte__sous-titre">Format XML conforme CBAM + PDF résumé</div>
+      </div>
+      <div class="zone-generer">
+        <div style="font-size:48px;">📄</div>
+        <div class="zone-generer__titre">Rapport CBAM</div>
+        <div class="zone-generer__sous">Acier Plus SAS · SIRET 123 456 789</div>
+
+        <div class="groupe-champ" style="width:100%; text-align:left;">
+          <label class="label" for="periode-rapport">Période du rapport</label>
+          <select id="periode-rapport" class="champ">
+            <option value="T1-2026">T1 2026 — Jan · Fév · Mar</option>
+            <option value="T2-2026">T2 2026 — Avr · Mai · Jun</option>
+            <option value="annuel-2025">Annuel 2025</option>
+            <option value="annuel-2026">Annuel 2026</option>
+          </select>
+        </div>
+
+        <!--
+          Dans un vrai projet, ce bouton appellerait :
+          fetch('http://localhost:8000/generate-report', { method:'POST', ... })
+        -->
+        <button class="btn btn-primaire" id="btn-generer"
+                style="width:100%; font-size:var(--taille-moyen); padding:var(--espace-md);"
+                onclick="genererRapport()">
+          📄 Générer le rapport PDF
+        </button>
+
+        <div id="msg-generation" class="msg-succes">
+          ✅ Rapport généré avec succès !<br>
+          <span style="font-family:var(--police-chiffre); color:var(--texte-discret);">
+            rapport_CBAM_T1_2026_AcierPlus.pdf · 2.3 Mo
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- Tableau historique -->
+  <div class="carte">
+    <div class="carte__entete">
+      <div class="carte__titre">Historique des rapports</div>
+      <div class="carte__sous-titre">Les 6 derniers rapports générés</div>
+    </div>
+    <div class="tableau-conteneur">
+      <table class="tableau">
+        <thead>
+          <tr>
+            <th>Période</th>
+            <th>Type</th>
+            <th>Date de génération</th>
+            <th class="cellule-chiffre">Total CO₂ (t)</th>
+            <th class="cellule-chiffre">Score CBAM</th>
+            <th>Statut</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-rapports">
+          <!-- Rempli par JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* ──────────────────────────────────────────────────
+   DONNÉES SIMULÉES — historique des rapports
+   Dans un vrai projet : fetch('http://localhost:8000/reports')
+──────────────────────────────────────────────────── */
+var rapports = [
+  { id: 6, periode: 'T1 2026',      type: 'CBAM',     date: '2026-04-22', co2: 12450, score: 87, statut: 'Prêt'   },
+  { id: 5, periode: 'T4 2025',      type: 'CBAM',     date: '2026-01-15', co2: 14200, score: 83, statut: 'Prêt'   },
+  { id: 4, periode: 'Annuel 2025',  type: 'ISO 14064', date: '2026-01-10', co2: 52800, score: 81, statut: 'Prêt'   },
+  { id: 3, periode: 'T3 2025',      type: 'CBAM',     date: '2025-10-08', co2: 13100, score: 79, statut: 'Prêt'   },
+  { id: 2, periode: 'T2 2025',      type: 'CBAM',     date: '2025-07-12', co2: 11900, score: 76, statut: 'Prêt'   },
+  { id: 1, periode: 'T1 2025',      type: 'CBAM',     date: '2025-04-20', co2: 13600, score: 72, statut: 'Erreur' }
+];
+
+
+/* ──────────────────────────────────────────────────
+   REMPLIR LE TABLEAU
+──────────────────────────────────────────────────── */
+function remplirTableau() {
+  var tbody = document.getElementById('tbody-rapports');
+  tbody.innerHTML = '';
+
+  rapports.forEach(function(r) {
+    var dateFormatee = new Date(r.date).toLocaleDateString('fr-FR', {
+      day: '2-digit', month: 'short', year: 'numeric'
+    });
+
+    var badgeStatut = r.statut === 'Prêt'
+      ? '<span class="badge badge-ok">✅ Prêt</span>'
+      : '<span class="badge badge-error">❌ Erreur</span>';
+
+    var couleurScore = r.score >= 85 ? 'var(--vert)' : r.score >= 75 ? 'var(--orange)' : 'var(--rouge)';
+
+    var boutonAction = r.statut === 'Prêt'
+      ? '<button class="btn btn-contour" style="font-size:var(--taille-petit); padding:3px var(--espace-sm);" onclick="telecharger(' + r.id + ')">⬇ Télécharger</button>'
+      : '<button class="btn btn-danger"  style="font-size:var(--taille-petit); padding:3px var(--espace-sm);" onclick="regenerer(' + r.id + ')">🔄 Régénérer</button>';
+
+    tbody.innerHTML +=
+      '<tr>' +
+        '<td style="font-weight:600; color:var(--texte);">' + r.periode + '</td>' +
+        '<td><span class="badge badge-warn">' + r.type + '</span></td>' +
+        '<td>' + dateFormatee + '</td>' +
+        '<td class="cellule-chiffre">' + r.co2.toLocaleString('fr-FR') + '</td>' +
+        '<td class="cellule-chiffre" style="color:' + couleurScore + '; font-weight:700;">' + r.score + '/100</td>' +
+        '<td>' + badgeStatut + '</td>' +
+        '<td>' + boutonAction + '</td>' +
+      '</tr>';
+  });
+}
+
+
+/* ──────────────────────────────────────────────────
+   GÉNÉRER UN RAPPORT
+   Simule un appel API avec setTimeout (délai artificiel 2s)
+──────────────────────────────────────────────────── */
+function genererRapport() {
+  var btn = document.getElementById('btn-generer');
+
+  // Désactive le bouton et affiche "chargement"
+  btn.textContent = '⟳ Génération en cours...';
+  btn.disabled = true;
+
+  setTimeout(function() {
+    // Remet le bouton à l'état normal
+    btn.textContent = '📄 Générer le rapport PDF';
+    btn.disabled = false;
+
+    // Affiche le message de succès
+    document.getElementById('msg-generation').style.display = 'block';
+
+    // Ajoute le nouveau rapport en haut du tableau
+    rapports.unshift({
+      id: rapports.length + 1,
+      periode: document.getElementById('periode-rapport').options[document.getElementById('periode-rapport').selectedIndex].text.split(' —')[0],
+      type: 'CBAM',
+      date: new Date().toISOString().slice(0, 10),
+      co2: 12450,
+      score: 87,
+      statut: 'Prêt'
+    });
+    remplirTableau();
+  }, 2000);
+}
+
+
+/* ──────────────────────────────────────────────────
+   TÉLÉCHARGER / RÉGÉNÉRER (simulation)
+──────────────────────────────────────────────────── */
+function telecharger(id) {
+  alert('📥 Téléchargement du rapport #' + id + '\nDans la version finale, l\'API génère le fichier PDF.');
+}
+
+function regenerer(id) {
+  rapports.find(function(r) { return r.id === id; }).statut = 'Prêt';
+  remplirTableau();
+}
+
+
+// Remplit le tableau dès le chargement de la page
+remplirTableau();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarbonIQ — Conformité CBAM</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <script src="../js/chart.umd.min.js"></script>
+  <style>
+    .panneau-droit { display:none; }
+    .main { margin-right:0; width:85%; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:var(--espace-md); padding-bottom:var(--espace-lg); margin-bottom:var(--espace-xl); border-bottom:1px solid var(--bordure); }
+    .topbar__titre { font-size:var(--taille-grand); font-weight:700; color:var(--texte); }
+    .topbar__sous-titre { font-size:var(--taille-petit); color:var(--texte-discret); margin-top:3px; }
+    .topbar__droite { display:flex; align-items:center; gap:var(--espace-sm); }
+    .sidebar__logo { display:flex; align-items:center; gap:var(--espace-sm); padding-bottom:var(--espace-lg); margin-bottom:var(--espace-sm); border-bottom:1px solid var(--bordure); }
+    .sidebar__logo-emoji { font-size:22px; }
+    .sidebar__logo-nom { font-size:var(--taille-moyen); font-weight:700; color:var(--texte); }
+    .sidebar__logo-sous { font-family:var(--police-chiffre); font-size:var(--taille-petit); color:var(--texte-discret); }
+    .sidebar__section-titre { font-family:var(--police-chiffre); font-size:10px; color:var(--texte-tres-discret); text-transform:uppercase; letter-spacing:0.12em; padding:var(--espace-lg) var(--espace-sm) var(--espace-xs); }
+    .sidebar__footer { margin-top:auto; padding-top:var(--espace-lg); border-top:1px solid var(--bordure); }
+    .sidebar__footer-entreprise { font-size:var(--taille-normal); font-weight:600; color:var(--texte); margin-bottom:var(--espace-xs); }
+    .sidebar__footer-statut { display:flex; align-items:center; gap:var(--espace-xs); font-family:var(--police-chiffre); font-size:var(--taille-petit); color:var(--texte-discret); }
+    .point-vert { width:7px; height:7px; border-radius:50%; background:var(--vert); animation:pulse 2s infinite; }
+
+    /* Score central */
+    .score-zone { display:flex; flex-direction:column; align-items:center; padding:var(--espace-xl) 0; }
+    .score-canvas-wrap { position:relative; width:200px; height:120px; }
+    .score-centre { position:absolute; bottom:0; left:50%; transform:translateX(-50%); text-align:center; }
+    .score-valeur { font-family:var(--police-chiffre); font-size:2.5rem; font-weight:700; color:var(--vert); line-height:1; }
+    .score-label  { font-size:var(--taille-petit); color:var(--texte-discret); }
+
+    /* Barres de progression */
+    .barre-wrap { margin-bottom:var(--espace-md); }
+    .barre-header { display:flex; justify-content:space-between; font-size:var(--taille-petit); color:var(--texte-discret); margin-bottom:var(--espace-xs); }
+    .barre-fond { background:var(--bordure); border-radius:var(--arrondi-rond); height:8px; overflow:hidden; }
+    .barre-fill { height:100%; border-radius:var(--arrondi-rond); width:0%; transition:width 1s ease; }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar__logo">
+    <span class="sidebar__logo-emoji">🌿</span>
+    <div><div class="sidebar__logo-nom">CarbonIQ</div><div class="sidebar__logo-sous">MRV Platform</div></div>
+  </div>
+  <nav>
+    <div class="sidebar__section-titre">Principal</div>
+    <a class="sidebar__lien" href="../index.html">📊 Dashboard</a>
+    <a class="sidebar__lien" href="activites.html">⚡ Activités</a>
+    <a class="sidebar__lien" href="alertes.html" style="justify-content:space-between;"><span>🔔 Alertes</span><span class="badge badge-error">2</span></a>
+    <div class="sidebar__section-titre">Données</div>
+    <a class="sidebar__lien" href="import_pdf.html">📄 Import PDF</a>
+    <div class="sidebar__section-titre">Conformité</div>
+    <a class="sidebar__lien sidebar__lien--actif" href="conformite.html">🛡️ Conformité CBAM</a>
+    <a class="sidebar__lien" href="rapports.html">📋 Rapports</a>
+    <div class="sidebar__section-titre">Système</div>
+    <a class="sidebar__lien" href="parametres.html">⚙️ Paramètres</a>
+  </nav>
+  <div class="sidebar__footer">
+    <div class="sidebar__footer-entreprise">Acier Plus SAS</div>
+    <div class="sidebar__footer-statut"><span class="point-vert"></span> API connectée</div>
+  </div>
+</aside>
+
+<main class="main">
+
+  <header class="topbar">
+    <div>
+      <h1 class="topbar__titre">🛡️ Conformité CBAM</h1>
+      <p class="topbar__sous-titre">Règlement UE 2023/956 — Carbon Border Adjustment Mechanism</p>
+    </div>
+    <div class="topbar__droite">
+      <span class="badge badge-ok"><span class="badge__point"></span>CBAM CONFORME ✅</span>
+    </div>
+  </header>
+
+
+  <!-- Score + barres -->
+  <div style="display:grid; grid-template-columns:1fr 2fr; gap:var(--espace-md); margin-bottom:var(--espace-md);">
+
+    <!-- Score en demi-cercle -->
+    <div class="carte">
+      <div class="carte__entete"><div class="carte__titre">Score global CBAM</div></div>
+      <div class="score-zone">
+        <!--
+          Le canvas fait 200×120 car c'est un demi-anneau.
+          Le chiffre est superposé en position absolue au centre bas.
+        -->
+        <div class="score-canvas-wrap">
+          <canvas id="gauge-score" width="200" height="120"></canvas>
+          <div class="score-centre">
+            <div class="score-valeur">87</div>
+            <div class="score-label">/ 100</div>
+          </div>
+        </div>
+        <div style="margin-top:var(--espace-lg);">
+          <span class="badge badge-ok" style="font-size:var(--taille-normal); padding:6px 16px;">✅ CONFORME</span>
+        </div>
+        <div style="margin-top:var(--espace-sm); color:var(--texte-discret); font-size:var(--taille-petit); text-align:center;">
+          Dernière vérification : 22 avr. 2026
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 barres de progression -->
+    <div class="carte">
+      <div class="carte__entete"><div class="carte__titre">Critères de conformité</div></div>
+
+      <div class="barre-wrap">
+        <div class="barre-header">
+          <span>📋 Complétude des données</span>
+          <span style="color:var(--vert); font-family:var(--police-chiffre);">92%</span>
+        </div>
+        <div class="barre-fond"><div class="barre-fill" data-valeur="92" style="background:var(--vert);"></div></div>
+        <div style="font-size:var(--taille-petit); color:var(--texte-discret); margin-top:4px;">Toutes les activités Scope 1 et 2 sont renseignées</div>
+      </div>
+
+      <div class="barre-wrap">
+        <div class="barre-header">
+          <span>🔬 Qualité MRV (ISO 14064)</span>
+          <span style="color:#58a6ff; font-family:var(--police-chiffre);">85%</span>
+        </div>
+        <div class="barre-fond"><div class="barre-fill" data-valeur="85" style="background:#58a6ff;"></div></div>
+        <div style="font-size:var(--taille-petit); color:var(--texte-discret); margin-top:4px;">Mesure, Reporting et Vérification selon norme EN ISO 14064</div>
+      </div>
+
+      <div class="barre-wrap">
+        <div class="barre-header">
+          <span>🔗 Traçabilité des émissions</span>
+          <span style="color:var(--orange); font-family:var(--police-chiffre);">78%</span>
+        </div>
+        <div class="barre-fond"><div class="barre-fill" data-valeur="78" style="background:var(--orange);"></div></div>
+        <div style="font-size:var(--taille-petit); color:var(--texte-discret); margin-top:4px;">Scope 3 partiel — données transport manquantes</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Tableau seuils CBAM -->
+  <div class="carte" style="margin-bottom:var(--espace-md);">
+    <div class="carte__entete">
+      <div class="carte__titre">Seuils CBAM vs émissions réelles</div>
+      <div class="carte__sous-titre">Secteur Acier — Règlement UE 2023/956</div>
+    </div>
+    <div class="tableau-conteneur">
+      <table class="tableau">
+        <thead>
+          <tr><th>Indicateur</th><th class="cellule-chiffre">Seuil CBAM</th><th class="cellule-chiffre">Votre valeur</th><th class="cellule-chiffre">Écart</th><th>Statut</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Intensité carbone (tCO₂/t acier)</td>
+            <td class="cellule-chiffre">1.50</td><td class="cellule-chiffre">0.82</td>
+            <td class="cellule-chiffre" style="color:var(--vert);">−0.68</td>
+            <td><span class="badge badge-ok">✅ Conforme</span></td>
+          </tr>
+          <tr>
+            <td>Scope 1 total (tCO₂)</td>
+            <td class="cellule-chiffre">10 000</td><td class="cellule-chiffre">7 800</td>
+            <td class="cellule-chiffre" style="color:var(--vert);">−2 200</td>
+            <td><span class="badge badge-ok">✅ Conforme</span></td>
+          </tr>
+          <tr>
+            <td>Scope 2 — électricité (tCO₂)</td>
+            <td class="cellule-chiffre">4 000</td><td class="cellule-chiffre">3 280</td>
+            <td class="cellule-chiffre" style="color:var(--vert);">−720</td>
+            <td><span class="badge badge-ok">✅ Conforme</span></td>
+          </tr>
+          <tr>
+            <td>Scope 3 — transport (tCO₂)</td>
+            <td class="cellule-chiffre">2 000</td><td class="cellule-chiffre">1 370</td>
+            <td class="cellule-chiffre" style="color:var(--vert);">−630</td>
+            <td><span class="badge badge-warn">⚠️ Partiel</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- Recommandations IA -->
+  <div class="carte">
+    <div class="carte__entete">
+      <div class="carte__titre">🤖 Recommandations IA</div>
+      <span class="badge badge-ok">Généré par CarbonIQ LLM</span>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:var(--espace-md);">
+      <div class="alerte alerte--succes">
+        <div class="alerte__icone">✅</div>
+        <div>
+          <div class="alerte__titre">Points forts</div>
+          <div class="alerte__description">Votre intensité carbone de 0.82 tCO₂/t est 45% sous le seuil CBAM. Le Scope 1 est bien maîtrisé grâce à votre programme de modernisation des fours.</div>
+        </div>
+      </div>
+      <div class="alerte alerte--warn">
+        <div class="alerte__icone">⚠️</div>
+        <div>
+          <div class="alerte__titre">Action prioritaire : compléter le Scope 3</div>
+          <div class="alerte__description">Les données transport sont incomplètes à 22%. Pour atteindre 95+, renseignez les distances fournisseurs. Impact estimé : +8 points.</div>
+          <div class="alerte__heure">Délai recommandé : avant le 30 mai 2026</div>
+        </div>
+      </div>
+      <div class="alerte alerte--info">
+        <div class="alerte__icone">💡</div>
+        <div>
+          <div class="alerte__titre">Opportunité : 720 tCO₂ de certificats disponibles</div>
+          <div class="alerte__description">L'écart de Scope 2 vous rend éligible à des certificats carbone CBAM. Contactez votre autorité nationale avant juin 2026.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* Graphique demi-anneau (utilisé comme jauge) */
+new Chart(document.getElementById('gauge-score'), {
+  type: 'doughnut',
+  data: {
+    datasets: [{
+      data: [87, 13],                                   // [score, reste]
+      backgroundColor: ['#3fb950', '#1a382840'],
+      borderWidth: 0
+    }]
+  },
+  options: {
+    cutout: '75%',
+    rotation: -90,          // commence en haut
+    circumference: 180,     // demi-cercle seulement
+    responsive: false,
+    plugins: { legend: { display: false }, tooltip: { enabled: false } }
+  }
+});
+
+/* Animation des barres : on attend 100ms pour que la CSS transition soit visible */
+setTimeout(function() {
+  document.querySelectorAll('.barre-fill').forEach(function(b) {
+    b.style.width = b.getAttribute('data-valeur') + '%';
+  });
+}, 100);
+</script>
+
+</body>
+</html>

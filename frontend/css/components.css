@@ -1,0 +1,501 @@
+/* ============================================================
+   COMPONENTS.CSS — Tous les composants réutilisables
+
+   Un "composant" = un élément qu'on utilise plusieurs fois
+   dans le dashboard (cartes, boutons, tableaux…).
+   On le code une fois ici, on l'utilise partout dans le HTML.
+   ============================================================ */
+
+@import './variables.css';
+
+
+/* ============================================================
+   1. CARTES KPI — Les grands chiffres en haut du dashboard
+      ex : "12 450 tCO₂" ou "↗ +3.2%"
+   ============================================================ */
+
+.kpi {
+  background: var(--fond-carte);
+  border: 1px solid var(--bordure);
+  border-radius: 10px;
+  padding: var(--espace-lg);
+  position: relative;       /* pour positionner le badge en haut à droite */
+  overflow: hidden;         /* cache ce qui dépasse les bords */
+  transition: var(--transition);
+}
+
+/* Barre colorée de 3px tout en haut de la carte */
+.kpi::before {
+  content: '';              /* élément vide, juste pour la barre */
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+/* Couleur de la barre selon le type de KPI */
+.kpi--vert::before   { background: var(--vert); }
+.kpi--orange::before { background: var(--orange); }
+.kpi--bleu::before   { background: #58a6ff; }
+.kpi--violet::before { background: #bc8cff; }
+
+/* Au survol : légère lueur verte sous la carte */
+.kpi:hover {
+  border-color: var(--bordure-forte);
+  box-shadow: var(--ombre-lueur-verte);
+}
+
+/* Le label en haut (ex: "ÉMISSIONS TOTALES") */
+.kpi__label {
+  font-family: var(--police-chiffre);
+  font-size: 11px;
+  color: var(--texte-discret);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--espace-sm);
+}
+
+/* Le grand chiffre au centre */
+.kpi__valeur {
+  font-family: var(--police-chiffre);
+  font-size: var(--taille-titre);   /* 28px */
+  font-weight: 600;
+  color: var(--vert);
+  line-height: 1;
+  margin-bottom: var(--espace-xs);
+}
+
+/* Couleur de la valeur selon le type */
+.kpi--orange .kpi__valeur { color: var(--orange); }
+.kpi--bleu   .kpi__valeur { color: #58a6ff; }
+.kpi--violet .kpi__valeur { color: #bc8cff; }
+
+/* L'unité à côté du chiffre (ex: "tCO₂") */
+.kpi__unite {
+  font-size: var(--taille-normal);
+  color: var(--texte-discret);
+  margin-left: var(--espace-xs);
+}
+
+/* Badge tendance en haut à droite (ex: "↗ +3.2%") */
+.kpi__badge {
+  position: absolute;
+  top: var(--espace-md);
+  right: var(--espace-md);
+  font-family: var(--police-chiffre);
+  font-size: var(--taille-petit);
+  font-weight: 600;
+  padding: 2px var(--espace-sm);
+  border-radius: var(--arrondi-sm);
+}
+
+/* ↘ tendance positive = vert (moins d'émissions c'est bien) */
+.kpi__badge--baisse {
+  background: #3fb95022;
+  color: var(--vert);
+}
+
+/* ↗ tendance négative = rouge (plus d'émissions c'est mal) */
+.kpi__badge--hausse {
+  background: var(--rouge-fond);
+  color: var(--rouge);
+}
+
+
+/* ============================================================
+   2. BOUTONS — Actions de l'utilisateur
+   ============================================================ */
+
+/* Style de base commun à tous les boutons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espace-sm);
+  padding: var(--espace-sm) var(--espace-lg);
+  border-radius: var(--arrondi-md);
+  border: 1px solid transparent;
+  font-family: var(--police-texte);
+  font-size: var(--taille-normal);
+  font-weight: 500;
+  cursor: pointer;          /* la souris devient une main au survol */
+  transition: var(--transition);
+  text-decoration: none;    /* si c'est un <a> utilisé comme bouton */
+  white-space: nowrap;      /* le texte ne coupe pas à la ligne */
+}
+
+/* Bouton principal : fond vert, texte sombre */
+.btn-primaire {
+  background: var(--vert);
+  color: var(--fond-page);
+  font-weight: 700;
+  border-color: var(--vert);
+}
+.btn-primaire:hover {
+  opacity: 0.85;
+}
+
+/* Bouton secondaire : transparent avec bordure */
+.btn-contour {
+  background: transparent;
+  color: var(--texte-discret);
+  border-color: var(--bordure);
+}
+.btn-contour:hover {
+  background: var(--fond-survol);
+  color: var(--texte);
+  border-color: var(--bordure-forte);
+}
+
+/* Bouton danger : rouge discret */
+.btn-danger {
+  background: var(--rouge-fond);
+  color: var(--rouge);
+  border-color: #ff456033;
+}
+.btn-danger:hover {
+  background: #ff456033;
+}
+
+/* Bouton désactivé (non cliquable) */
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+
+/* ============================================================
+   3. BADGES DE STATUT — Indicateurs visuels (OK / Alerte / Erreur)
+      ex: "● En ligne" ou "● Dépassement"
+   ============================================================ */
+
+/* Style de base commun */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espace-xs);
+  padding: 3px var(--espace-sm);
+  border-radius: var(--arrondi-rond);  /* forme pilule */
+  font-family: var(--police-chiffre);
+  font-size: var(--taille-petit);
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+
+.badge-ok    { background: #3fb95015; border-color: #3fb95040; color: var(--vert); }
+.badge-warn  { background: var(--orange-fond); border-color: #f7816640; color: var(--orange); }
+.badge-error { background: var(--rouge-fond);  border-color: #ff456040; color: var(--rouge); }
+
+/* Le petit point animé qui clignote (effet "live") */
+.badge__point {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;       /* cercle parfait */
+  background: currentColor; /* prend la couleur du texte parent */
+  animation: pulse 2s infinite;
+}
+
+/* Animation : le point grossit et disparaît en boucle */
+@keyframes pulse {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(1.4); }
+}
+
+
+/* ============================================================
+   4. TABLEAU DE DONNÉES
+   ============================================================ */
+
+/* Conteneur du tableau : coins arrondis et bordure */
+.tableau-conteneur {
+  border: 1px solid var(--bordure);
+  border-radius: var(--arrondi-lg);
+  overflow: hidden;         /* les coins arrondis coupent le tableau */
+}
+
+.tableau {
+  width: 100%;
+  border-collapse: collapse; /* supprime l'espace entre les cellules */
+  font-size: var(--taille-normal);
+}
+
+/* En-têtes des colonnes */
+.tableau thead th {
+  background: var(--fond-carte);
+  padding: var(--espace-sm) var(--espace-md);
+  text-align: left;
+  font-family: var(--police-chiffre);
+  font-size: 10px;
+  color: var(--texte-discret);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-bottom: 1px solid var(--bordure);
+  font-weight: 500;
+}
+
+/* Cellules du corps du tableau */
+.tableau tbody td {
+  padding: var(--espace-sm) var(--espace-md);
+  border-bottom: 1px solid var(--bordure);
+  color: var(--texte);
+  vertical-align: middle;
+}
+
+/* Alternance de couleurs : lignes paires plus sombres */
+.tableau tbody tr:nth-child(even) td {
+  background: var(--fond-carte);
+}
+.tableau tbody tr:nth-child(odd) td {
+  background: var(--fond-page);
+}
+
+/* Au survol : légère surbrillance verte */
+.tableau tbody tr:hover td {
+  background: #3fb95010;
+  border-color: #3fb95030;
+}
+
+/* Dernière ligne sans bordure en bas */
+.tableau tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Les chiffres dans le tableau utilisent la police monospace */
+.tableau .cellule-chiffre {
+  font-family: var(--police-chiffre);
+  text-align: right;
+}
+
+
+/* ============================================================
+   5. ALERTES — Messages importants avec niveau de gravité
+   ============================================================ */
+
+.alerte {
+  display: flex;
+  gap: var(--espace-md);
+  padding: var(--espace-md);
+  border-radius: var(--arrondi-md);
+  border: 1px solid var(--bordure);
+  border-left-width: 3px;   /* la bordure gauche est plus épaisse */
+  background: var(--fond-carte);
+  margin-bottom: var(--espace-md);
+}
+
+/* Couleur de la bordure gauche selon gravité */
+.alerte--info    { border-left-color: #58a6ff; }
+.alerte--succes  { border-left-color: var(--vert); }
+.alerte--warn    { border-left-color: var(--orange); }
+.alerte--erreur  { border-left-color: var(--rouge); }
+
+/* Carré arrondi qui contient l'icône */
+.alerte__icone {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--arrondi-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;           /* ne rétrécit pas si le texte est long */
+}
+
+.alerte--info   .alerte__icone { background: #58a6ff22; }
+.alerte--succes .alerte__icone { background: #3fb95022; }
+.alerte--warn   .alerte__icone { background: var(--orange-fond); }
+.alerte--erreur .alerte__icone { background: var(--rouge-fond); }
+
+/* Textes de l'alerte */
+.alerte__titre {
+  font-size: var(--taille-normal);
+  font-weight: 600;
+  color: var(--texte);
+  margin-bottom: 2px;
+}
+.alerte__description {
+  font-size: var(--taille-petit);
+  color: var(--texte-discret);
+}
+.alerte__heure {
+  font-family: var(--police-chiffre);
+  font-size: var(--taille-petit);
+  color: var(--texte-tres-discret);
+  margin-top: var(--espace-xs);
+}
+
+
+/* ============================================================
+   6. CARDS GÉNÉRIQUES — Conteneur réutilisable pour n'importe
+      quelle section du dashboard
+   ============================================================ */
+
+.carte {
+  background: var(--fond-carte);
+  border: 1px solid var(--bordure);
+  border-radius: 10px;
+  padding: var(--espace-lg);  /* 24px autour */
+  transition: var(--transition);
+}
+
+/* Au survol : la bordure devient légèrement plus visible */
+.carte:hover {
+  border-color: var(--bordure-forte);
+}
+
+/* En-tête de la carte : titre à gauche, action optionnelle à droite */
+.carte__entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--espace-lg);
+}
+
+.carte__titre {
+  font-size: var(--taille-moyen);
+  font-weight: 600;
+  color: var(--texte);
+}
+
+.carte__sous-titre {
+  font-size: var(--taille-petit);
+  color: var(--texte-discret);
+  margin-top: 2px;
+}
+
+
+/* ============================================================
+   7. FORMULAIRES — Champs de saisie, sélecteurs, dates
+   ============================================================ */
+
+/* Style de base commun à input, select et date */
+.champ {
+  width: 100%;
+  background: var(--fond-page);
+  border: 1px solid var(--bordure);
+  border-radius: var(--arrondi-md);
+  padding: var(--espace-sm) var(--espace-md);
+  color: var(--texte);
+  font-family: var(--police-texte);
+  font-size: var(--taille-normal);
+  transition: var(--transition);
+  outline: none;            /* supprime le contour bleu par défaut */
+  appearance: none;         /* supprime le style par défaut du navigateur */
+}
+
+/* Quand l'utilisateur clique sur le champ */
+.champ:focus {
+  border-color: var(--bordure-focus);  /* bordure verte */
+  box-shadow: 0 0 0 3px var(--vert-lueur);
+}
+
+/* Texte grisé avant que l'utilisateur tape */
+.champ::placeholder {
+  color: var(--texte-tres-discret);
+}
+
+/* Label au-dessus du champ */
+.label {
+  display: block;
+  font-size: var(--taille-petit);
+  color: var(--texte-discret);
+  margin-bottom: var(--espace-xs);
+  font-weight: 500;
+}
+
+/* Groupe label + champ */
+.groupe-champ {
+  margin-bottom: var(--espace-md);
+}
+
+/* Message d'erreur sous le champ */
+.champ-erreur-msg {
+  font-size: var(--taille-petit);
+  color: var(--rouge);
+  margin-top: var(--espace-xs);
+}
+
+/* Bordure rouge si le champ est invalide */
+.champ--erreur {
+  border-color: var(--rouge);
+}
+.champ--erreur:focus {
+  box-shadow: 0 0 0 3px var(--rouge-fond);
+}
+
+
+/* ============================================================
+   8. ZONE D'UPLOAD — Glisser-déposer un fichier
+   ============================================================ */
+
+.upload {
+  border: 2px dashed var(--bordure);   /* bordure en pointillés */
+  border-radius: var(--arrondi-lg);
+  padding: var(--espace-2xl);
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  background: transparent;
+}
+
+/* Au survol : fond vert très léger + bordure verte */
+.upload:hover,
+.upload--survol {             /* .upload--survol ajouté par JS au drag */
+  border-color: var(--vert);
+  background: var(--vert-lueur);
+}
+
+/* Icône au centre */
+.upload__icone {
+  font-size: 32px;
+  margin-bottom: var(--espace-md);
+  opacity: 0.6;
+}
+
+/* Texte principal */
+.upload__texte {
+  font-size: var(--taille-moyen);
+  color: var(--texte);
+  margin-bottom: var(--espace-xs);
+}
+
+/* Sous-texte (formats acceptés, taille max…) */
+.upload__sous-texte {
+  font-size: var(--taille-petit);
+  color: var(--texte-discret);
+}
+
+/* Barre de progression (visible pendant le chargement) */
+.upload__progression {
+  margin-top: var(--espace-lg);
+  height: 4px;
+  background: var(--bordure);
+  border-radius: var(--arrondi-rond);
+  overflow: hidden;
+}
+
+/* La partie verte qui avance (sa largeur est contrôlée par JS) */
+.upload__barre {
+  height: 100%;
+  background: var(--vert);
+  border-radius: var(--arrondi-rond);
+  width: 0%;                  /* commence à 0, JS met à jour ex: style="width:70%" */
+  transition: width 300ms ease;
+  position: relative;
+}
+
+/* Effet de brillance qui se déplace sur la barre */
+.upload__barre::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #ffffff30 50%,
+    transparent 100%
+  );
+  animation: brillance 1.5s infinite;
+}
+
+@keyframes brillance {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}

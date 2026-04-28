@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarbonIQ — Activités</title>
+
+  <!-- "../" = on remonte d'un dossier pour trouver css/ -->
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+
+  <style>
+    /* Masque le panneau droit (inutile sur cette page) */
+    .panneau-droit { display: none; }
+    .main { margin-right: 0; width: 85%; }
+
+    /* ── Topbar ─────────────────────────────────── */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: var(--espace-md);
+      padding-bottom: var(--espace-lg); margin-bottom: var(--espace-xl);
+      border-bottom: 1px solid var(--bordure);
+    }
+    .topbar__titre    { font-size: var(--taille-grand); font-weight: 700; color: var(--texte); }
+    .topbar__sous-titre { font-size: var(--taille-petit); color: var(--texte-discret); margin-top: 3px; }
+    .topbar__droite   { display: flex; align-items: center; gap: var(--espace-sm); flex-wrap: wrap; }
+
+    /* ── Sidebar spécifique ──────────────────────── */
+    .sidebar__logo { display:flex; align-items:center; gap:var(--espace-sm);
+      padding-bottom:var(--espace-lg); margin-bottom:var(--espace-sm);
+      border-bottom:1px solid var(--bordure); }
+    .sidebar__logo-emoji { font-size:22px; }
+    .sidebar__logo-nom   { font-size:var(--taille-moyen); font-weight:700; color:var(--texte); }
+    .sidebar__logo-sous  { font-family:var(--police-chiffre); font-size:var(--taille-petit); color:var(--texte-discret); }
+    .sidebar__section-titre {
+      font-family:var(--police-chiffre); font-size:10px; color:var(--texte-tres-discret);
+      text-transform:uppercase; letter-spacing:0.12em;
+      padding:var(--espace-lg) var(--espace-sm) var(--espace-xs);
+    }
+    .sidebar__footer { margin-top:auto; padding-top:var(--espace-lg); border-top:1px solid var(--bordure); }
+    .sidebar__footer-entreprise { font-size:var(--taille-normal); font-weight:600; color:var(--texte); margin-bottom:var(--espace-xs); }
+    .sidebar__footer-statut { display:flex; align-items:center; gap:var(--espace-xs);
+      font-family:var(--police-chiffre); font-size:var(--taille-petit); color:var(--texte-discret); }
+    .point-vert { width:7px; height:7px; border-radius:50%; background:var(--vert); animation:pulse 2s infinite; }
+
+    /* ── Résultat calcul (caché par défaut) ─────── */
+    .resultat-co2 {
+      display: none;
+      background: #1a382820;
+      border: 1px solid var(--vert);
+      border-radius: var(--arrondi-md);
+      padding: var(--espace-md);
+      margin-top: var(--espace-md);
+    }
+    .resultat-co2__chiffre { font-family:var(--police-chiffre); font-size:var(--taille-2xl,2rem); color:var(--vert); }
+
+    /* ── Bouton supprimer dans le tableau ────────── */
+    .btn-supprimer {
+      background: var(--rouge-fond); color: var(--rouge);
+      border: 1px solid #ff456033; border-radius: var(--arrondi-sm);
+      padding: 2px var(--espace-sm); font-size: var(--taille-petit);
+      cursor: pointer; transition: var(--transition);
+    }
+    .btn-supprimer:hover { background: #ff456033; }
+  </style>
+</head>
+
+<body>
+
+<!-- ════════════════════ SIDEBAR ═══════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar__logo">
+    <span class="sidebar__logo-emoji">🌿</span>
+    <div>
+      <div class="sidebar__logo-nom">CarbonIQ</div>
+      <div class="sidebar__logo-sous">MRV Platform</div>
+    </div>
+  </div>
+
+  <nav>
+    <div class="sidebar__section-titre">Principal</div>
+    <a class="sidebar__lien" href="../index.html">📊 Dashboard</a>
+    <!-- sidebar__lien--actif = page actuelle mise en surbrillance -->
+    <a class="sidebar__lien sidebar__lien--actif" href="activites.html">⚡ Activités</a>
+    <a class="sidebar__lien" href="alertes.html" style="justify-content:space-between;">
+      <span>🔔 Alertes</span><span class="badge badge-error">2</span>
+    </a>
+
+    <div class="sidebar__section-titre">Données</div>
+    <a class="sidebar__lien" href="import_pdf.html">📄 Import PDF</a>
+
+    <div class="sidebar__section-titre">Conformité</div>
+    <a class="sidebar__lien" href="conformite.html">🛡️ Conformité CBAM</a>
+    <a class="sidebar__lien" href="rapports.html">📋 Rapports</a>
+
+    <div class="sidebar__section-titre">Système</div>
+    <a class="sidebar__lien" href="parametres.html">⚙️ Paramètres</a>
+  </nav>
+
+  <div class="sidebar__footer">
+    <div class="sidebar__footer-entreprise">Acier Plus SAS</div>
+    <div class="sidebar__footer-statut">
+      <span class="point-vert"></span> API connectée
+    </div>
+  </div>
+</aside>
+
+
+<!-- ════════════════════ CONTENU ════════════════════ -->
+<main class="main">
+
+  <header class="topbar">
+    <div>
+      <h1 class="topbar__titre">⚡ Activités</h1>
+      <p class="topbar__sous-titre">Saisie et historique des émissions · 2026</p>
+    </div>
+    <div class="topbar__droite">
+      <span class="badge badge-ok"><span class="badge__point"></span>CBAM CONFORME ✅</span>
+    </div>
+  </header>
+
+
+  <!-- ── Formulaire d'ajout ──────────────────────── -->
+  <div class="carte" style="margin-bottom:var(--espace-md);">
+    <div class="carte__entete">
+      <div class="carte__titre">Ajouter une activité</div>
+      <div class="carte__sous-titre">Chaque activité calcule automatiquement son CO₂</div>
+    </div>
+
+    <!--
+      onsubmit="..." = appelle la fonction JS quand on soumet.
+      "return false" empêche le rechargement de la page.
+    -->
+    <form onsubmit="ajouterActivite(); return false;">
+
+      <div style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:var(--espace-md); margin-bottom:var(--espace-md);">
+
+        <div class="groupe-champ">
+          <label class="label" for="champ-source">Source d'émission</label>
+          <select id="champ-source" class="champ">
+            <option value="">— Choisir —</option>
+            <option value="Charbon">Combustion charbon</option>
+            <option value="Gaz naturel">Gaz naturel</option>
+            <option value="Electricite">Électricité réseau</option>
+            <option value="Transport">Transport / logistique</option>
+            <option value="Fuel">Fuel lourd</option>
+          </select>
+        </div>
+
+        <div class="groupe-champ">
+          <label class="label" for="champ-quantite">Quantité</label>
+          <input type="number" id="champ-quantite" class="champ" min="0" step="0.01" placeholder="ex: 2.4">
+        </div>
+
+        <div class="groupe-champ">
+          <label class="label" for="champ-unite">Unité</label>
+          <select id="champ-unite" class="champ">
+            <option value="t">tonne (t)</option>
+            <option value="kWh">kilowatt-heure (kWh)</option>
+            <option value="m3">mètre cube (m³)</option>
+            <option value="km">kilomètre (km)</option>
+            <option value="L">litre (L)</option>
+          </select>
+        </div>
+
+        <div class="groupe-champ">
+          <label class="label" for="champ-date">Date</label>
+          <input type="date" id="champ-date" class="champ">
+        </div>
+
+      </div>
+
+      <button type="submit" class="btn btn-primaire">+ Ajouter et calculer le CO₂</button>
+
+    </form>
+
+    <!-- Zone résultat — cachée jusqu'à l'ajout -->
+    <div class="resultat-co2" id="zone-resultat">
+      <div style="display:flex; align-items:center; gap:var(--espace-md);">
+        <span class="badge badge-ok">✅ Calculé</span>
+        <div>
+          <div style="font-size:var(--taille-petit); color:var(--texte-discret); margin-bottom:2px;">CO₂ estimé</div>
+          <div class="resultat-co2__chiffre" id="resultat-valeur">—</div>
+        </div>
+        <div style="color:var(--texte-discret); font-size:var(--taille-petit);">
+          Facteur utilisé : <span id="resultat-facteur" style="color:var(--texte); font-family:var(--police-chiffre);">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── Tableau de toutes les activités ───────────── -->
+  <div class="carte">
+    <div class="carte__entete">
+      <div class="carte__titre">Historique des activités</div>
+      <span class="badge badge-ok"><span class="badge__point"></span>Live</span>
+    </div>
+
+    <div class="tableau-conteneur">
+      <table class="tableau">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Source</th>
+            <th>Quantité</th>
+            <th>Date</th>
+            <th class="cellule-chiffre">CO₂ (t)</th>
+            <th>Scope</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <!-- tbody rempli par JavaScript -->
+        <tbody id="tableau-activites"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+
+<script>
+/* ──────────────────────────────────────────────────
+   DONNÉES ET FACTEURS D'ÉMISSION
+   (en attendant l'API, on utilise ces valeurs)
+──────────────────────────────────────────────────── */
+
+// Facteurs de conversion : quelle source produit combien de kg CO₂ par unité
+var facteurs = {
+  'Charbon':      { facteur: 2.34,  unite: 't',   scope: 'Scope 1' },
+  'Gaz naturel':  { facteur: 1.8,   unite: 'm3',  scope: 'Scope 1' },
+  'Electricite':  { facteur: 0.4,   unite: 'kWh', scope: 'Scope 2' },
+  'Transport':    { facteur: 0.12,  unite: 'km',  scope: 'Scope 3' },
+  'Fuel':         { facteur: 2.65,  unite: 'L',   scope: 'Scope 1' }
+};
+
+// Tableau des activités déjà enregistrées
+var activites = [
+  { id: 1, source: 'Charbon',    quantite: 2.4,   unite: 't',   date: '2026-01-22', co2_t: 5.62  },
+  { id: 2, source: 'Electricite',quantite: 850,   unite: 'kWh', date: '2026-01-22', co2_t: 0.34  },
+  { id: 3, source: 'Gaz naturel',quantite: 120,   unite: 'm3',  date: '2026-01-21', co2_t: 0.22  },
+  { id: 4, source: 'Transport',  quantite: 340,   unite: 'km',  date: '2026-01-20', co2_t: 0.04  }
+];
+var prochainId = 5;
+
+
+/* ──────────────────────────────────────────────────
+   AJOUTER UNE ACTIVITÉ
+──────────────────────────────────────────────────── */
+function ajouterActivite() {
+  var source   = document.getElementById('champ-source').value;
+  var quantite = parseFloat(document.getElementById('champ-quantite').value);
+  var unite    = document.getElementById('champ-unite').value;
+  var date     = document.getElementById('champ-date').value;
+
+  // Vérifications basiques
+  if (!source)         { alert('Choisissez une source.'); return; }
+  if (isNaN(quantite)) { alert('Entrez une quantité valide.'); return; }
+  if (!date)           { alert('Choisissez une date.'); return; }
+
+  // Calcul du CO₂
+  var info   = facteurs[source];
+  var co2Kg  = quantite * info.facteur;
+  var co2T   = (co2Kg / 1000).toFixed(3);
+
+  // Affiche le résultat
+  document.getElementById('zone-resultat').style.display = 'block';
+  document.getElementById('resultat-valeur').textContent = co2T + ' tonnes CO₂';
+  document.getElementById('resultat-facteur').textContent = info.facteur + ' kg CO₂ / ' + info.unite;
+
+  // Ajoute au tableau local
+  activites.push({
+    id: prochainId++,
+    source: source, quantite: quantite, unite: unite,
+    date: date, co2_t: parseFloat(co2T)
+  });
+
+  rafraichirTableau();
+}
+
+
+/* ──────────────────────────────────────────────────
+   SUPPRIMER UNE ACTIVITÉ
+──────────────────────────────────────────────────── */
+function supprimerActivite(id) {
+  // filter = garde seulement les éléments qui ne correspondent pas à l'id
+  activites = activites.filter(function(a) { return a.id !== id; });
+  rafraichirTableau();
+}
+
+
+/* ──────────────────────────────────────────────────
+   REMPLIR LE TABLEAU
+──────────────────────────────────────────────────── */
+function rafraichirTableau() {
+  var tbody = document.getElementById('tableau-activites');
+  tbody.innerHTML = '';  // vide avant de remplir
+
+  activites.forEach(function(a) {
+    var scopeMap = facteurs[a.source] ? facteurs[a.source].scope : '—';
+    var dateFormatee = new Date(a.date).toLocaleDateString('fr-FR');
+
+    tbody.innerHTML +=
+      '<tr>' +
+        '<td style="font-family:var(--police-chiffre); color:var(--texte-discret);">#' + a.id + '</td>' +
+        '<td>' + a.source + '</td>' +
+        '<td style="font-family:var(--police-chiffre);">' + a.quantite + ' ' + a.unite + '</td>' +
+        '<td>' + dateFormatee + '</td>' +
+        '<td class="cellule-chiffre">' + a.co2_t.toFixed(3) + '</td>' +
+        '<td><span class="badge ' + (scopeMap === 'Scope 1' ? 'badge-warn' : scopeMap === 'Scope 2' ? 'badge-ok' : 'badge-error') + '">' + scopeMap + '</span></td>' +
+        '<td><button class="btn-supprimer" onclick="supprimerActivite(' + a.id + ')">🗑 Supprimer</button></td>' +
+      '</tr>';
+  });
+}
+
+// Remplit le tableau au chargement
+rafraichirTableau();
+
+// Date du jour par défaut dans le formulaire
+document.getElementById('champ-date').value = new Date().toISOString().slice(0, 10);
+</script>
+
+</body>
+</html>
