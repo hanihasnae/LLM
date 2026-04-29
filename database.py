@@ -56,10 +56,35 @@ def create_tables():
         );
     """)
     
+    # Colonnes de traçabilité soft-delete (ajoutées si absentes)
+    cursor.execute("""
+        ALTER TABLE activities
+            ADD COLUMN IF NOT EXISTS actif       BOOLEAN DEFAULT true,
+            ADD COLUMN IF NOT EXISTS raison      TEXT,
+            ADD COLUMN IF NOT EXISTS original_id INTEGER;
+    """)
+    cursor.execute("""
+        ALTER TABLE emissions
+            ADD COLUMN IF NOT EXISTS actif BOOLEAN DEFAULT true;
+    """)
+
+    # Table audit_log — traçabilité CBAM/ISO 14064
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS audit_log (
+            id          SERIAL PRIMARY KEY,
+            activity_id INTEGER NOT NULL,
+            ancien_id   INTEGER,
+            nouveau_id  INTEGER,
+            changement  TEXT,
+            raison      TEXT,
+            created_at  TIMESTAMP DEFAULT NOW()
+        );
+    """)
+
     conn.commit()
     cursor.close()
     conn.close()
-    print("✅ Tables créées avec succès !")
+    print("Tables creees avec succes !")
 
 def insert_default_factors():
     """Insère les facteurs d'émission standards (GHG Protocol Maroc)"""
