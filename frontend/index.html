@@ -562,24 +562,44 @@
         <div class="carte__titre">Activités enregistrées</div>
         <span class="badge badge-ok" id="act-count">— lignes</span>
       </div>
+
+      <!-- Stats -->
+      <div id="stats-activites" style="font-family:Consolas;font-size:12px;margin-bottom:14px;color:var(--texte-discret);"></div>
+
+      <!-- Filtres -->
+      <div style="display:flex;gap:10px;margin-bottom:14px;">
+        <input type="text" id="filtre-search" class="champ"
+          placeholder="🔍 Rechercher par source, date..."
+          oninput="filtrerActivites()"
+          style="flex:1;padding:8px 10px;font-size:12px;"/>
+        <select id="filtre-scope" class="champ" onchange="filtrerActivites()"
+          style="width:140px;padding:8px 10px;font-size:12px;">
+          <option value="">Tous les scopes</option>
+          <option value="1">Scope 1</option>
+          <option value="2">Scope 2</option>
+        </select>
+      </div>
+
       <div class="tableau-conteneur">
         <table class="tableau">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Source</th>
-              <th>Quantité</th>
-              <th>Unité</th>
-              <th>Date</th>
-              <th class="cellule-chiffre">CO₂ (kg)</th>
-              <th>Scope</th>
+              <th style="width:50px;">ID</th>
+              <th style="width:110px;">SOURCE</th>
+              <th style="width:140px;">QTÉ</th>
+              <th style="width:110px;">DATE</th>
+              <th style="width:100px;">CO₂ (KG)</th>
+              <th style="width:120px;">ACTION</th>
             </tr>
           </thead>
           <tbody id="activites-tbody">
-            <tr><td colspan="7" style="text-align:center;color:var(--texte-discret);padding:20px;">Chargement...</td></tr>
+            <tr><td colspan="6" style="text-align:center;color:var(--texte-discret);padding:20px;">Chargement...</td></tr>
           </tbody>
         </table>
       </div>
+
+      <!-- Pagination -->
+      <div id="pagination"></div>
     </div>
 
   </section>
@@ -1034,57 +1054,224 @@ async function ajouterActivite() {
   }
 }
 
-// Charge les activités depuis /activities et /emissions, fusionne par id
-async function chargerActivites() {
+// ── État global du tableau ────────────────────────
+var PAGE_SIZE        = 10;
+var pageCourante     = 1;
+var _activitesCache  = [];   // toutes les données brutes de l'API
+var _emMapCache      = {};   // index émissions par activity_id
+var _activitesFiltrees = []; // vue courante après filtres
+
+// Charge depuis l'API et initialise le tableau
+async function chargerActivites(page) {
+  page = page || 1;
   var tbody = document.getElementById('activites-tbody');
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--texte-discret);padding:20px;">Chargement...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--texte-discret);padding:20px;">Chargement...</td></tr>';
 
-  var [repAct, repEm] = await Promise.all([
-    fetch('http://localhost:8000/activities'),
-    fetch('http://localhost:8000/emissions')
-  ]);
+  try {
+    var [repAct, repEm] = await Promise.all([
+      fetch('http://localhost:8000/activities'),
+      fetch('http://localhost:8000/emissions')
+    ]);
 
-  if (!repAct.ok || !repEm.ok) {
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#f78166;padding:20px;">Erreur de chargement</td></tr>';
+    if (!repAct.ok || !repEm.ok) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#f78166;padding:20px;">Erreur de chargement</td></tr>';
+      return;
+    }
+
+    var dataAct = await repAct.json();
+    var dataEm  = await repEm.json();
+
+    _activitesCache = dataAct.data || [];
+
+    var emissions = dataEm.activities || [];
+    _emMapCache = {};
+    emissions.forEach(function(e) { _emMapCache[e.id] = e; });
+
+    var statsEl = document.getElementById('stats-activites');
+    if (statsEl) {
+      statsEl.innerHTML = '<span style="color:#3fb950;">✅ ' + _activitesCache.length + ' activités actives</span>';
+    }
+
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#f78166;padding:20px;">Erreur de chargement</td></tr>';
     return;
   }
 
-  var dataAct = await repAct.json();
-  var dataEm  = await repEm.json();
+  // Applique les filtres texte/scope et affiche
+  _appliquerFiltres(page);
+}
 
-  var activites = dataAct.data || [];
-  var emissions = dataEm.activities || [];
+// Filtre sur le cache existant (sans re-fetch)
+function filtrerActivites() {
+  _appliquerFiltres(1);
+}
 
-  // Index des émissions par id d'activité pour fusion rapide
-  var emMap = {};
-  emissions.forEach(function(e) { emMap[e.id] = e; });
+// Applique search + scope sur _activitesCache → _activitesFiltrees
+function _appliquerFiltres(page) {
+  var search = (document.getElementById('filtre-search')?.value || '').toLowerCase().trim();
+  var scope  = document.getElementById('filtre-scope')?.value || '';
+
+  _activitesFiltrees = _activitesCache.filter(function(a) {
+    var em = _emMapCache[a.id] || {};
+    if (scope && String(em.scope) !== scope) return false;
+    if (search) {
+      var displayId = a.original_id || a.id;
+      if (/^\d+$/.test(search)) {
+        // Recherche numérique → correspondance exacte sur l'ID affiché
+        if (String(displayId) !== search) return false;
+      } else {
+        // Recherche textuelle → correspondance partielle sur source et date
+        var txt = [(a.source || ''), String(a.date || '')].join(' ').toLowerCase();
+        if (!txt.includes(search)) return false;
+      }
+    }
+    return true;
+  });
+
+  afficherTableau(_activitesFiltrees, _emMapCache, page || 1);
+}
+
+// Navigue vers une page de la vue filtrée courante
+function irPage(page) {
+  afficherTableau(_activitesFiltrees, _emMapCache, page);
+}
+
+// Rend une page du tableau
+function afficherTableau(activites, emMap, page) {
+  var tbody = document.getElementById('activites-tbody');
+  if (!tbody) return;
 
   var compteur = document.getElementById('act-count');
-  if (compteur) compteur.textContent = activites.length + ' ligne' + (activites.length > 1 ? 's' : '');
+  if (compteur) compteur.textContent = activites.length + ' ligne' + (activites.length !== 1 ? 's' : '');
 
   if (activites.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--texte-discret);padding:20px;">Aucune activité enregistrée</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--texte-discret);padding:20px;">Aucune activité</td></tr>';
+    document.getElementById('pagination').innerHTML = '';
     return;
   }
 
+  var totalPages = Math.ceil(activites.length / PAGE_SIZE);
+  page = Math.max(1, Math.min(page, totalPages));
+  pageCourante = page;
+
+  var debut    = (page - 1) * PAGE_SIZE;
+  var pageData = activites.slice(debut, debut + PAGE_SIZE);
+
   tbody.innerHTML = '';
-  activites.forEach(function(a) {
-    var em     = emMap[a.id] || {};
-    var co2Kg  = parseFloat(em.co2_kg) || 0;
-    var scope  = em.scope != null ? 'Scope ' + em.scope : '—';
-    var dateF  = a.date ? new Date(a.date).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+  pageData.forEach(function(a) {
+    var em        = emMap[a.id] || {};
+    var co2Kg     = parseFloat(a.co2_kg != null ? a.co2_kg : (em.co2_kg || 0));
+    var qteAff    = (a.quantity != null ? parseFloat(a.quantity).toFixed(2) : '—') + ' ' + (a.unit || '');
+    var dateF     = a.date ? new Date(a.date).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+    var displayId = a.original_id || a.id;  // même ID visuel avant et après modification
+
+    var btnActions =
+      '<div style="display:flex;gap:6px;">' +
+        '<button onclick="corrigerActivite(' + a.id + ',' + (a.quantity || 0) + ',\'' + (a.source || '') + '\',\'' + (a.unit || '') + '\')" ' +
+        'title="Corriger" ' +
+        'style="background:rgba(88,166,255,0.1);border:1px solid rgba(88,166,255,0.3);color:#58a6ff;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;">✏️</button>' +
+        '<button onclick="supprimerActivite(' + a.id + ')" ' +
+        'title="Supprimer" ' +
+        'style="background:rgba(255,69,96,0.1);border:1px solid rgba(255,69,96,0.3);color:#ff4560;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;">🗑️</button>' +
+      '</div>';
+
     tbody.innerHTML +=
       '<tr>' +
-        '<td style="font-family:Consolas;color:var(--texte-discret)">' + a.id + '</td>' +
-        '<td>' + (a.source ?? '—') + '</td>' +
-        '<td style="font-family:Consolas">' + (a.quantity ?? '—') + '</td>' +
-        '<td style="font-family:Consolas">' + (a.unit ?? '—') + '</td>' +
-        '<td>' + dateF + '</td>' +
-        '<td class="cellule-chiffre" style="color:#3fb950;font-family:Consolas">' + co2Kg.toLocaleString('fr-FR') + '</td>' +
-        '<td><span class="badge ' + (em.scope === 1 ? 'badge-warn' : 'badge-ok') + '">' + scope + '</span></td>' +
+        '<td style="font-family:Consolas;color:var(--texte-discret);">#' + displayId + '</td>' +
+        '<td>' + (a.source || '—') + '</td>' +
+        '<td style="font-family:Consolas;">' + qteAff + '</td>' +
+        '<td style="color:var(--texte-discret);font-size:12px;">' + dateF + '</td>' +
+        '<td class="cellule-chiffre" style="color:#3fb950;font-family:Consolas;">' + co2Kg.toLocaleString('fr-FR') + '</td>' +
+        '<td>' + btnActions + '</td>' +
       '</tr>';
   });
+
+  // Pagination
+  var pag = document.getElementById('pagination');
+  if (pag) {
+    var html = '<div style="display:flex;gap:8px;justify-content:center;align-items:center;margin-top:16px;font-family:Consolas;font-size:12px;">';
+    if (page > 1)
+      html += '<button onclick="irPage(' + (page - 1) + ')" class="btn btn-contour" style="font-size:12px;">← Précédent</button>';
+    html += '<span style="color:#7a9e8a;padding:8px 12px;">Page ' + page + ' / ' + totalPages + ' &nbsp;(' + activites.length + ' lignes)</span>';
+    if (page < totalPages)
+      html += '<button onclick="irPage(' + (page + 1) + ')" class="btn btn-contour" style="font-size:12px;">Suivant →</button>';
+    html += '</div>';
+    pag.innerHTML = html;
+  }
+}
+
+// Supprime une activité avec traçabilité CBAM
+// ── SUPPRIMER ─────────────────────────────────────
+async function supprimerActivite(id) {
+  const raison = prompt(
+    `🗑️ Supprimer l'activité #${id}\n\n` +
+    `Raison (obligatoire pour audit CBAM) :`
+  );
+  if (!raison?.trim()) {
+    alert('❌ Raison obligatoire');
+    return;
+  }
+
+  const res = await fetch(
+    `http://localhost:8000/activities/${id}/supprimer`,
+    {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ raison: raison.trim() })
+    }
+  );
+
+  const data = await res.json();
+  if (res.ok) {
+    alert(`✅ Activité #${id} supprimée\nRaison conservée pour audit ✅`);
+    chargerActivites(pageCourante);
+  } else {
+    alert('❌ ' + data.detail);
+  }
+}
+
+
+// ── MODIFIER ──────────────────────────────────────
+async function corrigerActivite(id, ancQty, source, unite) {
+  const nouvelleQty = prompt(
+    `✏️ Modifier l'activité #${id}\n` +
+    `Ancienne quantité : ${ancQty} ${unite}\n\n` +
+    `Nouvelle quantité :`
+  );
+  if (!nouvelleQty || isNaN(parseFloat(nouvelleQty))) return;
+
+  const raison = prompt(`Raison de la modification :`);
+  if (!raison?.trim()) {
+    alert('❌ Raison obligatoire');
+    return;
+  }
+
+  const res = await fetch(
+    `http://localhost:8000/activities/${id}/modifier`,
+    {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nouvelle_quantite: parseFloat(nouvelleQty),
+        raison:            raison.trim()
+      })
+    }
+  );
+
+  const data = await res.json();
+  if (res.ok) {
+    alert(
+      `✅ Modifié !\n\n` +
+      `Avant : ${data.avant.quantity} ${unite}\n` +
+      `Après : ${data.apres.quantity} ${unite}\n` +
+      `CO₂   : ${data.apres.co2_kg} kg\n` +
+      `Nouveau ID : #${data.nouveau_id}`
+    );
+    chargerActivites(pageCourante);
+  } else {
+    alert('❌ ' + data.detail);
+  }
 }
 
 // Initialise l'unité et la date par défaut au chargement
