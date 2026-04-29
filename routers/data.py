@@ -1,5 +1,5 @@
 # routers/data.py
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from database import get_connection
 from datetime import date
@@ -32,22 +32,68 @@ class ActivityInput(BaseModel):
 @router.get("/activities")
 def get_all_activities():
     with db_cursor() as (cursor, _):
-        cursor.execute("SELECT * FROM activities ORDER BY date DESC")
+        cursor.execute("SELECT * FROM activities WHERE actif = true ORDER BY date DESC")
         activities = cursor.fetchall()
     return {"data": activities, "count": len(activities)}
 
 
 @router.post("/activities")
 def add_activity(activity: ActivityInput):
+    
+    # Vérifie que la source est valide
+    valid_sources = ["electricity", "fuel", "gas"]
+    if activity.source not in valid_sources:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Source invalide. Choisir parmi : {valid_sources}"
+        )
+
     with db_cursor() as (cursor, conn):
+        
+        # Étape 1 — Insère l'activité
         cursor.execute("""
             INSERT INTO activities (source, quantity, unit, date)
             VALUES (%s, %s, %s, %s)
             RETURNING id
         """, (activity.source, activity.quantity, activity.unit, activity.date))
+        
         new_id = cursor.fetchone()["id"]
+
+        # Étape 2 — Trouve le facteur d'émission
+        cursor.execute("""
+            SELECT factor, scope FROM emission_factors
+            WHERE energy_type = %s
+        """, (activity.source,))
+        
+        factor_row = cursor.fetchone()
+
+        # Étape 3 — Calcule et insère l'émission
+        co2_kg = 0
+        scope  = 0
+
+        if factor_row:
+            co2_kg = round(activity.quantity * factor_row["factor"], 2)
+            scope  = factor_row["scope"]
+
+            cursor.execute("""
+                INSERT INTO emissions (activity_id, co2_kg, scope)
+                VALUES (%s, %s, %s)
+            """, (new_id, co2_kg, scope))
+
         conn.commit()
-    return {"message": "Activité ajoutée ✅", "id": new_id}
+
+    return {
+        "message": "Activité ajoutée ✅",
+        "id": new_id,
+        "calcul": {
+            "quantite":    activity.quantity,
+            "unite":       activity.unit,
+            "facteur_co2": factor_row["factor"] if factor_row else 0,
+            "co2_kg":      round(co2_kg, 2),
+            "co2_tonnes":  round(co2_kg / 1000, 4),
+            "scope":       f"Scope {scope}"
+        }
+    }
 
 
 @router.get("/emission-factors")
@@ -90,6 +136,8 @@ def get_emissions():
 
 @router.get("/summary")
 def get_summary():
+    conn   = get_connection()
+    cursor = conn.cursor()
     with db_cursor() as (cursor, _):
         cursor.execute("""
             SELECT
@@ -97,9 +145,21 @@ def get_summary():
                 SUM(a.quantity * ef.factor) as total_co2_kg, ef.scope
             FROM activities a
             JOIN emission_factors ef ON a.source = ef.energy_type
+            WHERE a.actif = true
             GROUP BY a.source, a.unit, ef.factor, ef.scope
         """)
         summary = cursor.fetchall()
+        cursor.execute("""
+        SELECT SUM(co2_kg) as total
+        FROM emissions e
+        JOIN activities a ON e.activity_id = a.id
+        WHERE a.actif = true      -- ← seulement les actives
+        AND e.actif = true
+        """)
+        total = cursor.fetchone()["total"] or 0
+
+        cursor.close()
+        conn.close()
 
     total_co2 = sum(row["total_co2_kg"] for row in summary)
     return {
