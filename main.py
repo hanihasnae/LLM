@@ -5,7 +5,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from database import create_tables, insert_default_factors
-from routers import data , pdf , erp 
+from routers import data , pdf , erp , tracabilite
+
 
 # Crée l'application FastAPI
 app = FastAPI(
@@ -51,6 +52,7 @@ def home():
 app.include_router(data.router)
 app.include_router(pdf.router)
 app.include_router(erp.router)
+app.include_router(tracabilite.router)
 
 # ── FICHIERS STATIQUES ────────────────────────────────
 # Sert tous les fichiers du dossier frontend/ directement.
