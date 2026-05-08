@@ -1,113 +1,127 @@
-/* ============================================================
-   VARIABLES CSS — Dashboard Empreinte Carbone
+/* ══════════════════════════════════════════════════════════════
+   VARIABLES GLOBALES — Système Light/Dark Theme
+   ══════════════════════════════════════════════════════════════ */
 
-   Les variables CSS permettent de définir des valeurs une seule
-   fois et de les réutiliser partout dans le projet.
-   Syntaxe : --nom-variable: valeur;
-   Utilisation : color: var(--nom-variable);
-   ============================================================ */
-
+/* ───────────────────────────────────────────────────────────── */
+/* THÈME DARK (par défaut)                                      */
+/* ───────────────────────────────────────────────────────────── */
 :root {
+  /* Fonds */
+  --fond-page:           #091413;
+  --fond-carte:          #0f2018;
+  --fond-survol:         rgba(63, 185, 80, 0.1);
+  --fond-input:          #0a0e0d;
 
-  /* ----------------------------------------------------------
-     COULEURS DE FOND
-     Du plus sombre (page) au plus clair (cartes)
-  ---------------------------------------------------------- */
-  --fond-page:     #091413;   /* fond général, presque noir */
-  --fond-carte:    #0f2018;   /* fond des cartes */
-  --fond-survol:   #132619;   /* quand on passe la souris sur une carte */
+  /* Bordures */
+  --bordure:             #1a3828;
+  --bordure-forte:       #245038;
+  --bordure-legere:      rgba(63, 185, 80, 0.2);
+  --bordure-focus:       #3fb950;
 
-  /* ----------------------------------------------------------
-     COULEURS DES BORDURES
-  ---------------------------------------------------------- */
-  --bordure:        #1a3828;  /* bordure normale */
-  --bordure-forte:  #245038;  /* bordure mise en avant */
-  --bordure-focus:  #3fb950;  /* bordure quand un champ est sélectionné */
+  /* Texte */
+  --texte:               #e6edf3;
+  --texte-discret:       #8b949e;
+  --texte-tres-discret:  #4a6a58;
+  --texte-fonce:         #0a0e0d;
 
-  /* ----------------------------------------------------------
-     COULEURS PRINCIPALES (palette verte = positif / neutre)
-  ---------------------------------------------------------- */
-  --vert:           #3fb950;  /* vert principal, actions, indicateurs OK */
-  --vert-clair:     #B0E4CC;  /* textes et badges verts clairs */
-  --vert-lueur:     #3fb95033;/* halo vert (effet glow, très transparent) */
+  /* Couleurs Scopes */
+  --couleur-scope1:      #f97316;
+  --couleur-scope2:      #3fb950;
+  --couleur-scope3:      #a855f7;
+  --couleur-cbam:        #3b82f6;
 
-  /* ----------------------------------------------------------
-     COULEURS D'ALERTE (orange = avertissement, rouge = danger)
-  ---------------------------------------------------------- */
-  --orange:         #f78166;  /* avertissement */
-  --rouge:          #ff4560;  /* danger / dépassement */
-  --orange-fond:    #f7816622;/* fond orange transparent pour les badges */
-  --rouge-fond:     #ff456022;/* fond rouge transparent pour les badges */
+  /* Accents */
+  --vert:                #3fb950;
+  --vert-clair:          #B0E4CC;
+  --vert-lueur:          #3fb95033;
+  --orange:              #f97316;
+  --orange-fond:         #f7816622;
+  --rouge:               #ef4444;
+  --rouge-fond:          #ff456022;
+  --bleu:                #3b82f6;
+  --violet:              #a855f7;
 
-  /* ----------------------------------------------------------
-     COULEURS DE TEXTE
-  ---------------------------------------------------------- */
-  --texte:          #e6edf3;  /* texte principal, bien lisible */
-  --texte-discret:  #7a9e8a;  /* texte secondaire, labels, sous-titres */
-  --texte-tres-discret: #4a6a58; /* texte très atténué, ex: placeholders */
+  /* Ombres */
+  --ombre:               0 4px 12px rgba(0, 0, 0, 0.3);
+  --ombre-legere:        0 2px 8px rgba(0, 0, 0, 0.15);
+  --ombre-carte:         0 4px 12px #00000060, inset 0 1px 0 #1a382880;
+  --ombre-lueur-verte:   0 0 16px #3fb95033, 0 0 4px #3fb95066;
+  --ombre-lueur-rouge:   0 0 16px #ff456033, 0 0 4px #ff456066;
 
-  /* ----------------------------------------------------------
-     POLICES — 100% hors ligne, aucun lien internet
+  /* Typographie */
+  --police-texte:        'IBM Plex Sans', 'Segoe UI', sans-serif;
+  --police-chiffre:      'IBM Plex Mono', 'Consolas', monospace;
 
-     Segoe UI    → ressemble à IBM Plex Sans : propre, moderne,
-                   très lisible. Installée par défaut sur Windows.
+  /* Tailles */
+  --taille-petit:        0.75rem;
+  --taille-normal:       0.875rem;
+  --taille-moyen:        1rem;
+  --taille-grand:        1.375rem;
+  --taille-titre:        1.75rem;
+  --taille-hero:         2.25rem;
 
-     Consolas    → ressemble à IBM Plex Mono : monospace claire,
-                   chiffres bien alignés. Installée sur Windows.
+  /* Espacements */
+  --espace-xs:           4px;
+  --espace-sm:           8px;
+  --espace-md:           16px;
+  --espace-lg:           20px;
+  --espace-xl:           32px;
+  --espace-2xl:          48px;
 
-     Les polices après la virgule sont des filets de sécurité
-     si Segoe UI ou Consolas n'est pas disponible (ex: Linux, Mac).
-  ---------------------------------------------------------- */
-  --police-texte:   'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-  --police-chiffre: 'Consolas', 'Cascadia Code', 'Courier New', monospace;
+  /* Rayons */
+  --arrondi-sm:          4px;
+  --arrondi-md:          8px;
+  --arrondi-lg:          12px;
+  --arrondi-rond:        9999px;
 
-  /* ----------------------------------------------------------
-     TAILLES DE TEXTE
-  ---------------------------------------------------------- */
-  --taille-petit:   0.75rem;   /* 12px — labels, légendes */
-  --taille-normal:  0.875rem;  /* 14px — texte courant */
-  --taille-moyen:   1rem;      /* 16px — texte important */
-  --taille-grand:   1.375rem;  /* 22px — sous-titres */
-  --taille-titre:   1.75rem;   /* 28px — titres de section */
-  --taille-hero:    2.25rem;   /* 36px — grand KPI affiché */
+  /* Misc */
+  --transition:          all 0.3s ease;
+  --largeur-sidebar:     250px;
+  --hauteur-topbar:      60px;
+  --largeur-max:         1440px;
+}
 
-  /* ----------------------------------------------------------
-     ESPACEMENTS
-     Utilisés pour padding, margin, gap…
-  ---------------------------------------------------------- */
-  --espace-xs:  0.25rem;   /*  4px */
-  --espace-sm:  0.5rem;    /*  8px */
-  --espace-md:  1rem;      /* 16px */
-  --espace-lg:  1.5rem;    /* 24px */
-  --espace-xl:  2rem;      /* 32px */
-  --espace-2xl: 3rem;      /* 48px */
+/* ───────────────────────────────────────────────────────────── */
+/* THÈME LIGHT                                                  */
+/* ───────────────────────────────────────────────────────────── */
+[data-theme="light"] {
+  --fond-page:           #f8fafb;
+  --fond-carte:          #ffffff;
+  --fond-survol:         rgba(63, 185, 80, 0.08);
+  --fond-input:          #f0f3f6;
 
-  /* ----------------------------------------------------------
-     ARRONDIS DES COINS (border-radius)
-  ---------------------------------------------------------- */
-  --arrondi-sm:   4px;     /* léger arrondi, ex: badges */
-  --arrondi-md:   8px;     /* cartes, boutons */
-  --arrondi-lg:   12px;    /* grandes cartes */
-  --arrondi-rond: 9999px;  /* cercle ou pilule */
+  --bordure:             #d0d7de;
+  --bordure-forte:       #a8c4ae;
+  --bordure-legere:      rgba(63, 185, 80, 0.15);
+  --bordure-focus:       #3fb950;
 
-  /* ----------------------------------------------------------
-     OMBRES
-     Donnent de la profondeur aux éléments
-  ---------------------------------------------------------- */
-  --ombre-carte:  0 4px 12px #00000060, inset 0 1px 0 #1a382880;
-  --ombre-lueur-verte: 0 0 16px #3fb95033, 0 0 4px #3fb95066;
-  --ombre-lueur-rouge: 0 0 16px #ff456033, 0 0 4px #ff456066;
+  --texte:               #1a2332;
+  --texte-discret:       #656d76;
+  --texte-tres-discret:  #8a9bb0;
+  --texte-fonce:         #0a0e0d;
 
-  /* ----------------------------------------------------------
-     TRANSITIONS (animations fluides au survol)
-     ex: transition: var(--transition);
-  ---------------------------------------------------------- */
-  --transition: 200ms ease-in-out;
+  --ombre:               0 4px 12px rgba(0, 0, 0, 0.08);
+  --ombre-legere:        0 2px 8px rgba(0, 0, 0, 0.05);
+  --ombre-carte:         0 2px 8px #00000018, inset 0 1px 0 #ffffff80;
+  --ombre-lueur-verte:   0 0 12px #3fb95020;
+  --ombre-lueur-rouge:   0 0 12px #cf222e20;
+}
 
-  /* ----------------------------------------------------------
-     MISE EN PAGE GÉNÉRALE
-  ---------------------------------------------------------- */
-  --largeur-sidebar:    240px;   /* largeur du menu latéral */
-  --hauteur-topbar:     56px;    /* hauteur de la barre du haut */
-  --largeur-max:        1440px;  /* largeur maximale du contenu */
+/* ───────────────────────────────────────────────────────────── */
+/* Préférence système (appliqué si aucun data-theme explicite)  */
+/* ───────────────────────────────────────────────────────────── */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --fond-page:     #f8fafb;
+    --fond-carte:    #ffffff;
+    --fond-survol:   rgba(63, 185, 80, 0.08);
+    --fond-input:    #f0f3f6;
+    --bordure:       #d0d7de;
+    --bordure-forte: #a8c4ae;
+    --texte:         #1a2332;
+    --texte-discret: #656d76;
+    --ombre:         0 4px 12px rgba(0, 0, 0, 0.08);
+    --ombre-legere:  0 2px 8px rgba(0, 0, 0, 0.05);
+    --ombre-carte:   0 2px 8px #00000018, inset 0 1px 0 #ffffff80;
+  }
 }

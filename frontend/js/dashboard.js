@@ -1,4 +1,4 @@
-import { fetchStats, fetchEmissions } from './api.js';
+import { fetchStats, fetchEmissions, fetchScope3Summary } from './api.js';
 
 // ── COULEURS ──────────────────────────────────────
 const COULEURS = {
@@ -15,102 +15,191 @@ const STYLE_AXE = {
   grid:  { color: '#1a382840' }
 };
 
-// ── ANIMATION CHIFFRES ────────────────────────────
-// Garde 2 décimales pour les petites valeurs (tonnes), 0 pour les grands entiers (score)
-function animerChiffre(element, valeurFinale, dureeMs = 900) {
-  if (!element) return;
-  const debut    = Date.now();
-  const decimales = valeurFinale < 100 ? 2 : 0;
+// ── ÉTAT GLOBAL ───────────────────────────────────
+let _allParMois    = [];
+let _dashStats     = null;
+let _scope3Summary = null;
+let _prevDonutHash = '';
 
-  function etape() {
-    const progression = Math.min((Date.now() - debut) / dureeMs, 1);
-    const valeur = valeurFinale * progression;
-    element.textContent = valeur.toLocaleString('fr-FR', {
-      minimumFractionDigits: decimales,
-      maximumFractionDigits: decimales
-    });
-    if (progression < 1) requestAnimationFrame(etape);
-  }
-  requestAnimationFrame(etape);
+// ── CHIFFRES ──────────────────────────────────────
+function animerChiffre(element, valeurFinale) {
+  if (!element) return;
+  element.dataset.valeur = valeurFinale;
+  element.textContent = valeurFinale.toLocaleString('fr-FR', {
+    minimumFractionDigits: 3,
+    maximumFractionDigits: 3
+  });
 }
 
 function transformerSummary(summary) {
   if (!summary || !summary.details) return null;
 
-  const details = summary.details;
-  let scope1Kg = 0;
-  let scope2Kg = 0;
-  details.forEach(function(d) {
-    if (d.scope === 1) scope1Kg += (d.total_co2_kg || 0);
-    if (d.scope === 2) scope2Kg += (d.total_co2_kg || 0);
-  });
+  const scope1Kg = summary.scope1_kg ?? 0;
+  const scope2Kg = summary.scope2_kg ?? 0;
+  const scope3Kg = summary.scope3_kg ?? 0;
 
-  const par_source = details.map(function(d) {
-    return { source: d.source, total_co2_kg: d.total_co2_kg || 0 };
+  const scope1Tonnes = parseFloat((scope1Kg / 1000).toFixed(3));
+  const scope2Tonnes = parseFloat((scope2Kg / 1000).toFixed(3));
+  const scope3Tonnes = parseFloat((scope3Kg / 1000).toFixed(3));
+  const totalTonnes  = parseFloat((scope1Tonnes + scope2Tonnes + scope3Tonnes).toFixed(3));
+
+  const par_source = summary.details.map(function(d) {
+    return { source: d.source, total_co2_kg: d.total_co2_kg || 0, scope: d.scope };
   });
 
   return {
     total_co2_kg:     summary.total_co2_kg,
-    total_co2_tonnes: summary.total_co2_tonnes,
-    scope1_tonnes:    scope1Kg / 1000,
-    scope2_tonnes:    scope2Kg / 1000,
+    total_co2_tonnes: totalTonnes,
+    scope1_tonnes:    scope1Tonnes,
+    scope2_tonnes:    scope2Tonnes,
+    scope3_tonnes:    scope3Tonnes,
     par_source:       par_source,
-    statut_cbam:      summary.total_co2_tonnes < 12000 ? 'CONFORME' : 'NON CONFORME',
-    details:          details
+    details:          summary.details
   };
 }
 
-
-// ── MISE À JOUR KPIs ──────────────────────────────
+// ── KPIs + HERO BAR ───────────────────────────────
 function updateKPIs(stats) {
   if (!stats) return;
 
   const total  = stats.total_co2_tonnes ?? 0;
   const scope1 = stats.scope1_tonnes    ?? 0;
   const scope2 = stats.scope2_tonnes    ?? 0;
-
-  const conforme = stats.statut_cbam === 'CONFORME';
-  const score = conforme ? 87 : 42;
+  const scope3 = stats.scope3_tonnes    ?? 0;
 
   animerChiffre(document.getElementById('kpi-total'),  total);
   animerChiffre(document.getElementById('kpi-scope1'), scope1);
   animerChiffre(document.getElementById('kpi-scope2'), scope2);
-  document.getElementById('kpi-score').textContent = score;
+  animerChiffre(document.getElementById('kpi-scope3'), scope3);
 
-  // Badge CBAM dans la topbar
-  const badge = document.getElementById('cbam-badge');
-  if (badge) {
-    badge.className = 'topbar__badge ' + (conforme ? 'topbar__badge--ok' : 'topbar__badge--nok');
-    badge.innerHTML = conforme
-      ? '<span class="point-vert"></span> CBAM CONFORME ✅'
-      : '<span class="point-rouge"></span> CBAM NON CONFORME ❌';
-  }
-
-  // Badge score dans la KPI card
-  const badgeScore = document.getElementById('badge-score');
-  if (badgeScore) {
-    badgeScore.textContent = conforme ? 'CONFORME' : 'NON CONFORME';
-    badgeScore.className   = 'kpi__statut ' + (conforme ? 'kpi__statut--ok' : 'kpi__statut--nok');
+  if (total > 0) {
+    const p1 = (scope1 / total * 100).toFixed(1);
+    const p2 = (scope2 / total * 100).toFixed(1);
+    const p3 = (scope3 / total * 100).toFixed(1);
+    const b1 = document.getElementById('hero-bar-s1');
+    const b2 = document.getElementById('hero-bar-s2');
+    const b3 = document.getElementById('hero-bar-s3');
+    if (b1) b1.style.width = p1 + '%';
+    if (b2) b2.style.width = p2 + '%';
+    if (b3) b3.style.width = p3 + '%';
+    const e1 = document.getElementById('hero-pct-s1');
+    const e2 = document.getElementById('hero-pct-s2');
+    const e3 = document.getElementById('hero-pct-s3');
+    if (e1) e1.textContent = p1 + '%';
+    if (e2) e2.textContent = p2 + '%';
+    if (e3) e3.textContent = p3 + '%';
   }
 }
 
-// ── UTILITAIRE GRAPHIQUES ─────────────────────────
-// Détruit l'ancien graphique sur ce canvas avant d'en créer un nouveau
-function resetChart(elementId) {
-  const existant = Chart.getChart(elementId);
-  if (existant) existant.destroy();
-  return document.getElementById(elementId);
+// ── INITIALISATION DATES (1er chargement) ─────────
+function initDateRange() {
+  const debutEl = document.getElementById('dash-date-debut');
+  const finEl   = document.getElementById('dash-date-fin');
+  if (!debutEl || !finEl || debutEl.value) return; // déjà rempli
+
+  const fin = new Date();
+  const debut = new Date();
+  debut.setDate(debut.getDate() - 180); // 6M par défaut
+
+  const toISO = function(d) { return d.toISOString().substring(0, 10); };
+  debutEl.value = toISO(debut);
+  finEl.value   = toISO(fin);
 }
 
-// ── GRAPHIQUE LIGNE — Évolution par mois ──────────
-function drawEmissionsChart(emissions) {
-  if (!emissions?.par_mois || emissions.par_mois.length === 0) return;
+// ── BOUTON PÉRIODE (7j / 3M / 6M / 9M / 1an) ─────
+function dashPeriode(btn, days) {
+  // Active le bouton cliqué
+  document.querySelectorAll('.dash-periode-btn').forEach(function(b) {
+    b.classList.remove('dash-periode-btn--actif');
+  });
+  btn.classList.add('dash-periode-btn--actif');
 
-  const labels = emissions.par_mois.map(function(d) { return d.mois; });
-  const scope1 = emissions.par_mois.map(function(d) { return d.scope1_kg ?? 0; });
-  const scope2 = emissions.par_mois.map(function(d) { return d.scope2_kg ?? 0; });
+  // Calcule et remplit les dates
+  const fin   = new Date();
+  const debut = new Date();
+  debut.setDate(debut.getDate() - days);
+  const toISO = function(d) { return d.toISOString().substring(0, 10); };
+  const debutEl = document.getElementById('dash-date-debut');
+  const finEl   = document.getElementById('dash-date-fin');
+  if (debutEl) debutEl.value = toISO(debut);
+  if (finEl)   finEl.value   = toISO(fin);
 
-  new Chart(resetChart('chartEmissions'), {
+  dashApplyFilters();
+}
+
+// ── CHANGEMENT MANUEL DE DATES ────────────────────
+function dashDateChange() {
+  // Désélectionne les boutons période
+  document.querySelectorAll('.dash-periode-btn').forEach(function(b) {
+    b.classList.remove('dash-periode-btn--actif');
+  });
+  dashApplyFilters();
+}
+
+// ── HELPER : ISO "YYYY-MM" ─────────────────────────
+function toYM(s) {
+  if (!s) return '';
+  return String(s).substring(0, 7); // "2026-01"
+}
+
+// ── FILTRE + GRAPHIQUE LIGNE ───────────────────────
+function dashApplyFilters() {
+  if (!_allParMois || _allParMois.length === 0) return;
+
+  const debutVal = document.getElementById('dash-date-debut')?.value || '';
+  const finVal   = document.getElementById('dash-date-fin')?.value   || '';
+
+  let slice;
+  if (debutVal && finVal) {
+    const ymDebut = toYM(debutVal);
+    const ymFin   = toYM(finVal);
+    slice = _allParMois.filter(function(d) {
+      const ym = toYM(d.mois_date);
+      return ym >= ymDebut && ym <= ymFin;
+    });
+    // Fallback : si aucun mois dans la plage, on montre tout
+    if (slice.length === 0) slice = _allParMois;
+  } else {
+    slice = _allParMois;
+  }
+
+  // Scopes cochés
+  const s1on = document.getElementById('f-s1')?.checked ?? true;
+  const s2on = document.getElementById('f-s2')?.checked ?? true;
+  const s3on = document.getElementById('f-s3')?.checked ?? true;
+
+  const labels = slice.map(function(d) { return d.mois; });
+  const scope1 = slice.map(function(d) { return s1on ? (d.scope1_kg ?? 0) : null; });
+  const scope2 = slice.map(function(d) { return s2on ? (d.scope2_kg ?? 0) : null; });
+  const scope3 = slice.map(function(d) { return s3on ? (d.scope3_kg ?? 0) : null; });
+
+  const existant = Chart.getChart('chartEmissions');
+  if (existant) {
+    existant.data.labels           = labels;
+    existant.data.datasets[0].data = scope1;
+    existant.data.datasets[1].data = scope2;
+    existant.data.datasets[2].data = scope3;
+    existant.data.datasets[0].hidden = !s1on;
+    existant.data.datasets[1].hidden = !s2on;
+    existant.data.datasets[2].hidden = !s3on;
+    existant.update('active');
+  } else {
+    _createEmissionsChart(labels, scope1, scope2, scope3);
+  }
+
+  // Donut selon scopes actifs
+  const actifs = [];
+  if (s1on) actifs.push(1);
+  if (s2on) actifs.push(2);
+  if (s3on) actifs.push(3);
+  renderScopeDonut(_dashStats, actifs);
+}
+
+// ── GRAPHIQUE LIGNE (création) ────────────────────
+function _createEmissionsChart(labels, scope1, scope2, scope3) {
+  const ctx = document.getElementById('chartEmissions');
+  if (!ctx) return;
+  new Chart(ctx, {
     type: 'line',
     data: {
       labels: labels,
@@ -120,36 +209,42 @@ function drawEmissionsChart(emissions) {
           data: scope1,
           borderColor: COULEURS.orange,
           backgroundColor: COULEURS.orange + '18',
-          borderWidth: 2,
-          pointRadius: 4,
+          borderWidth: 2, pointRadius: 4,
           pointBackgroundColor: COULEURS.orange,
-          fill: true,
-          tension: 0.4
+          fill: true, tension: 0.4
         },
         {
           label: 'Scope 2',
           data: scope2,
           borderColor: COULEURS.bleu,
           backgroundColor: COULEURS.bleu + '18',
-          borderWidth: 2,
-          pointRadius: 4,
+          borderWidth: 2, pointRadius: 4,
           pointBackgroundColor: COULEURS.bleu,
-          fill: true,
-          tension: 0.4
+          fill: true, tension: 0.4
+        },
+        {
+          label: 'Scope 3',
+          data: scope3,
+          borderColor: COULEURS.violet,
+          backgroundColor: COULEURS.violet + '18',
+          borderWidth: 2, pointRadius: 4,
+          pointBackgroundColor: COULEURS.violet,
+          fill: true, tension: 0.4
         }
       ]
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: {
-          position: 'top',
-          align: 'end',
+          position: 'top', align: 'end',
           labels: { color: COULEURS.texte, font: { family: 'Consolas', size: 11 }, boxWidth: 12 }
         },
         tooltip: {
           callbacks: {
             label: function(ctx) {
+              if (ctx.parsed.y === null) return null;
               return ctx.dataset.label + ' : ' + ctx.parsed.y.toLocaleString('fr-FR') + ' kg CO₂';
             }
           }
@@ -160,19 +255,64 @@ function drawEmissionsChart(emissions) {
   });
 }
 
-// ── GRAPHIQUE DONUT ───────────────────────────────
-function drawSourceChart(stats) {
-  if (!stats?.par_source) return;
+// ── DONUT SCOPES ──────────────────────────────────
+function renderScopeDonut(stats, activeScopes) {
+  const ctx = document.getElementById('scopes-chart');
+  if (!ctx || !stats) return;
 
-  const labels  = stats.par_source.map(d => d.source);
-  const valeurs = stats.par_source.map(d => d.total_co2_kg ?? 0);
-  const mapCouleurs = { electricity: COULEURS.bleu, fuel: COULEURS.orange, gas: COULEURS.vert };
-  const couleurs = labels.map(function(l) { return mapCouleurs[l] || COULEURS.texte; });
+  activeScopes = (activeScopes && activeScopes.length > 0) ? activeScopes : [1, 2, 3];
 
-  new Chart(resetChart('chartSource'), {
+  let labels = [], valeurs = [], couleurs = [], titre = '';
+
+  if (activeScopes.length === 3) {
+    labels   = ['Scope 1 — Directes', 'Scope 2 — Électricité', 'Scope 3 — Chaîne de valeur'];
+    valeurs  = [stats.scope1_tonnes ?? 0, stats.scope2_tonnes ?? 0, stats.scope3_tonnes ?? 0];
+    couleurs = [COULEURS.orange, COULEURS.bleu, COULEURS.violet];
+    titre    = 'Répartition — 3 Scopes';
+  } else if (activeScopes.length === 1 && activeScopes[0] === 1) {
+    const src = (stats.par_source || []).filter(function(d) { return d.scope === 1; });
+    labels   = src.map(function(d) { return d.source; });
+    valeurs  = src.map(function(d) { return parseFloat(((d.total_co2_kg || 0) / 1000).toFixed(3)); });
+    couleurs = [COULEURS.orange, '#ff9966', '#ffcc44'];
+    titre    = 'Scope 1 — par source';
+  } else if (activeScopes.length === 1 && activeScopes[0] === 2) {
+    const src = (stats.par_source || []).filter(function(d) { return d.scope === 2; });
+    labels   = src.map(function(d) { return d.source; });
+    valeurs  = src.map(function(d) { return parseFloat(((d.total_co2_kg || 0) / 1000).toFixed(3)); });
+    couleurs = [COULEURS.bleu, '#44aaff', '#88ccff'];
+    titre    = 'Scope 2 — par source';
+  } else if (activeScopes.length === 1 && activeScopes[0] === 3) {
+    const up   = _scope3Summary ? parseFloat((_scope3Summary.upstream_co2_kg   / 1000).toFixed(3)) : 0;
+    const down = _scope3Summary ? parseFloat((_scope3Summary.downstream_co2_kg / 1000).toFixed(3)) : 0;
+    labels   = ['Upstream (amont)', 'Downstream (aval)'];
+    valeurs  = [up, down];
+    couleurs = [COULEURS.violet, '#dd88ff'];
+    titre    = 'Scope 3 — amont / aval';
+  } else {
+    const map = { 1: stats.scope1_tonnes ?? 0, 2: stats.scope2_tonnes ?? 0, 3: stats.scope3_tonnes ?? 0 };
+    const nameMap  = { 1: 'Scope 1', 2: 'Scope 2', 3: 'Scope 3' };
+    const colorMap = { 1: COULEURS.orange, 2: COULEURS.bleu, 3: COULEURS.violet };
+    activeScopes.forEach(function(s) {
+      labels.push(nameMap[s]);
+      valeurs.push(map[s]);
+      couleurs.push(colorMap[s]);
+    });
+    titre = 'Scopes sélectionnés';
+  }
+
+  const titreEl = document.getElementById('dash-donut-titre');
+  if (titreEl) titreEl.textContent = titre;
+
+  const hash = JSON.stringify({ labels, valeurs });
+  if (hash === _prevDonutHash) return;
+  _prevDonutHash = hash;
+
+  if (window.scopesChart) { window.scopesChart.destroy(); window.scopesChart = null; }
+
+  window.scopesChart = new Chart(ctx, {
     type: 'doughnut',
     data: {
-      labels,
+      labels: labels,
       datasets: [{
         data: valeurs,
         backgroundColor: couleurs,
@@ -182,23 +322,21 @@ function drawSourceChart(stats) {
     },
     options: {
       responsive: true,
-      cutout: '60%',
+      maintainAspectRatio: false,
+      cutout: '62%',
       plugins: {
         legend: {
           position: 'bottom',
-          labels: {
-            color: COULEURS.texte,
-            padding: 12,
-            font: { family: 'Consolas', size: 11 },
-            boxWidth: 10
-          }
+          labels: { color: COULEURS.texte, font: { family: 'Consolas', size: 11 }, padding: 14, boxWidth: 12 }
         },
         tooltip: {
           callbacks: {
-            label: ctx => {
-              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-              const pct   = ((ctx.parsed / total) * 100).toFixed(1);
-              return ctx.label + ' : ' + ctx.parsed.toLocaleString('fr-FR') + ' kg (' + pct + '%)';
+            label: function(ctx) {
+              const total = ctx.dataset.data.reduce(function(a, b) { return a + b; }, 0);
+              const pct   = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : '0.0';
+              return ctx.label + ' : ' + ctx.parsed.toLocaleString('fr-FR', {
+                minimumFractionDigits: 3, maximumFractionDigits: 3
+              }) + ' t (' + pct + '%)';
             }
           }
         }
@@ -207,41 +345,9 @@ function drawSourceChart(stats) {
   });
 }
 
-// ── TABLEAU FLUX EN DIRECT ────────────────────────
-function updateFluxTable(emissions) {
-  const tbody = document.getElementById('flux-tbody');
-  if (!tbody) return;
-
-  const liste = emissions?.activities || [];
-
-  if (liste.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#7a9e8a;padding:20px;">Aucune activité enregistrée</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = '';
-  liste.slice(0, 5).forEach(function(a) {
-    const co2Kg = parseFloat(a.co2_kg) || 0;
-    const badge = co2Kg > 5000
-      ? '<span class="badge badge-warn">⚠️ Élevé</span>'
-      : '<span class="badge badge-ok">✅ Normal</span>';
-
-    const dateFormatee = a.date
-      ? new Date(a.date).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' })
-      : '—';
-
-    tbody.innerHTML +=
-      '<tr>' +
-        '<td>' + (a.source ?? '—') + '</td>' +
-        '<td style="font-family:Consolas">' + (a.quantity ?? '—') + ' ' + (a.unit ?? '') + '</td>' +
-        '<td>' + dateFormatee + '</td>' +
-        '<td style="font-family:Consolas;color:#3fb950">' + (co2Kg/1000).toFixed(3) + ' t</td>' +
-        '<td>' + badge + '</td>' +
-      '</tr>';
-  });
-}
-
 // ── LOADER ────────────────────────────────────────
+let premiereCharge = true;
+
 function afficherLoader(visible) {
   let loader = document.getElementById('loader-dashboard');
   if (visible && !loader) {
@@ -257,26 +363,56 @@ function afficherLoader(visible) {
   if (loader) loader.style.display = visible ? 'block' : 'none';
 }
 
-// ── INIT PRINCIPALE ───────────────────────────────
+// ── INIT ──────────────────────────────────────────
+let estEnChargement = false;
+
 async function initDashboard() {
-  afficherLoader(true);
+  if (estEnChargement) return;
+  estEnChargement = true;
 
-  // On récupère les 2 endpoints en parallèle pour aller plus vite
-  const [stats, emissions] = await Promise.all([
-    fetchStats(),       // /summary  → KPIs + donut
-    fetchEmissions()    // /emissions → ligne chart + tableau
-  ]);
+  if (premiereCharge) afficherLoader(true);
 
-  afficherLoader(false);
+  try {
+    const [stats, emissions, scope3] = await Promise.all([
+      fetchStats(),
+      fetchEmissions(),
+      fetchScope3Summary()
+    ]);
 
-  const donnees = transformerSummary(stats);
+    const donnees = transformerSummary(stats);
+    if (!donnees) return;
 
-  updateKPIs(donnees);           // KPIs avec décimales
-  drawEmissionsChart(emissions); // ligne par mois (Scope 1 / Scope 2)
-  drawSourceChart(donnees);      // donut par source
-  updateFluxTable(emissions);    // tableau avec co2_kg réel
+    _dashStats     = donnees;
+    _scope3Summary = scope3;
+    if (emissions?.par_mois) _allParMois = emissions.par_mois;
+
+    updateKPIs(donnees);
+
+    // Affiche l'heure de dernière mise à jour
+    const el = document.getElementById('last-update');
+    if (el) {
+      const h = new Date();
+      el.textContent = 'Màj ' + h.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+
+    // Initialise les dates au 1er chargement puis applique les filtres
+    initDateRange();
+    dashApplyFilters();
+
+  } finally {
+    if (premiereCharge) {
+      afficherLoader(false);
+      premiereCharge = false;
+    }
+    estEnChargement = false;
+  }
 }
 
 // ── LANCEMENT ─────────────────────────────────────
 initDashboard();
-setInterval(initDashboard, 30000);
+setInterval(initDashboard, 5000);
+
+// Exposition globale pour les handlers HTML onclick/onchange
+window.dashApplyFilters = dashApplyFilters;
+window.dashPeriode      = dashPeriode;
+window.dashDateChange   = dashDateChange;

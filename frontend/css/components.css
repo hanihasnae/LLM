@@ -499,3 +499,62 @@
   from { transform: translateX(-100%); }
   to   { transform: translateX(100%); }
 }
+
+/* ══════════════════════════════════════════
+   THEME TOGGLE — Bouton Light/Dark
+══════════════════════════════════════════ */
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.theme-toggle__btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--arrondi-md);
+  border: 1px solid var(--bordure);
+  background: var(--fond-carte);
+  color: var(--texte);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  padding: 0;
+}
+
+.theme-toggle__btn:hover {
+  background: var(--fond-survol);
+  border-color: var(--vert);
+  transform: scale(1.05);
+}
+
+.theme-toggle__icon {
+  width: 20px;
+  height: 20px;
+  opacity: 0.7;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.theme-toggle__icon--moon {
+  display: block;
+}
+
+.theme-toggle__icon--sun {
+  display: none;
+}
+
+/* En mode light, affiche le sun, cache la moon */
+[data-theme="light"] .theme-toggle__icon--moon {
+  display: none;
+}
+
+[data-theme="light"] .theme-toggle__icon--sun {
+  display: block;
+}
+
+.theme-toggle__btn:hover .theme-toggle__icon {
+  opacity: 1;
+  transform: rotate(20deg);
+}

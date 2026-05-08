@@ -1,30 +1,20 @@
-/* ============================================================
-   LAYOUT.CSS — Structure générale du dashboard
-
-   Ce fichier s'occupe uniquement de la mise en page :
-   où est la sidebar, où est le contenu, comment ils s'organisent.
-   Les couleurs viennent de variables.css
-   ============================================================ */
-
-/* On importe d'abord les variables pour pouvoir les utiliser ici */
 @import './variables.css';
 
-
-/* ============================================================
-   BASE — Paramètres généraux de la page
-   ============================================================ */
-
-/* Supprime les marges/paddings par défaut du navigateur */
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box; /* le padding ne fait plus grossir les éléments */
+  box-sizing: border-box;
 }
 
-/* Le body est le conteneur de TOUTE la page */
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+
 body {
-  display: flex;            /* les 3 colonnes se mettent côte à côte */
-  min-height: 100vh;        /* occupe au moins toute la hauteur de l'écran */
+  display: grid;
+  grid-template-rows: auto 1fr;
   background: var(--fond-page);
   color: var(--texte);
   font-family: var(--police-texte);
@@ -32,29 +22,50 @@ body {
   line-height: 1.5;
 }
 
-
-/* ============================================================
-   SIDEBAR — Menu de gauche (15% de la largeur)
-   ============================================================ */
-
-.sidebar {
-  width: 15%;
-  min-width: 180px;         /* ne rétrécit pas en dessous de 180px */
-  height: 100vh;            /* prend toute la hauteur de l'écran */
-  position: fixed;          /* reste fixe quand on scroll le contenu */
-  top: 0;
-  left: 0;
-
-  background: var(--fond-carte);
-  border-right: 1px solid var(--bordure);
-
+/* ── Header pleine largeur ─────────────────────────── */
+.page-header {
   display: flex;
-  flex-direction: column;   /* les éléments internes s'empilent verticalement */
-  padding: var(--espace-lg);
-  overflow-y: auto;         /* scrollbar si le menu est trop long */
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--espace-lg);
+  background: var(--fond-carte);
+  border-bottom: 1px solid var(--bordure);
 }
 
-/* Logo / titre en haut de la sidebar */
+.page-header__gauche {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.page-header__droite {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--espace-md);
+}
+
+/* ── Wrapper : flex row, sidebar + dashboard côte à côte ── */
+.main-wrapper {
+  display: flex;
+  flex-direction: row;
+  min-height: 0;      /* critique : permet aux enfants de ne pas dépasser */
+  overflow: hidden;
+}
+
+/* ── Sidebar : largeur fixe, scroll indépendant ─────── */
+.sidebar {
+  order: -1;          /* gauche, même si <aside> est après <main> dans le HTML */
+  width: 250px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  background: var(--fond-carte);
+  border-right: 1px solid var(--bordure);
+  display: flex;
+  flex-direction: column;
+  padding: var(--espace-lg);
+}
+
 .sidebar__logo {
   font-family: var(--police-chiffre);
   font-size: var(--taille-moyen);
@@ -65,7 +76,6 @@ body {
   letter-spacing: 0.05em;
 }
 
-/* Un lien de navigation dans la sidebar */
 .sidebar__lien {
   display: flex;
   align-items: center;
@@ -78,29 +88,37 @@ body {
   transition: var(--transition);
 }
 
-/* Au survol et quand le lien est actif */
 .sidebar__lien:hover,
 .sidebar__lien--actif {
   background: var(--fond-survol);
   color: var(--texte);
   border-left: 2px solid var(--vert);
+  padding-left: calc(var(--espace-md) - 2px);
 }
 
-
-/* ============================================================
-   CONTENU PRINCIPAL — Zone centrale (55% de la largeur)
-   ============================================================ */
-
+/* ── Main : occupe tout l'espace restant, scroll indépendant ── */
 .main {
-  width: 65%;
-  margin-left: 15%;         /* décalé à droite pour laisser place à la sidebar */
-  margin-right: calc(20% + 20px);        /* décalé à gauche pour laisser place au panneau droit */
-  min-height: 100vh;
-  padding: var(--espace-xl) var(--espace-lg);
+  flex: 1;
+  min-width: 0;       /* évite débordement flex */
   overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--espace-xl) var(--espace-lg) 80px;
 }
 
-/* Titre de section dans le contenu principal */
+/* ── Grilles internes ──────────────────────────────── */
+.grille-kpi {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--espace-md);
+  margin-bottom: var(--espace-xl);
+}
+
+.grille-graphiques {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--espace-md);
+}
+
 .main__titre {
   font-size: var(--taille-titre);
   color: var(--texte);
@@ -108,103 +126,200 @@ body {
   margin-bottom: var(--espace-xs);
 }
 
-/* Sous-titre ou description */
 .main__sous-titre {
   font-size: var(--taille-normal);
   color: var(--texte-discret);
   margin-bottom: var(--espace-xl);
 }
 
-/* Grille pour placer les cartes KPI côte à côte */
-.grille-kpi {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 colonnes égales */
-  gap: var(--espace-md);
-  margin-bottom: var(--espace-xl);
-}
-
-/* Grille pour les graphiques (2 colonnes) */
-.grille-graphiques {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--espace-md);
-}
-
-
-/* ============================================================
-   PANNEAU DROIT — Infos complémentaires (30% de la largeur)
-   ============================================================ */
-
-.panneau-droit {
-  width: 20%;
-  height: 100vh;
-  position: fixed;          /* reste fixe comme la sidebar */
-  top: 0;
-  right:20px;
-
-  background: var(--fond-carte);
-  border-left: 1px solid var(--bordure);
-
+/* ── Bouton toggle de thème ──────────────────────── */
+.theme-toggle {
   display: flex;
-  flex-direction: column;
-  padding: var(--espace-lg);
-  overflow-y: auto;
+  align-items: center;
 }
 
-/* Titre d'une section dans le panneau droit */
-.panneau-droit__titre {
-  font-size: var(--taille-petit);
+.theme-toggle__btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--bordure);
+  background: transparent;
   color: var(--texte-discret);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: var(--espace-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  padding: 0;
+  flex-shrink: 0;
 }
 
+.theme-toggle__btn:hover {
+  background: var(--fond-survol);
+  color: var(--vert);
+  border-color: var(--vert);
+}
 
-/* ============================================================
-   RESPONSIVE — Adaptation sur petits écrans (mobile / tablette)
+.theme-toggle__icon {
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
 
-   En dessous de 900px :
-   - La sidebar disparaît (on économise la place)
-   - Le panneau droit passe en bas
-   - Le contenu prend toute la largeur
-   ============================================================ */
+/* Dark mode : lune visible, soleil caché */
+.theme-toggle__icon--sun  { display: none; }
+.theme-toggle__icon--moon { display: block; }
 
+/* Light mode : soleil visible, lune cachée */
+[data-theme="light"] .theme-toggle__icon--sun  { display: block; }
+[data-theme="light"] .theme-toggle__icon--moon { display: none; }
+
+/* ── Icône alerte (cloche) ───────────────────────── */
+.alerte-cloche {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--bordure);
+  color: var(--texte-discret);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.alerte-cloche:hover {
+  background: var(--fond-survol);
+  color: var(--texte);
+  border-color: var(--bordure-forte);
+}
+
+.alerte-cloche__icone {
+  width: 17px;
+  height: 17px;
+}
+
+.alerte-cloche__badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #ff4560;
+  color: #fff;
+  font-family: var(--police-chiffre);
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 2px solid var(--fond-carte);
+  line-height: 1;
+}
+
+/* Sonnerie quand il y a des alertes non lues */
+.alerte-cloche--active {
+  color: #ff4560;
+  border-color: #ff4560;
+  background: rgba(255, 69, 96, 0.08);
+  animation: sonnerie 3s ease-in-out infinite;
+}
+
+@keyframes sonnerie {
+  0%,  100% { transform: rotate(0deg); }
+  5%         { transform: rotate(15deg); }
+  10%        { transform: rotate(-12deg); }
+  15%        { transform: rotate(10deg); }
+  20%        { transform: rotate(-8deg); }
+  25%        { transform: rotate(0deg); }
+}
+
+/* ── Badge CBAM animé ─────────────────────────────── */
+.cbam-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-family: var(--police-chiffre);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  border: 1.5px solid;
+  transition: all 0.3s ease;
+}
+
+.cbam-badge__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* État attente */
+.cbam-badge--attente {
+  color: var(--texte-discret);
+  border-color: var(--bordure);
+  background: transparent;
+}
+.cbam-badge--attente .cbam-badge__dot {
+  background: var(--texte-discret);
+}
+
+/* CONFORME — vert pulsant */
+.cbam-badge--conforme {
+  color: #3fb950;
+  border-color: #3fb950;
+  background: rgba(63, 185, 80, 0.08);
+  animation: pulse-vert 2s ease-in-out infinite;
+}
+.cbam-badge--conforme .cbam-badge__dot {
+  background: #3fb950;
+  animation: dot-pulse-vert 2s ease-in-out infinite;
+}
+
+/* NON CONFORME — rouge pulsant */
+.cbam-badge--nonconforme {
+  color: #ff4560;
+  border-color: #ff4560;
+  background: rgba(255, 69, 96, 0.08);
+  animation: pulse-rouge 2s ease-in-out infinite;
+}
+.cbam-badge--nonconforme .cbam-badge__dot {
+  background: #ff4560;
+  animation: dot-pulse-rouge 2s ease-in-out infinite;
+}
+
+@keyframes pulse-vert {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(63,185,80,0.5); }
+  50%       { box-shadow: 0 0 0 6px rgba(63,185,80,0); }
+}
+@keyframes dot-pulse-vert {
+  0%, 100% { transform: scale(1);    opacity: 1; }
+  50%       { transform: scale(1.4); opacity: 0.6; }
+}
+@keyframes pulse-rouge {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,69,96,0.5); }
+  50%       { box-shadow: 0 0 0 6px rgba(255,69,96,0); }
+}
+@keyframes dot-pulse-rouge {
+  0%, 100% { transform: scale(1);    opacity: 1; }
+  50%       { transform: scale(1.4); opacity: 0.6; }
+}
+
+.panneau-droit { display: none; }
+
+/* ── Mobile ────────────────────────────────────────── */
 @media (max-width: 900px) {
-
-  body {
-    flex-direction: column; /* les blocs s'empilent verticalement */
-  }
-
-  /* Cache la sidebar sur mobile */
-  .sidebar {
-    display: none;
-  }
-
-  /* Le contenu prend toute la largeur */
-  .main {
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-    padding: var(--espace-md);
-  }
-
-  /* Le panneau droit passe en bas, plus fixe */
-  .panneau-droit {
-    position: static;       /* n'est plus fixe, suit le scroll normal */
-    width: 100%;
-    height: auto;
-    border-left: none;
-    border-top: 1px solid var(--bordure);
-  }
-
-  /* Sur mobile, 1 seule colonne pour les KPI */
-  .grille-kpi {
-    grid-template-columns: 1fr;
-  }
-
-  /* Sur mobile, 1 seule colonne pour les graphiques */
-  .grille-graphiques {
-    grid-template-columns: 1fr;
-  }
+  html, body    { overflow: auto; }
+  .main-wrapper { flex-direction: column; overflow: visible; }
+  .sidebar      { display: none; }
+  .main         { overflow-y: visible; padding: var(--espace-md); }
+  .grille-kpi        { grid-template-columns: repeat(2, 1fr); }
+  .grille-graphiques { grid-template-columns: 1fr; }
 }

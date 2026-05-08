@@ -55,6 +55,7 @@ async function requete(chemin, options = {}) {
 
     // fetch() envoie la requête et attend la réponse
     const reponse = await fetch(API_BASE + chemin, {
+      cache: 'no-store',
       headers: { "Content-Type": "application/json" },
       ...options          // fusionne avec les options supplémentaires
     });
@@ -207,21 +208,18 @@ export async function fetchEmissions() {
 /* ──────────────────────────────────────────────────
    5. FACTEURS D'ÉMISSION GHG
    GET /emission-factors
-   Retourne : les facteurs de conversion
-   ex : 1 tonne de charbon = 2340 kg de CO₂
 ──────────────────────────────────────────────────── */
 export async function fetchEmissionFactors() {
-  console.log("📋 Chargement des facteurs d'émission...");
   return await requete("/emission-factors");
+}
 
-  /*
-    Exemple de réponse attendue :
-    [
-      { "source": "Charbon",     "unite": "tonne", "facteur_co2": 2340 },
-      { "source": "Gaz naturel", "unite": "m3",    "facteur_co2": 1.8  },
-      { "source": "Electricite", "unite": "kWh",   "facteur_co2": 0.4  }
-    ]
-  */
+/* ──────────────────────────────────────────────────
+   6. RÉSUMÉ SCOPE 3
+   GET /scope3/summary
+   Retourne : upstream_co2_kg, downstream_co2_kg, total
+──────────────────────────────────────────────────── */
+export async function fetchScope3Summary() {
+  return await requete("/scope3/summary");
 }
 
 

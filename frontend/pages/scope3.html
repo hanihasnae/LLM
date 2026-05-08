@@ -1,0 +1,147 @@
+<!-- ═══ Formulaire Saisie Manuelle Scope 3 ═══ -->
+
+<div class="scope3-form-container">
+    <h2>Saisie Scope 3 — Chaîne de valeur</h2>
+    
+    <!-- Onglets Amont / Aval -->
+    <div class="tab-group">
+        <button class="tab active" data-direction="upstream" onclick="switchDirection('upstream')">
+            ↓ Amont (Upstream)
+        </button>
+        <button class="tab" data-direction="downstream" onclick="switchDirection('downstream')">
+            ↑ Aval (Downstream)
+        </button>
+    </div>
+
+    <!-- Sélection catégorie -->
+    <div class="form-group">
+        <label>Catégorie GHG Protocol</label>
+        <select id="scope3-category" onchange="updateFormFields()">
+            <optgroup label="Amont" id="upstream-options">
+                <option value="1">Cat 1 — Matières premières achetées</option>
+                <option value="3">Cat 3 — Énergie amont (hors S1/S2)</option>
+                <option value="4">Cat 4 — Transport entrant</option>
+                <option value="5">Cat 5 — Déchets de production</option>
+            </optgroup>
+            <optgroup label="Aval" id="downstream-options">
+                <option value="9">Cat 9 — Transport sortant</option>
+                <option value="12">Cat 12 — Fin de vie produits</option>
+            </optgroup>
+        </select>
+    </div>
+
+    <!-- Type de source (dynamique selon catégorie) -->
+    <div class="form-group">
+        <label>Type de source</label>
+        <select id="scope3-source-type">
+            <!-- Rempli dynamiquement par JS -->
+        </select>
+    </div>
+
+    <!-- Champs communs -->
+    <div class="form-row">
+        <div class="form-group">
+            <label>Description</label>
+            <input type="text" id="scope3-description" 
+                   placeholder="Ex: Acier brut importé de Turquie">
+        </div>
+        <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="scope3-date">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label>Quantité</label>
+            <input type="number" id="scope3-quantity" step="0.01" min="0">
+        </div>
+        <div class="form-group">
+            <label>Unité</label>
+            <select id="scope3-unit">
+                <option value="kg">kg</option>
+                <option value="tonnes">tonnes</option>
+                <option value="litres">litres</option>
+                <option value="m3">m³</option>
+                <option value="kWh">kWh</option>
+                <option value="t.km">t.km</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Champs Transport (Cat 4 & 9) — affichés conditionnellement -->
+    <div id="transport-fields" class="conditional-fields" style="display:none;">
+        <h3>Détails Transport</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Mode de transport</label>
+                <select id="scope3-transport-mode">
+                    <option value="truck">Camion</option>
+                    <option value="ship">Maritime</option>
+                    <option value="rail">Train</option>
+                    <option value="air">Aérien</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Distance (km)</label>
+                <input type="number" id="scope3-distance" step="1" min="0">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Poids (tonnes)</label>
+                <input type="number" id="scope3-weight" step="0.01" min="0">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Origine</label>
+                <input type="text" id="scope3-origin" placeholder="Ex: Istanbul, Turquie">
+            </div>
+            <div class="form-group">
+                <label>Destination</label>
+                <input type="text" id="scope3-destination" placeholder="Ex: Casablanca, Maroc">
+            </div>
+        </div>
+    </div>
+
+    <!-- Champs Fournisseur (Cat 1) — affichés conditionnellement -->
+    <div id="supplier-fields" class="conditional-fields" style="display:none;">
+        <h3>Informations Fournisseur</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Nom du fournisseur</label>
+                <input type="text" id="scope3-supplier-name" placeholder="Ex: ArcelorMittal">
+            </div>
+            <div class="form-group">
+                <label>Pays du fournisseur</label>
+                <input type="text" id="scope3-supplier-country" placeholder="Ex: Turquie">
+            </div>
+        </div>
+    </div>
+
+    <!-- Qualité des données (ISO 14064) -->
+    <div class="form-group">
+        <label>Qualité des données (ISO 14064)</label>
+        <select id="scope3-data-quality">
+            <option value="measured">Mesuré (facture, pesée)</option>
+            <option value="estimated" selected>Estimé (calcul basé sur données partielles)</option>
+            <option value="default">Valeur par défaut (facteur standard)</option>
+        </select>
+    </div>
+
+    <!-- Document source -->
+    <div class="form-group">
+        <label>Référence document (optionnel)</label>
+        <input type="text" id="scope3-source-doc" 
+               placeholder="Ex: Facture FAC-2026-0042, BL-2026-105">
+    </div>
+
+    <!-- Bouton -->
+    <button class="btn-primary" onclick="submitScope3Entry()">
+        Ajouter l'entrée Scope 3
+    </button>
+    
+    <!-- Résultat -->
+    <div id="scope3-result" class="result-box" style="display:none;"></div>
+</div>
