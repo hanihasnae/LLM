@@ -50,7 +50,7 @@ def create_tables():
         CREATE TABLE IF NOT EXISTS emissions (
             id SERIAL PRIMARY KEY,
             activity_id INTEGER REFERENCES activities(id),
-            co2_kg FLOAT NOT NULL,             -- émissions en kg CO2
+            co2_kg DOUBLE PRECISION NOT NULL,             -- émissions en kg CO2
             scope INTEGER NOT NULL,            -- Scope 1 ou 2
             calculated_at TIMESTAMP DEFAULT NOW()
         );
@@ -59,13 +59,33 @@ def create_tables():
     # Colonnes de traçabilité soft-delete (ajoutées si absentes)
     cursor.execute("""
         ALTER TABLE activities
-            ADD COLUMN IF NOT EXISTS actif       BOOLEAN DEFAULT true,
-            ADD COLUMN IF NOT EXISTS raison      TEXT,
-            ADD COLUMN IF NOT EXISTS original_id INTEGER;
+            ADD COLUMN IF NOT EXISTS actif           BOOLEAN DEFAULT true,
+            ADD COLUMN IF NOT EXISTS raison          TEXT,
+            ADD COLUMN IF NOT EXISTS original_id     INTEGER,
+            ADD COLUMN IF NOT EXISTS source_document VARCHAR(255),
+            ADD COLUMN IF NOT EXISTS methode_saisie  VARCHAR(50) DEFAULT 'manuel';
     """)
     cursor.execute("""
         ALTER TABLE emissions
             ADD COLUMN IF NOT EXISTS actif BOOLEAN DEFAULT true;
+    """)
+
+    # Table company_profile — profil CBAM entreprise (une seule ligne)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS company_profile (
+            id                        SERIAL PRIMARY KEY,
+            nom_entreprise            VARCHAR(100) DEFAULT 'Mon Entreprise',
+            secteur                   VARCHAR(50),
+            cn_code                   VARCHAR(20),
+            production_annuelle_tonnes FLOAT,
+            route_production          VARCHAR(10) DEFAULT NULL,
+            updated_at                TIMESTAMP DEFAULT NOW()
+        );
+    """)
+    # Migration: élargit la colonne si elle est encore CHAR(1)
+    cursor.execute("""
+        ALTER TABLE company_profile
+            ALTER COLUMN route_production TYPE VARCHAR(10);
     """)
 
     # Table audit_log — traçabilité CBAM/ISO 14064
@@ -78,6 +98,64 @@ def create_tables():
             changement  TEXT,
             raison      TEXT,
             created_at  TIMESTAMP DEFAULT NOW()
+        );
+    """)
+
+    # Table journal_modifications — détail des changements ISO 14064
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS journal_modifications (
+            id           SERIAL PRIMARY KEY,
+            activity_id  INTEGER,
+            champ_modifie TEXT,
+            ancienne_val  TEXT,
+            nouvelle_val  TEXT,
+            raison        TEXT,
+            created_at    TIMESTAMP DEFAULT NOW()
+        );
+    """)
+
+    # Table scope3_entries — émissions chaîne de valeur (GHG Protocol cat 1/3/4/5/9/12)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS scope3_entries (
+            id               SERIAL PRIMARY KEY,
+            category         INTEGER NOT NULL,
+            category_name    VARCHAR(100),
+            direction        VARCHAR(20),          -- 'upstream' ou 'downstream'
+            description      TEXT,
+            source_type      VARCHAR(100),
+            quantity         FLOAT,
+            unit             VARCHAR(20),
+            emission_factor  FLOAT,
+            co2_kg           FLOAT,
+            distance_km      FLOAT,
+            weight_tonnes    FLOAT,
+            transport_mode   VARCHAR(20),
+            origin           TEXT,
+            destination      TEXT,
+            supplier_name    VARCHAR(100),
+            supplier_country VARCHAR(100),
+            date             DATE,
+            data_quality     VARCHAR(20) DEFAULT 'estimated',
+            source_document  TEXT,
+            period_quarter   INTEGER,
+            period_year      INTEGER,
+            actif            BOOLEAN DEFAULT true,
+            raison           TEXT,
+            updated_at       TIMESTAMP DEFAULT NOW(),
+            created_at       TIMESTAMP DEFAULT NOW()
+        );
+    """)
+
+    # Table journal_scope3 — traçabilité soft-delete Scope 3
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS journal_scope3 (
+            id               SERIAL PRIMARY KEY,
+            scope3_entry_id  INTEGER REFERENCES scope3_entries(id),
+            champ_modifie    TEXT,
+            ancienne_val     TEXT,
+            nouvelle_val     TEXT,
+            raison           TEXT,
+            created_at       TIMESTAMP DEFAULT NOW()
         );
     """)
 
