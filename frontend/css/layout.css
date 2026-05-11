@@ -27,7 +27,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--espace-lg);
+  padding: 0 clamp(12px, 2vw, 24px);
+  min-height: clamp(48px, 6vh, 64px);
   background: var(--fond-carte);
   border-bottom: 1px solid var(--bordure);
 }
@@ -53,18 +54,260 @@ body {
   overflow: hidden;
 }
 
-/* ── Sidebar : largeur fixe, scroll indépendant ─────── */
+/* ══════════════════════════════════════════════════════
+   SIDEBAR — style ChatGPT
+   ══════════════════════════════════════════════════════ */
+
+/* ── Base ─────────────────────────────────────────────── */
 .sidebar {
-  order: -1;          /* gauche, même si <aside> est après <main> dans le HTML */
-  width: 250px;
+  order: -1;
+  width: var(--largeur-sidebar);   /* 250px */
   flex-shrink: 0;
-  overflow-y: auto;
+  overflow: hidden;
   background: var(--fond-carte);
   border-right: 1px solid var(--bordure);
   display: flex;
   flex-direction: column;
-  padding: var(--espace-lg);
+  padding: 12px 8px 0;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Nav scrollable — seulement les liens, pas le footer */
+.sidebar nav {
+  flex: 1;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding: 0 0 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bordure) transparent;
+}
+.sidebar nav::-webkit-scrollbar       { width: 3px; }
+.sidebar nav::-webkit-scrollbar-track { background: transparent; }
+.sidebar nav::-webkit-scrollbar-thumb { background: var(--bordure); border-radius: 99px; }
+.sidebar nav::-webkit-scrollbar-thumb:hover { background: var(--texte-discret); }
+
+/* ── En-tête (logo + toggle) ────────────────────────── */
+.sidebar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 4px 8px;
+  margin-bottom: 4px;
+}
+
+/* ── Logo ───────────────────────────────────────────── */
+.sidebar__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
+}
+.sidebar__logo-emoji { font-size: 22px; flex-shrink: 0; }
+.sidebar__logo-textes { overflow: hidden; }
+.sidebar__logo-nom   { font-size: 14px; font-weight: 700; color: var(--texte); white-space: nowrap; }
+.sidebar__logo-sous  { font-size: 11px; color: var(--texte-discret); white-space: nowrap; }
+
+/* ── Bouton toggle ───────────────────────────────────── */
+.sidebar-toggle-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--arrondi-md);
+  border: none;
+  background: transparent;
+  color: var(--texte-discret);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+  position: relative;
+}
+.sidebar-toggle-btn:hover {
+  background: var(--fond-survol);
+  color: var(--texte);
+}
+/* Tooltip "Ouvrir la barre latérale" */
+.sidebar-toggle-btn::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--texte);
+  color: var(--fond-page);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: var(--police-texte);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 200;
+}
+.sidebar-toggle-btn:hover::after { opacity: 1; }
+
+/* ── Section titre ───────────────────────────────────── */
+.sidebar__section-titre {
+  font-family: var(--police-chiffre);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--texte-tres-discret);
+  padding: 12px 8px 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: opacity 0.2s ease, max-height 0.25s ease;
+  max-height: 40px;
+}
+
+/* ── Liens nav ───────────────────────────────────────── */
+.sidebar__lien {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--arrondi-md);
+  color: var(--texte-discret);
+  text-decoration: none;
+  font-size: var(--taille-normal);
+  transition: background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+}
+.sidebar__lien:hover {
+  background: var(--fond-survol);
+  color: var(--texte);
+}
+.sidebar__lien--actif {
+  background: var(--fond-survol);
+  color: var(--texte);
+}
+.sidebar__lien-icone { font-size: 16px; flex-shrink: 0; }
+.sidebar__lien-texte { flex: 1; overflow: hidden; transition: opacity 0.15s ease; }
+.sidebar__lien-badge { flex-shrink: 0; }
+
+/* Tooltip sur liens (visible quand sidebar réduite) */
+.sidebar__lien::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--texte);
+  color: var(--fond-page);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 200;
+  transition: opacity 0.15s ease;
+}
+
+/* ── Footer ─────────────────────────────────────────── */
+.sidebar__footer {
+  margin-top: auto;
+  padding-top: var(--espace-lg);
+  border-top: 1px solid var(--bordure);
+  overflow: hidden;
+}
+.sidebar__footer-entreprise {
+  font-size: var(--taille-normal);
+  font-weight: 600;
+  color: var(--texte);
+  margin-bottom: var(--espace-xs);
+  white-space: nowrap;
+}
+.sidebar__footer-statut {
+  display: flex;
+  align-items: center;
+  gap: var(--espace-sm);
+  font-size: var(--taille-petit);
+  color: var(--texte-discret);
+  white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════════════════
+   ÉTAT RÉDUIT (56px) — icônes seules
+   ══════════════════════════════════════════════════════ */
+.sidebar--reduite {
+  width: 56px;
+}
+
+/* Header : empile toggle sous logo */
+.sidebar--reduite .sidebar__header {
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-bottom: 8px;
+}
+
+/* Logo : emoji seul, centré, cliquable pour ouvrir */
+.sidebar--reduite .sidebar__logo {
+  justify-content: center;
+  flex: none;
+  cursor: pointer;
+  border-radius: var(--arrondi-md);
+  padding: 6px;
+  transition: background 0.15s ease;
+  position: relative;
+}
+.sidebar--reduite .sidebar__logo:hover {
+  background: var(--fond-survol);
+}
+.sidebar--reduite .sidebar__logo::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--texte);
+  color: var(--fond-page);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: var(--police-texte);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 200;
+  transition: opacity 0.15s ease;
+}
+.sidebar--reduite .sidebar__logo:hover::after { opacity: 1; }
+.sidebar--reduite .sidebar__logo-textes { display: none; }
+
+/* Toggle : caché quand réduit — le logo sert de bouton */
+.sidebar--reduite .sidebar-toggle-btn { display: none; }
+
+/* Section titres : cachées */
+.sidebar--reduite .sidebar__section-titre {
+  opacity: 0;
+  max-height: 0;
+  padding: 0;
+  pointer-events: none;
+}
+
+/* Liens : icône centrée, tooltip au survol */
+.sidebar--reduite .sidebar__lien {
+  justify-content: center;
+  padding: 8px;
+  gap: 0;
+}
+.sidebar--reduite .sidebar__lien-texte  { opacity: 0; width: 0; overflow: hidden; }
+.sidebar--reduite .sidebar__lien-badge  { display: none; }
+.sidebar--reduite .sidebar__lien--actif { background: var(--fond-survol); }
+.sidebar--reduite .sidebar__lien:hover::after { opacity: 1; }
+
+/* Footer réduit : dot seul */
+.sidebar--reduite .footer-dot-seul  { display: flex; }
+.sidebar--reduite .footer-complet   { display: none; }
 
 .sidebar__logo {
   font-family: var(--police-chiffre);
@@ -99,23 +342,23 @@ body {
 /* ── Main : occupe tout l'espace restant, scroll indépendant ── */
 .main {
   flex: 1;
-  min-width: 0;       /* évite débordement flex */
+  min-width: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: var(--espace-xl) var(--espace-lg) 80px;
+  padding: clamp(16px, 2.5vw, 32px) clamp(12px, 2vw, 24px) 80px;
 }
 
 /* ── Grilles internes ──────────────────────────────── */
 .grille-kpi {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
   gap: var(--espace-md);
   margin-bottom: var(--espace-xl);
 }
 
 .grille-graphiques {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
   gap: var(--espace-md);
 }
 
@@ -314,7 +557,27 @@ body {
 
 .panneau-droit { display: none; }
 
-/* ── Mobile ────────────────────────────────────────── */
+/* ── Écran moyen (≤ 1280px) ────────────────────────── */
+@media (max-width: 1280px) {
+  .grille-kpi {
+    grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+  }
+}
+
+/* ── Petit écran / zoom élevé (≤ 1024px) ──────────── */
+@media (max-width: 1024px) {
+  .sidebar { width: 56px; }
+  .sidebar .sidebar__logo-textes,
+  .sidebar .sidebar__lien-texte,
+  .sidebar .sidebar__section-titre,
+  .sidebar .sidebar__footer-entreprise { display: none; }
+  .sidebar .sidebar__lien  { justify-content: center; padding: 8px; gap: 0; }
+  .sidebar .sidebar__logo  { justify-content: center; }
+  .grille-kpi        { grid-template-columns: repeat(2, 1fr); }
+  .grille-graphiques { grid-template-columns: 1fr; }
+}
+
+/* ── Mobile (≤ 900px) ──────────────────────────────── */
 @media (max-width: 900px) {
   html, body    { overflow: auto; }
   .main-wrapper { flex-direction: column; overflow: visible; }

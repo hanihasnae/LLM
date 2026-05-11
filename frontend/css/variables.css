@@ -52,13 +52,13 @@
   --police-texte:        'IBM Plex Sans', 'Segoe UI', sans-serif;
   --police-chiffre:      'IBM Plex Mono', 'Consolas', monospace;
 
-  /* Tailles */
-  --taille-petit:        0.75rem;
-  --taille-normal:       0.875rem;
-  --taille-moyen:        1rem;
-  --taille-grand:        1.375rem;
-  --taille-titre:        1.75rem;
-  --taille-hero:         2.25rem;
+  /* Tailles — fluides avec clamp(min, fluide, max) */
+  --taille-petit:        clamp(0.68rem,  1vw,   0.75rem);
+  --taille-normal:       clamp(0.8rem,   1.2vw, 0.875rem);
+  --taille-moyen:        clamp(0.875rem, 1.4vw, 1rem);
+  --taille-grand:        clamp(1.1rem,   1.8vw, 1.375rem);
+  --taille-titre:        clamp(1.25rem,  2.2vw, 1.75rem);
+  --taille-hero:         clamp(1.5rem,   3vw,   2.25rem);
 
   /* Espacements */
   --espace-xs:           4px;

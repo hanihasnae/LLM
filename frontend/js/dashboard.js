@@ -348,20 +348,7 @@ function renderScopeDonut(stats, activeScopes) {
 // ── LOADER ────────────────────────────────────────
 let premiereCharge = true;
 
-function afficherLoader(visible) {
-  let loader = document.getElementById('loader-dashboard');
-  if (visible && !loader) {
-    loader = document.createElement('div');
-    loader.id = 'loader-dashboard';
-    loader.style.cssText =
-      'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);' +
-      'background:#0f2018;border:1px solid #1a3828;border-radius:12px;' +
-      'padding:24px 32px;color:#7a9e8a;font-family:Consolas;font-size:14px;z-index:999;';
-    loader.textContent = '⟳ Chargement des données...';
-    document.body.appendChild(loader);
-  }
-  if (loader) loader.style.display = visible ? 'block' : 'none';
-}
+function afficherLoader(visible) { /* loader supprimé */ }
 
 // ── INIT ──────────────────────────────────────────
 let estEnChargement = false;

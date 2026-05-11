@@ -78,15 +78,19 @@
 
     /* ── Pied de la sidebar ─────────────────────── */
     .sidebar__footer {
-      margin-top: auto;        /* pousse le footer tout en bas */
-      padding-top: var(--espace-lg);
+      flex-shrink: 0;
+      padding: 10px 6px 12px;
       border-top: 1px solid var(--bordure);
+      background: var(--fond-carte);
     }
     .sidebar__footer-entreprise {
       font-size: var(--taille-normal);
       font-weight: 600;
       color: var(--texte);
       margin-bottom: var(--espace-xs);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .sidebar__footer-statut {
       display: flex;
@@ -95,12 +99,34 @@
       font-family: var(--police-chiffre);
       font-size: var(--taille-petit);
       color: var(--texte-discret);
+      overflow: hidden;
     }
+    #sidebar-api-texte {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    /* footer-dot-seul : caché par défaut, visible seulement en réduit */
+    .footer-dot-seul {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 0;
+    }
+    /* footer-complet : visible par défaut, caché en réduit */
+    .footer-complet { display: block; }
     .point-vert {
       width: 7px; height: 7px;
       border-radius: 50%;
       background: var(--vert);
+      flex-shrink: 0;
       animation: pulse 2s infinite;
+    }
+    .point-rouge {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--rouge);
+      flex-shrink: 0;
     }
 
     /* ── Système de pages ───────────────────────── */
@@ -161,6 +187,55 @@
     .dash-mini-kpi--bleu   { border-left-color: #58a6ff; }
     .dash-mini-kpi--violet { border-left-color: #bc8cff; }
     .dash-mini-kpi--vert   { border-left-color: var(--vert); }
+
+    /* ── Carte Score CBAM — mise en valeur ─────────── */
+    #kpi-score-card {
+      background: linear-gradient(135deg, rgba(63,185,80,0.12) 0%, rgba(63,185,80,0.04) 100%);
+      border: 1px solid rgba(63,185,80,0.35);
+      border-left: 3px solid var(--vert);
+      box-shadow: 0 0 16px rgba(63,185,80,0.15), inset 0 1px 0 rgba(63,185,80,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    #kpi-score-card::before {
+      content: 'CBAM';
+      position: absolute;
+      top: 6px; right: 8px;
+      font-family: var(--police-chiffre);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: rgba(63,185,80,0.45);
+    }
+    #kpi-score-card .dash-mini-kpi__label {
+      color: var(--vert);
+      font-weight: 700;
+      font-size: 10px;
+    }
+    #kpi-score-card .dash-mini-kpi__valeur {
+      font-size: 1.8rem;
+      color: var(--vert);
+      text-shadow: 0 0 12px rgba(63,185,80,0.5);
+      line-height: 1.1;
+    }
+    #kpi-score-card.cbam-non-conforme {
+      background: linear-gradient(135deg, rgba(239,68,68,0.12) 0%, rgba(239,68,68,0.04) 100%);
+      border-color: rgba(239,68,68,0.35);
+      border-left-color: var(--rouge);
+      box-shadow: 0 0 16px rgba(239,68,68,0.15), inset 0 1px 0 rgba(239,68,68,0.1);
+    }
+    #kpi-score-card.cbam-non-conforme .dash-mini-kpi__label { color: var(--rouge); }
+    #kpi-score-card.cbam-non-conforme .dash-mini-kpi__valeur {
+      color: var(--rouge);
+      text-shadow: 0 0 12px rgba(239,68,68,0.5);
+    }
+    #kpi-score-badge {
+      font-size: 10px !important;
+      padding: 3px 8px;
+      border-radius: 99px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
     .dash-mini-kpi__label {
       font-size: 10px; color: var(--texte-discret);
       text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px;
@@ -445,7 +520,7 @@
 
     /* Zone des messages */
     .pdr-messages {
-      height: 200px;
+      height: 220px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
@@ -453,8 +528,11 @@
       margin-bottom: var(--espace-sm);
       padding: 4px 2px 4px 0;
     }
-    .pdr-messages::-webkit-scrollbar { width: 3px; }
-    .pdr-messages::-webkit-scrollbar-thumb { background: var(--bordure); border-radius: 2px; }
+    .pdr-messages { scrollbar-width: thin; scrollbar-color: var(--bordure) transparent; }
+    .pdr-messages::-webkit-scrollbar { width: 4px; }
+    .pdr-messages::-webkit-scrollbar-track { background: transparent; }
+    .pdr-messages::-webkit-scrollbar-thumb { background: var(--bordure); border-radius: 99px; }
+    .pdr-messages::-webkit-scrollbar-thumb:hover { background: var(--texte-discret); }
 
     /* Bulle de base */
     .pdr-msg {
@@ -569,8 +647,8 @@
     /* ── FAB Chat ───────────────────────────────── */
     .chat-fab-wrapper {
       position: fixed;
-      bottom: 24px;
-      right: 24px;
+      bottom: clamp(12px, 2vh, 24px);
+      right: clamp(12px, 2vw, 24px);
       z-index: 500;
       display: flex;
       flex-direction: row;
@@ -618,10 +696,10 @@
     /* ── Chat Overlay (popup) ────────────────────── */
     .chat-overlay {
       position: fixed;
-      bottom: 96px;
-      right: 24px;
-      width: 370px;
-      max-height: 580px;
+      bottom: clamp(72px, 9vh, 96px);
+      right: clamp(12px, 2vw, 24px);
+      width: min(370px, calc(100vw - 24px));
+      max-height: min(580px, 78vh);
       z-index: 600;
       background: var(--fond-carte);
       border: 1px solid var(--bordure);
@@ -868,9 +946,9 @@
           </select>
         </div>
         <div>
-          <label style="display:block;font-size:11px;color:var(--texte-discret);margin-bottom:4px;">Quantité</label>
+          <label style="display:block;font-size:11px;color:var(--texte-discret);margin-bottom:4px;">Quantité <span style="color:var(--rouge);">*</span></label>
           <input id="act-quantite" type="number" min="0" step="any" placeholder="ex: 1500"
-            style="width:100%;background:var(--fond-carte);color:var(--texte);border:1px solid var(--bordure);border-radius:6px;padding:8px 10px;font-family:Consolas;font-size:13px;box-sizing:border-box;">
+            style="width:100%;background:var(--fond-carte);color:var(--texte);border:1px solid var(--bordure);border-radius:6px;padding:8px 10px;font-family:Consolas;font-size:13px;box-sizing:border-box;transition:border-color .2s;">
         </div>
         <div>
           <label style="display:block;font-size:11px;color:var(--texte-discret);margin-bottom:4px;">Unité</label>
@@ -878,9 +956,9 @@
             style="width:100%;background:var(--fond-survol);color:var(--texte-discret);border:1px solid var(--bordure);border-radius:6px;padding:8px 10px;font-family:Consolas;font-size:13px;box-sizing:border-box;">
         </div>
         <div>
-          <label style="display:block;font-size:11px;color:var(--texte-discret);margin-bottom:4px;">Date</label>
+          <label style="display:block;font-size:11px;color:var(--texte-discret);margin-bottom:4px;">Date <span style="color:var(--rouge);">*</span></label>
           <input id="act-date" type="date"
-            style="width:100%;background:var(--fond-carte);color:var(--texte);border:1px solid var(--bordure);border-radius:6px;padding:8px 10px;font-family:Consolas;font-size:13px;box-sizing:border-box;">
+            style="width:100%;background:var(--fond-carte);color:var(--texte);border:1px solid var(--bordure);border-radius:6px;padding:8px 10px;font-family:Consolas;font-size:13px;box-sizing:border-box;transition:border-color .2s;">
         </div>
         <button class="btn btn-primaire" onclick="ajouterActivite()">💾 Ajouter</button>
       </div>
@@ -950,6 +1028,104 @@
   </section>
 
 
+  <!-- ══ PAGE : MONITORING IoT / ERP ═══════════ -->
+  <section id="page-monitoring" class="page">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div>
+        <div class="topbar__titre">Monitoring IoT / ERP</div>
+        <div class="topbar__sous-titre">Flux de données temps réel — capteurs et imports</div>
+      </div>
+      <div class="topbar__droite">
+        <span id="monitoring-refresh-label" style="font-size:11px;color:var(--texte-discret);">Actualisation auto 10s</span>
+        <button class="btn btn-contour" onclick="chargerMonitoring()" style="font-size:12px;">↻ Actualiser</button>
+        <button class="btn btn-primaire" onclick="exporterMonitoringCSV()" style="font-size:12px;">⬇ Export CSV</button>
+      </div>
+    </div>
+
+    <!-- Statut capteurs -->
+    <div id="monitoring-capteurs" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--espace-md);margin-bottom:var(--espace-lg);"></div>
+
+    <!-- Filtres -->
+    <div class="carte" style="margin-bottom:var(--espace-md);">
+      <div style="display:flex;flex-wrap:wrap;gap:var(--espace-md);align-items:flex-end;">
+        <div>
+          <div style="font-size:11px;color:var(--texte-discret);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;">Source</div>
+          <select id="m-filtre-methode" onchange="chargerMonitoring()" style="background:var(--surface-eleve);color:var(--texte);border:1px solid var(--bordure);border-radius:6px;padding:6px 10px;font-size:13px;">
+            <option value="">Toutes</option>
+            <option value="iot">IoT</option>
+            <option value="erp">ERP</option>
+            <option value="manuel">Manuel</option>
+            <option value="pdf">PDF</option>
+          </select>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--texte-discret);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;">Énergie</div>
+          <select id="m-filtre-source" onchange="chargerMonitoring()" style="background:var(--surface-eleve);color:var(--texte);border:1px solid var(--bordure);border-radius:6px;padding:6px 10px;font-size:13px;">
+            <option value="">Toutes</option>
+            <option value="electricity">Électricité</option>
+            <option value="fuel">Fuel</option>
+            <option value="gas">Gaz</option>
+          </select>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--texte-discret);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;">Du</div>
+          <input type="date" id="m-filtre-from" onchange="chargerMonitoring()" style="background:var(--surface-eleve);color:var(--texte);border:1px solid var(--bordure);border-radius:6px;padding:6px 10px;font-size:13px;">
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--texte-discret);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;">Au</div>
+          <input type="date" id="m-filtre-to" onchange="chargerMonitoring()" style="background:var(--surface-eleve);color:var(--texte);border:1px solid var(--bordure);border-radius:6px;padding:6px 10px;font-size:13px;">
+        </div>
+        <div style="margin-left:auto;">
+          <div style="font-size:11px;color:var(--texte-discret);margin-bottom:4px;">&nbsp;</div>
+          <button class="btn btn-contour" onclick="reinitialiserFiltresMonitoring()" style="font-size:12px;">✕ Réinitialiser</button>
+        </div>
+      </div>
+      <div style="margin-top:var(--espace-sm);font-size:12px;color:var(--texte-discret);" id="monitoring-count-label"></div>
+    </div>
+
+    <!-- Graphique tendance -->
+    <div class="carte" style="margin-bottom:var(--espace-md);">
+      <div class="carte__entete">
+        <div class="carte__titre">Tendance CO₂ par source</div>
+        <div class="carte__sous-titre" id="monitoring-chart-subtitle">Dernières 50 mesures filtrées</div>
+      </div>
+      <div style="height:220px;position:relative;">
+        <canvas id="monitoring-chart"></canvas>
+      </div>
+    </div>
+
+    <!-- Table flux live -->
+    <div class="carte">
+      <div class="carte__entete">
+        <div class="carte__titre">Flux de données</div>
+        <div class="carte__sous-titre">Entrées les plus récentes en premier</div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;" id="monitoring-table">
+          <thead>
+            <tr style="border-bottom:1px solid var(--bordure);">
+              <th style="text-align:left;padding:8px 10px;color:var(--texte-discret);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">ID</th>
+              <th style="text-align:left;padding:8px 10px;color:var(--texte-discret);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Source</th>
+              <th style="text-align:left;padding:8px 10px;color:var(--texte-discret);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Capteur / Document</th>
+              <th style="text-align:right;padding:8px 10px;color:var(--texte-discret);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Quantité</th>
+              <th style="text-align:right;padding:8px 10px;color:var(--texte-discret);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">CO₂ (kg)</th>
+              <th style="text-align:left;padding:8px 10px;color:var(--texte-discret);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Date</th>
+              <th style="text-align:left;padding:8px 10px;color:var(--texte-discret);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Horodatage</th>
+              <th style="text-align:center;padding:8px 10px;color:var(--texte-discret);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Méthode</th>
+            </tr>
+          </thead>
+          <tbody id="monitoring-tbody">
+            <tr><td colspan="8" style="text-align:center;padding:30px;color:var(--texte-discret);">⏳ Chargement...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+
   <!-- ══ PAGE : IMPORT PDF ══════════════════════ -->
   <section id="page-import" class="page">
     <div class="carte">
@@ -966,7 +1142,6 @@
         <div class="upload__progression" id="conteneur-barre" style="display:none; margin-top:16px;">
           <div class="upload__barre" id="barre-upload"></div>
         </div>
-        <div id="import-statut" style="font-family:Consolas;font-size:12px;color:var(--texte-discret);margin-top:8px;display:none;"></div>
       </div>
 
       <!-- Input fichier invisible -->
@@ -1145,6 +1320,59 @@
         </div>
       </div>
 
+      <!-- Données utilisées pour le calcul -->
+      <div class="carte" id="cbam-donnees-card" style="margin-bottom:var(--espace-md);">
+        <div class="carte__entete">
+          <div class="carte__titre">Données utilisées pour le calcul</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <select id="cbam-filtre-annee" onchange="chargerConformiteCBAM()"
+              style="background:var(--surface-eleve);color:var(--texte);border:1px solid var(--bordure);border-radius:6px;padding:5px 10px;font-size:12px;">
+              <option value="">Toutes les années</option>
+            </select>
+            <select id="cbam-filtre-trimestre" onchange="chargerConformiteCBAM()"
+              style="background:var(--surface-eleve);color:var(--texte);border:1px solid var(--bordure);border-radius:6px;padding:5px 10px;font-size:12px;">
+              <option value="">Année complète</option>
+              <option value="1">Q1 — Jan-Mar</option>
+              <option value="2">Q2 — Avr-Jun</option>
+              <option value="3">Q3 — Jul-Sep</option>
+              <option value="4">Q4 — Oct-Déc</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Bandeau période + nb activités -->
+        <div style="display:flex;flex-wrap:wrap;gap:var(--espace-md);margin:var(--espace-md) 0 var(--espace-sm);padding:10px 14px;background:var(--fond-survol);border-radius:8px;">
+          <div style="flex:1;min-width:120px;">
+            <div style="font-size:10px;color:var(--texte-discret);text-transform:uppercase;letter-spacing:.06em;">Période</div>
+            <div id="cbam-periode-label" style="font-size:13px;font-weight:600;color:var(--texte);margin-top:2px;">—</div>
+          </div>
+          <div style="flex:1;min-width:100px;">
+            <div style="font-size:10px;color:var(--texte-discret);text-transform:uppercase;letter-spacing:.06em;">Activités</div>
+            <div id="cbam-nb-activites" style="font-size:13px;font-weight:600;color:var(--texte);margin-top:2px;">—</div>
+          </div>
+          <div style="flex:1;min-width:120px;">
+            <div style="font-size:10px;color:var(--texte-discret);text-transform:uppercase;letter-spacing:.06em;">CO₂ dans le calcul</div>
+            <div id="cbam-co2-utilise" style="font-size:13px;font-weight:600;color:var(--texte);margin-top:2px;">—</div>
+          </div>
+          <div style="flex:2;min-width:180px;">
+            <div style="font-size:10px;color:var(--texte-discret);text-transform:uppercase;letter-spacing:.06em;">Règle de scope</div>
+            <div id="cbam-colonne-explication" style="font-size:11px;color:var(--texte-discret);margin-top:2px;line-height:1.5;">—</div>
+          </div>
+        </div>
+
+        <!-- Ventilation S1 / S2 / Sources -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--espace-md);">
+          <div>
+            <div style="font-size:11px;color:var(--texte-discret);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;">Émissions par scope</div>
+            <div id="cbam-scope-bars"></div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--texte-discret);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;">Émissions par source</div>
+            <div id="cbam-source-bars"></div>
+          </div>
+        </div>
+      </div>
+
       <!-- Recommandation -->
       <div class="carte">
         <div class="carte__titre" style="margin-bottom:var(--espace-sm);">Recommandation</div>
@@ -1311,10 +1539,10 @@
       </div>
     </div>
 
-    <!-- ── Formulaire + liste en 2 colonnes ── -->
-    <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:var(--espace-md);align-items:start;">
+    <!-- ── Formulaire puis tableau, empilés verticalement ── -->
+    <div style="display:flex;flex-direction:column;gap:var(--espace-md);">
 
-      <!-- Colonne gauche : formulaire de saisie -->
+      <!-- Formulaire de saisie (pleine largeur) -->
       <div class="carte">
         <div class="carte__entete">
           <div>
@@ -1452,14 +1680,13 @@
         <div id="s3-resultat" style="display:none;margin-top:var(--espace-sm);"></div>
       </div>
 
-
-      <!-- Colonne droite : liste des entrées -->
+      <!-- Tableau des entrées (en dessous du formulaire) -->
       <div class="carte">
         <div class="carte__entete">
           <div class="carte__titre">📋 Entrées enregistrées</div>
           <button class="btn btn-contour" style="font-size:11px;" onclick="chargerScope3()">↺ Rafraîchir</button>
         </div>
-        <div class="tableau-conteneur">
+        <div class="tableau-conteneur" style="max-height:420px;overflow-y:auto;">
           <table class="tableau">
             <thead>
               <tr>
@@ -1487,63 +1714,91 @@
 </main>
 
 <!-- SIDEBAR — colonne 2 (droite) -->
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
 
-  <div class="sidebar__logo">
-    <span class="sidebar__logo-emoji">🌿</span>
-    <div>
-      <div class="sidebar__logo-nom">CarbonIQ</div>
-      <div class="sidebar__logo-sous">MRV Platform</div>
+  <!-- ── En-tête sidebar : logo + toggle ── -->
+  <div class="sidebar__header">
+    <div class="sidebar__logo" id="sidebar-logo" onclick="toggleSidebar()" data-tooltip="Ouvrir la barre latérale">
+      <span class="sidebar__logo-emoji">🌿</span>
+      <div class="sidebar__logo-textes">
+        <div class="sidebar__logo-nom">CarbonIQ</div>
+        <div class="sidebar__logo-sous">MRV Platform</div>
+      </div>
     </div>
+    <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="toggleSidebar()">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <rect x="1" y="1" width="5.5" height="16" rx="1.5" fill="currentColor" opacity="0.8"/>
+        <rect x="9" y="1" width="8" height="16" rx="1.5" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.45"/>
+      </svg>
+    </button>
   </div>
 
   <nav>
 
     <div class="sidebar__section-titre">Principal</div>
 
-    <a class="sidebar__lien sidebar__lien--actif" data-page="dashboard" href="#">
-      📊 Dashboard
+    <a class="sidebar__lien sidebar__lien--actif" data-page="dashboard" href="#" data-tooltip="Dashboard">
+      <span class="sidebar__lien-icone">📊</span>
+      <span class="sidebar__lien-texte">Dashboard</span>
     </a>
-    <a class="sidebar__lien" data-page="activites" href="#">
-      ⚡ Activités
+    <a class="sidebar__lien" data-page="activites" href="#" data-tooltip="Activités">
+      <span class="sidebar__lien-icone">⚡</span>
+      <span class="sidebar__lien-texte">Activités</span>
     </a>
-    <a class="sidebar__lien" data-page="alertes" href="#"
-       style="justify-content: space-between;">
-      <span>🔔 Alertes</span>
-      <span class="badge badge-error">2</span>
+    <a class="sidebar__lien" data-page="alertes" href="#" data-tooltip="Alertes">
+      <span class="sidebar__lien-icone">🔔</span>
+      <span class="sidebar__lien-texte">Alertes</span>
+      <span class="badge badge-error sidebar__lien-badge" style="margin-left:auto;">2</span>
     </a>
 
     <div class="sidebar__section-titre">Données</div>
 
-    <a class="sidebar__lien" data-page="import" href="#">
-      📄 Import PDF
+    <a class="sidebar__lien" data-page="import" href="#" data-tooltip="Import PDF">
+      <span class="sidebar__lien-icone">📄</span>
+      <span class="sidebar__lien-texte">Import PDF</span>
     </a>
-    <a class="sidebar__lien" data-page="scope3" href="#">
-      🔗 Scope 3
+    <a class="sidebar__lien" data-page="scope3" href="#" data-tooltip="Scope 3">
+      <span class="sidebar__lien-icone">🔗</span>
+      <span class="sidebar__lien-texte">Scope 3</span>
+    </a>
+    <a class="sidebar__lien" data-page="monitoring" href="#" data-tooltip="Monitoring IoT/ERP">
+      <span class="sidebar__lien-icone">📡</span>
+      <span class="sidebar__lien-texte">Monitoring</span>
+      <span class="badge badge-error sidebar__lien-badge" id="monitoring-alerte-badge" style="margin-left:auto;display:none;"></span>
     </a>
 
     <div class="sidebar__section-titre">Conformité</div>
 
-    <a class="sidebar__lien" data-page="cbam" href="#">
-      🛡️ Conformité CBAM
+    <a class="sidebar__lien" data-page="cbam" href="#" data-tooltip="Conformité CBAM">
+      <span class="sidebar__lien-icone">🛡️</span>
+      <span class="sidebar__lien-texte">Conformité CBAM</span>
     </a>
-    <a class="sidebar__lien" data-page="rapports" href="#">
-      📋 Rapports
+    <a class="sidebar__lien" data-page="rapports" href="#" data-tooltip="Rapports">
+      <span class="sidebar__lien-icone">📋</span>
+      <span class="sidebar__lien-texte">Rapports</span>
     </a>
 
     <div class="sidebar__section-titre">Système</div>
 
-    <a class="sidebar__lien" data-page="parametres" href="#">
-      ⚙️ Paramètres
+    <a class="sidebar__lien" data-page="parametres" href="#" data-tooltip="Paramètres">
+      <span class="sidebar__lien-icone">⚙️</span>
+      <span class="sidebar__lien-texte">Paramètres</span>
     </a>
 
   </nav>
 
   <div class="sidebar__footer">
-    <div class="sidebar__footer-entreprise">Acier Plus SAS</div>
-    <div class="sidebar__footer-statut">
-      <span class="point-vert"></span>
-      API connectée
+    <!-- État FERMÉ : dot seul, centré -->
+    <div class="footer-dot-seul">
+      <span id="sidebar-api-dot" class="point-vert"></span>
+    </div>
+    <!-- État OUVERT : nom + statut -->
+    <div class="footer-complet">
+      <div id="sidebar-footer-nom" class="sidebar__footer-entreprise">—</div>
+      <div class="sidebar__footer-statut">
+        <span id="sidebar-api-dot2" class="point-vert"></span>
+        <span id="sidebar-api-texte">Connexion…</span>
+      </div>
     </div>
   </div>
 
@@ -1592,6 +1847,17 @@
             onclick="naviguer('parametres')" title="Configurer le profil CBAM">
         <span class="badge__point"></span>CBAM actif
       </span>
+      <!-- Toggle provider Groq / Ollama -->
+      <button id="chat-provider-btn"
+        onclick="toggleChatProvider()"
+        title="Changer de modèle LLM"
+        style="display:flex;align-items:center;gap:5px;border:1px solid var(--bordure);
+               background:var(--surface-eleve);color:var(--texte-discret);
+               border-radius:20px;padding:3px 10px;font-size:10px;cursor:pointer;
+               transition:all .2s;margin-left:4px;">
+        <span id="chat-provider-dot" style="width:7px;height:7px;border-radius:50%;background:#4ade80;flex-shrink:0;"></span>
+        <span id="chat-provider-label">…</span>
+      </button>
     </div>
     <button class="chat-ov-close" onclick="toggleChatOverlay()" title="Fermer">✕</button>
   </div>
@@ -1612,7 +1878,7 @@
     </div>
 
     <!-- Messages -->
-    <div class="pdr-messages" id="pdr-messages" style="height:280px;flex-shrink:0;">
+    <div class="pdr-messages" id="pdr-messages">
       <div class="pdr-msg pdr-msg--ia">
         <span class="chat-tag chat-tag--prescription">DR. CARBONIQ</span>
         Je ne lis pas vos graphiques — je les <strong>analyse</strong>. Posez-moi ce qu'aucun tableau de bord ne peut vous dire : causes racines, simulations de scénarios, risques CBAM cachés.
@@ -1692,7 +1958,8 @@ var titres = {
   scope3:     'Scope 3 — Chaîne de valeur 🔗',
   cbam:       'Conformité CBAM 🛡️',
   rapports:   'Rapports 📋',
-  parametres: 'Paramètres ⚙️'
+  parametres:  'Paramètres ⚙️',
+  monitoring:  'Monitoring IoT / ERP 📡'
 };
 
 // Fonction principale : change la page affichée
@@ -1713,13 +1980,43 @@ function allerPage(nomPage) {
   // Met à jour le titre
   if (titres[nomPage]) titrePage.textContent = titres[nomPage];
 
-  if (nomPage === 'activites') chargerActivites();
-  if (nomPage === 'cbam')     chargerConformiteCBAM();
-  if (nomPage === 'alertes')  chargerAlertes();
-  if (nomPage === 'scope3')   chargerScope3();
+  if (nomPage === 'activites')  chargerActivites();
+  if (nomPage === 'cbam')      chargerConformiteCBAM();
+  if (nomPage === 'alertes')   chargerAlertes();
+  if (nomPage === 'scope3')    chargerScope3();
+  if (nomPage === 'monitoring') _demarrerAutoRefreshMonitoring();
+  else _arreterAutoRefreshMonitoring();
 }
 
 function naviguer(page) { allerPage(page); }
+
+/* ── Sidebar toggle (style ChatGPT) ─────────────────── */
+function appliquerEtatSidebar(reduite) { /* géré par CSS via .sidebar--reduite */ }
+
+function toggleSidebar() {
+  var sidebar = document.getElementById('sidebar');
+  var btn     = document.getElementById('sidebar-toggle-btn');
+  var reduite = sidebar.classList.toggle('sidebar--reduite');
+  btn.setAttribute('data-tooltip',
+    reduite ? 'Ouvrir la barre latérale' : 'Fermer la barre latérale'
+  );
+  appliquerEtatSidebar(reduite);
+  localStorage.setItem('sidebar-reduite', reduite ? '1' : '0');
+}
+
+// Restaure l'état sauvegardé au chargement
+(function() {
+  var btn     = document.getElementById('sidebar-toggle-btn');
+  var sidebar = document.getElementById('sidebar');
+  var reduite = localStorage.getItem('sidebar-reduite') === '1';
+  if (reduite) {
+    if (sidebar) sidebar.classList.add('sidebar--reduite');
+    if (btn) btn.setAttribute('data-tooltip', 'Ouvrir la barre latérale');
+  } else {
+    if (btn) btn.setAttribute('data-tooltip', 'Fermer la barre latérale');
+  }
+  appliquerEtatSidebar(reduite);
+})();
 
 // Branche chaque lien du menu sur allerPage()
 liens.forEach(function(lien) {
@@ -1868,13 +2165,16 @@ async function chargerDashboardCBAM() {
     }
 
     // 6. Mise à jour carte Score CBAM
+    if (scoreCard) {
+      scoreCard.classList.toggle('cbam-non-conforme', !conforme);
+    }
     if (scoreEl) {
       scoreEl.textContent = score;
-      scoreEl.style.color = conforme ? 'var(--vert-clair)' : '#f78166';
+      scoreEl.style.color = '';
     }
     if (scoreBadge) {
       scoreBadge.className   = conforme ? 'badge badge-ok' : 'badge badge-error';
-      scoreBadge.textContent = conforme ? 'CONFORME' : 'NON CONFORME';
+      scoreBadge.textContent = conforme ? '✓ CONFORME' : '✗ NON CONFORME';
     }
     if (scoreCard) {
       scoreCard.className = conforme ? 'dash-mini-kpi dash-mini-kpi--vert' : 'dash-mini-kpi dash-mini-kpi--orange';
@@ -1931,6 +2231,7 @@ function pdrUpload() {
 // ── VARIABLES CHAT ────────────────────────────────
 const API = "http://localhost:8000";
 let enCours = false;
+var _historiqueChat = [];   // [{role:'user'|'assistant', content:'...'}]
 
 // ── INITIALISATION SUGGESTIONS ────────────────────
 async function chargerSuggestions() {
@@ -1948,6 +2249,48 @@ async function chargerSuggestions() {
 }
 
 // ── ENVOYER MESSAGE ───────────────────────────────
+// ── Provider LLM (Groq / Ollama) ──────────────────────────────
+var _chatProvider = localStorage.getItem('chat-provider') || null;  // null = utilise LLM_PROVIDER du .env
+
+async function _initChatProvider() {
+  try {
+    var res  = await fetch(API + '/chat/info');
+    var info = await res.json();
+    // Si pas de préférence stockée, utilise le provider du serveur
+    if (!_chatProvider) _chatProvider = info.provider;
+    _updateProviderBtn(_chatProvider);
+  } catch(e) {
+    _updateProviderBtn(_chatProvider || 'groq');
+  }
+}
+
+function _updateProviderBtn(provider) {
+  var btn   = document.getElementById('chat-provider-btn');
+  var dot   = document.getElementById('chat-provider-dot');
+  var label = document.getElementById('chat-provider-label');
+  if (!btn) return;
+  if (provider === 'ollama') {
+    dot.style.background   = '#a78bfa';
+    label.textContent      = 'Ollama local';
+    btn.title              = 'Cliquer pour passer sur Groq (cloud)';
+  } else {
+    dot.style.background   = '#4ade80';
+    label.textContent      = 'Groq cloud';
+    btn.title              = 'Cliquer pour passer sur Ollama (local)';
+  }
+}
+
+function toggleChatProvider() {
+  _chatProvider = (_chatProvider === 'ollama') ? 'groq' : 'ollama';
+  localStorage.setItem('chat-provider', _chatProvider);
+  _updateProviderBtn(_chatProvider);
+  var msg = _chatProvider === 'ollama'
+    ? '🟣 Basculé sur <strong>Ollama local (qwen2.5:3b)</strong>. Les réponses peuvent prendre 30-60s.'
+    : '🟢 Basculé sur <strong>Groq cloud (llama-3.3-70b)</strong>. Réponses rapides.';
+  _historiqueChat = [];   // reset l'historique au changement de provider
+  ajouterBulle(msg, 'ia');
+}
+
 async function envoyerMessage() {
   if (enCours) return;
   const input = document.getElementById('pdr-input');
@@ -1957,22 +2300,55 @@ async function envoyerMessage() {
   ajouterBulle(texte, 'user');
   input.value = '';
 
+  // Ajouter à l'historique AVANT l'envoi
+  _historiqueChat.push({ role: 'user', content: texte });
+
   const loaderId = ajouterLoader();
   enCours = true;
+
+  var provider = _chatProvider || 'groq';
+  if (provider === 'ollama') {
+    document.getElementById('pdr-input').placeholder = '⏳ Ollama réfléchit…';
+  }
+
+  // Envoyer l'historique sans le dernier message user (déjà dans "question")
+  var historiqueEnvoi = _historiqueChat.slice(0, -1);
+  // Limiter : 4 échanges pour Ollama, 8 pour Groq
+  var maxHist = provider === 'ollama' ? 8 : 16;
+  historiqueEnvoi = historiqueEnvoi.slice(-maxHist);
 
   try {
     const res = await fetch(API + '/chat', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ question: texte })
+      body:    JSON.stringify({ question: texte, provider: provider, historique: historiqueEnvoi })
     });
     const data = await res.json();
     supprimerLoader(loaderId);
     enCours = false;
-    ajouterBulle(res.ok ? data.reponse : '❌ Erreur : ' + (data.detail || 'Réessayez'), 'ia');
+    document.getElementById('pdr-input').placeholder = 'Posez une question...';
+    if (res.ok) {
+      ajouterBulle(data.reponse, 'ia');
+      // Ajouter la réponse à l'historique
+      _historiqueChat.push({ role: 'assistant', content: data.reponse });
+      // Garder max 20 messages en mémoire
+      if (_historiqueChat.length > 20) _historiqueChat = _historiqueChat.slice(-20);
+    } else {
+      // Retirer le message user en cas d'erreur
+      _historiqueChat.pop();
+      var errMsg = data.detail || 'Erreur inconnue';
+      if (provider === 'ollama' && res.status === 503) {
+        errMsg = '❌ Ollama inaccessible. Lancez : <code>ollama serve</code>';
+      } else if (res.status === 504) {
+        errMsg = '⏳ ' + (data.detail || 'Timeout Ollama — essayez une question plus courte.');
+      }
+      ajouterBulle(errMsg, 'ia');
+    }
   } catch(e) {
+    _historiqueChat.pop();
     supprimerLoader(loaderId);
     enCours = false;
+    document.getElementById('pdr-input').placeholder = 'Posez une question...';
     ajouterBulle('❌ API déconnectée. Vérifiez que FastAPI tourne.', 'ia');
   }
 }
@@ -2067,6 +2443,39 @@ document.getElementById('pdr-input').addEventListener('keydown', function(e) {
   document.head.appendChild(s);
 })();
 
+// ── SIDEBAR FOOTER — nom entreprise + statut API ──
+(async function initSidebarFooter() {
+  const nomEl  = document.getElementById('sidebar-footer-nom');
+  const dot1   = document.getElementById('sidebar-api-dot');   // dot état fermé
+  const dot2   = document.getElementById('sidebar-api-dot2');  // dot état ouvert
+  const txtEl  = document.getElementById('sidebar-api-texte');
+  const API    = window.API_BASE || 'http://localhost:8000';
+
+  function setStatut(connecte) {
+    var cls = connecte ? 'point-vert' : 'point-rouge';
+    var txt = connecte ? 'API connectée' : 'API hors ligne';
+    if (dot1) dot1.className = cls;
+    if (dot2) dot2.className = cls;
+    if (txtEl) txtEl.textContent = txt;
+  }
+
+  // Statut API
+  try {
+    const r = await fetch(API + '/summary', { signal: AbortSignal.timeout(3000) });
+    setStatut(r.ok);
+  } catch { setStatut(false); }
+
+  // Nom entreprise
+  try {
+    const r = await fetch(API + '/company/profile');
+    if (r.ok) {
+      const d = await r.json();
+      const nom = (d.profil && d.profil.nom_entreprise) || d.nom_entreprise || '';
+      if (nom && nomEl) nomEl.textContent = nom;
+    }
+  } catch { /* reste à — */ }
+})();
+
 // ── FAB CHAT — toggle overlay ─────────────────────
 function toggleChatOverlay() {
   var ov     = document.getElementById('chat-overlay');
@@ -2078,6 +2487,7 @@ function toggleChatOverlay() {
   if (!open) {
     var msgs = document.getElementById('pdr-messages');
     if (msgs) msgs.scrollTop = msgs.scrollHeight;
+    _initChatProvider();   // détecte et affiche le provider actif
   }
 }
 
@@ -2361,7 +2771,24 @@ async function ajouterActivite() {
   var unite    = document.getElementById('act-unite').value;
   var date     = document.getElementById('act-date').value;
 
-  if (!quantite || !date) { alert('Veuillez remplir la quantité et la date.'); return; }
+  var champQte  = document.getElementById('act-quantite');
+  var champDate = document.getElementById('act-date');
+  var erreur = false;
+
+  if (!quantite || quantite <= 0) {
+    champQte.style.borderColor = 'var(--rouge)';
+    setTimeout(function(){ champQte.style.borderColor = 'var(--bordure)'; }, 2000);
+    erreur = true;
+  }
+  if (!date) {
+    champDate.style.borderColor = 'var(--rouge)';
+    setTimeout(function(){ champDate.style.borderColor = 'var(--bordure)'; }, 2000);
+    erreur = true;
+  }
+  if (erreur) {
+    afficherToast('Quantité et date sont obligatoires.', 'erreur');
+    return;
+  }
 
   var reponse = await fetch('http://localhost:8000/activities', {
     method:  'POST',
@@ -2370,16 +2797,24 @@ async function ajouterActivite() {
   });
 
   if (reponse.ok) {
-    document.getElementById('act-quantite').value = '';
+    champQte.value = '';
+    afficherToast('Activité ajoutée avec succès.', 'ok');
     chargerActivites();
   } else {
-    alert('Erreur lors de l\'ajout.');
+    var data = await reponse.json().catch(function(){ return {}; });
+    afficherToast(data.detail || 'Erreur lors de l\'ajout.', 'erreur');
   }
 }
 
 // ── État global du tableau ────────────────────────
 var PAGE_SIZE        = 10;
 var pageCourante     = 1;
+
+function changerPageSize(n) {
+  PAGE_SIZE    = parseInt(n);
+  pageCourante = 1;
+  afficherTableau(_activitesFiltrees, _emMapCache, 1);
+}
 var _activitesCache  = [];   // toutes les données brutes de l'API
 var _emMapCache      = {};   // index émissions par activity_id
 var _activitesFiltrees = []; // vue courante après filtres
@@ -2513,7 +2948,16 @@ function afficherTableau(activites, emMap, page) {
   // Pagination
   var pag = document.getElementById('pagination');
   if (pag) {
+    var selStyle = 'background:var(--fond-input);border:1px solid var(--bordure);color:var(--texte-discret);'
+                 + 'border-radius:6px;padding:4px 8px;font-size:12px;font-family:Consolas;cursor:pointer;';
+    var options  = [10, 25, 50, 100].map(function(n) {
+      return '<option value="' + n + '"' + (n === PAGE_SIZE ? ' selected' : '') + '>' + n + '</option>';
+    }).join('');
+
     var html = '<div style="display:flex;gap:8px;justify-content:center;align-items:center;margin-top:16px;font-family:Consolas;font-size:12px;">';
+    html += '<label style="color:var(--texte-tres-discret);display:flex;align-items:center;gap:6px;">'
+          + 'Lignes&nbsp;: <select style="' + selStyle + '" onchange="changerPageSize(this.value)">' + options + '</select></label>';
+    html += '<span style="color:var(--texte-tres-discret);padding:0 4px;">|</span>';
     if (page > 1)
       html += '<button onclick="irPage(' + (page - 1) + ')" class="btn btn-contour" style="font-size:12px;">← Précédent</button>';
     html += '<span style="color:#7a9e8a;padding:8px 12px;">Page ' + page + ' / ' + totalPages + ' &nbsp;(' + activites.length + ' lignes)</span>';
@@ -2524,51 +2968,55 @@ function afficherTableau(activites, emMap, page) {
   }
 }
 
-// Supprime une activité avec traçabilité CBAM
 // ── SUPPRIMER ─────────────────────────────────────
 async function supprimerActivite(id) {
-  const raison = prompt(
-    `🗑️ Supprimer l'activité #${id}\n\n` +
-    `Raison (obligatoire pour audit CBAM) :`
-  );
-  if (!raison?.trim()) {
-    alert('❌ Raison obligatoire');
-    return;
-  }
+  const raison = await _ouvrirModal({
+    icone:     '🗑️',
+    titre:     `Supprimer l'activité #${id}`,
+    sousTitre: 'Cette action est <strong>irréversible</strong>. La raison sera conservée dans le journal d\'audit CBAM (ISO 14064).',
+    btnLabel:  'Supprimer',
+    btnColor:  '#f85149',
+  });
+
+  if (!raison) return; // annuler cliqué
 
   const res = await fetch(
     `http://localhost:8000/activities/${id}/supprimer`,
     {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ raison: raison.trim() })
+      body:    JSON.stringify({ raison })
     }
   );
 
   const data = await res.json();
   if (res.ok) {
-    alert(`✅ Activité #${id} supprimée\nRaison conservée pour audit ✅`);
+    afficherToast(`Activité #${id} supprimée — journal d'audit mis à jour`, 'ok');
     chargerActivites(pageCourante);
   } else {
-    alert('❌ ' + data.detail);
+    afficherToast(data.detail || 'Erreur serveur', 'erreur');
   }
 }
 
 
 // ── MODIFIER ──────────────────────────────────────
 async function corrigerActivite(id, ancQty, source, unite) {
-  const nouvelleQty = prompt(
-    `✏️ Modifier l'activité #${id}\n` +
-    `Ancienne quantité : ${ancQty} ${unite}\n\n` +
-    `Nouvelle quantité :`
-  );
-  if (!nouvelleQty || isNaN(parseFloat(nouvelleQty))) return;
+  const raison = await _ouvrirModal({
+    icone:     '✏️',
+    titre:     `Modifier l'activité #${id}`,
+    sousTitre: `Source : <strong>${source}</strong> · Quantité actuelle : <strong>${ancQty} ${unite}</strong><br>
+                <span style="color:var(--texte-discret,#7a9e8a);font-size:11px;">
+                Entrez la raison de la modification. La nouvelle valeur sera saisie à l'étape suivante.</span>`,
+    btnLabel:  'Continuer',
+    btnColor:  '#58a6ff',
+  });
 
-  const raison = prompt(`Raison de la modification :`);
-  if (!raison?.trim()) {
-    alert('❌ Raison obligatoire');
-    return;
-  }
+  if (!raison) return;
+
+  const nouvelleQtyStr = window._promptLeger
+    ? await window._promptLeger(`Nouvelle quantité (actuelle : ${ancQty} ${unite}) :`)
+    : window.prompt(`Nouvelle quantité (actuelle : ${ancQty} ${unite}) :`);
+  if (!nouvelleQtyStr || isNaN(parseFloat(nouvelleQtyStr))) return;
 
   const res = await fetch(
     `http://localhost:8000/activities/${id}/modifier`,
@@ -2576,24 +3024,21 @@ async function corrigerActivite(id, ancQty, source, unite) {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        nouvelle_quantite: parseFloat(nouvelleQty),
-        raison:            raison.trim()
+        nouvelle_quantite: parseFloat(nouvelleQtyStr),
+        raison:            raison
       })
     }
   );
 
   const data = await res.json();
   if (res.ok) {
-    alert(
-      `✅ Modifié !\n\n` +
-      `Avant : ${data.avant.quantity} ${unite}\n` +
-      `Après : ${data.apres.quantity} ${unite}\n` +
-      `CO₂   : ${data.apres.co2_kg} kg\n` +
-      `Nouveau ID : #${data.nouveau_id}`
+    afficherToast(
+      `Activité #${id} modifiée — ${data.avant?.quantity} → ${data.apres?.quantity} ${unite}`,
+      'ok'
     );
     chargerActivites(pageCourante);
   } else {
-    alert('❌ ' + data.detail);
+    afficherToast(data.detail || 'Erreur serveur', 'erreur');
   }
 }
 
@@ -2611,30 +3056,24 @@ async function importTraiterFichier(fichier) {
 
   var barre     = document.getElementById('barre-upload');
   var conteneur = document.getElementById('conteneur-barre');
-  var statut    = document.getElementById('import-statut');
   var resultat  = document.getElementById('import-resultat');
 
-  // Affiche la barre de progression
   conteneur.style.display = 'block';
-  statut.style.display    = 'block';
   resultat.style.display  = 'none';
   barre.style.width = '20%';
-  statut.textContent = 'Lecture du fichier...';
 
   var formData = new FormData();
   formData.append('fichier', fichier);
 
   try {
-    barre.style.width  = '50%';
-    statut.textContent = 'Envoi vers l\'API...';
+    barre.style.width = '50%';
 
     var reponse = await fetch('http://localhost:8000/upload-pdf', {
       method: 'POST',
       body: formData
     });
 
-    barre.style.width  = '85%';
-    statut.textContent = 'Analyse LLM en cours...';
+    barre.style.width = '85%';
 
     if (!reponse.ok) {
       var err = await reponse.json();
@@ -2642,19 +3081,16 @@ async function importTraiterFichier(fichier) {
     }
 
     var data = await reponse.json();
-    barre.style.width  = '100%';
-    statut.textContent = 'Extraction terminée !';
+    barre.style.width = '100%';
 
     setTimeout(function() {
       conteneur.style.display = 'none';
-      statut.style.display    = 'none';
       barre.style.width       = '0%';
       importAfficherResultat(data.donnees_extraites, fichier.name);
-    }, 500);
+    }, 400);
 
   } catch (e) {
     conteneur.style.display = 'none';
-    statut.style.display    = 'none';
     resultat.style.display  = 'block';
     resultat.innerHTML =
       '<div style="background:rgba(247,129,102,0.08);border:1px solid rgba(247,129,102,0.2);' +
@@ -2669,32 +3105,35 @@ function importAfficherResultat(d, nomFichier) {
   var resultat = document.getElementById('import-resultat');
   resultat.style.display = 'block';
 
-  // Confiance faible = le LLM n'a pas trouvé de facture énergétique valide
+  // Confiance faible = document non lisible → message d'erreur, pas de saisie
   if (d.confiance === 'faible') {
     resultat.innerHTML =
-      '<div style="background:rgba(255,69,96,0.07);border:1px solid rgba(255,69,96,0.25);' +
-      'border-radius:10px;padding:20px;text-align:center;">' +
-        '<div style="font-size:28px;margin-bottom:10px;">⚠️</div>' +
-        '<div style="color:#ff4560;font-weight:600;font-size:14px;margin-bottom:6px;">' +
-          'Fichier non reconnu comme facture énergétique' +
+      '<div style="background:rgba(255,69,96,0.06);border:1px solid rgba(255,69,96,0.25);border-radius:10px;padding:24px;text-align:center;">' +
+        '<div style="font-size:32px;margin-bottom:12px;">📄❌</div>' +
+        '<div style="font-size:14px;font-weight:600;color:var(--rouge);margin-bottom:8px;">Document non reconnu</div>' +
+        '<div style="font-size:12px;color:var(--texte-discret);line-height:1.7;margin-bottom:6px;">' + nomFichier + '</div>' +
+        '<div style="font-size:12px;color:var(--texte-discret);line-height:1.7;">' +
+          'Le document ne contient pas les données énergétiques attendues.<br>' +
+          'Importez une facture <strong style="color:var(--texte);">électricité</strong>, ' +
+          '<strong style="color:var(--texte);">gaz</strong> ou ' +
+          '<strong style="color:var(--texte);">fuel</strong> au format texte.' +
         '</div>' +
-        '<div style="color:var(--texte-discret);font-size:12px;font-family:Consolas;margin-bottom:16px;">' +
-          nomFichier +
-        '</div>' +
-        '<div style="color:var(--texte-discret);font-size:12px;line-height:1.6;">' +
-          'Le document ne contient pas les données attendues.<br>' +
-          'Importez une facture (électricité, gaz ou fuel).' +
-        '</div>' +
-        '<button class="btn btn-contour" style="margin-top:14px;font-size:12px;" ' +
-          'onclick="document.getElementById(\'import-resultat\').style.display=\'none\'">Fermer</button>' +
+        '<button class="btn btn-contour" style="margin-top:18px;border-color:var(--rouge);color:var(--rouge);" ' +
+          'onclick="document.getElementById(\'import-resultat\').style.display=\'none\'">✕ Fermer</button>' +
       '</div>';
     return;
   }
 
-  var facteurs = { electricity: 0.625, fuel: 3.24, gas: 2.02 };
-  var co2_kg   = d.quantite ? (d.quantite * (facteurs[d.type_energie] || 0)).toFixed(2) : '—';
-  var couleur  = d.confiance === 'haute' ? '#3fb950' : '#f78166';
+  // Injecte la traçabilité dans l'objet avant de le passer au bouton
+  d.source_document = nomFichier;
+  d.methode_saisie  = 'pdf_auto';
 
+  var facteurs = { electricity: 0.625, fuel: 3.24, gas: 2.02 };
+  var _f = d.type_energie && facteurs[d.type_energie];
+  var co2_kg = (d.quantite && _f) ? (d.quantite * _f).toFixed(2) : '—';
+  var couleur = d.confiance === 'haute' ? '#3fb950' : d.confiance === 'moyenne' ? '#e3b341' : '#f78166';
+
+  resultat.dataset.nomFichier = nomFichier;
   resultat.innerHTML =
     '<div style="border-top:1px solid var(--bordure);padding-top:var(--espace-md);">' +
       '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">' +
@@ -2707,13 +3146,14 @@ function importAfficherResultat(d, nomFichier) {
         '<tr><td>Quantité</td><td style="color:#3fb950;font-weight:600;">' + (d.quantite || '—') + ' ' + (d.unite || '') + '</td></tr>' +
         '<tr><td>Date facture</td><td>' + (d.date_facture || '—') + '</td></tr>' +
         '<tr><td>Montant</td><td>' + (d.montant_dh || '—') + ' DH</td></tr>' +
-        '<tr><td>CO₂ estimé</td><td style="color:#3fb950;font-weight:600;">' + co2_kg + ' kg</td></tr>' +
+        '<tr><td>CO₂ estimé</td><td style="color:' + (co2_kg !== '—' ? '#3fb950' : 'var(--texte-tres-discret)') + ';font-weight:600;">' + (co2_kg !== '—' ? co2_kg + ' kg' : '— (type énergie requis)') + '</td></tr>' +
+        '<tr><td style="color:var(--texte-tres-discret)">Document source</td><td style="color:var(--texte-tres-discret);font-size:11px;">' + nomFichier + '</td></tr>' +
       '</table>' +
       '<div style="display:flex;gap:8px;margin-top:var(--espace-md);">' +
         '<button class="btn btn-primaire" style="flex:1;" ' +
           'onclick="importValider(' + JSON.stringify(d).replace(/"/g, '&quot;') + ')">💾 Valider et enregistrer</button>' +
-        '<button class="btn btn-contour" style="padding:8px 12px;" ' +
-          'onclick="document.getElementById(\'import-resultat\').style.display=\'none\'">✕</button>' +
+        '<button class="btn btn-contour" style="padding:8px 12px;border-color:var(--rouge);color:var(--rouge);" ' +
+          'onclick="document.getElementById(\'import-resultat\').style.display=\'none\'">✕ Annuler</button>' +
       '</div>' +
     '</div>';
 }
@@ -2742,8 +3182,66 @@ async function importValider(donnees) {
   } catch (e) {
     btn.textContent = '💾 Valider et enregistrer';
     btn.disabled = false;
-    alert('❌ Erreur : ' + e.message);
+    afficherToast('Erreur : ' + e.message, 'erreur');
   }
+}
+
+async function importValiderManuel() {
+  var type        = document.getElementById('edit-type').value;
+  var quantiteStr = document.getElementById('edit-quantite').value;
+  var date        = document.getElementById('edit-date').value;
+  var fournisseur = document.getElementById('edit-fournisseur').value;
+
+  if (!type || !quantiteStr || !date) {
+    afficherToast('Type d\'énergie, quantité et date sont requis', 'erreur');
+    return;
+  }
+
+  var unites      = { electricity: 'kWh', fuel: 'litres', gas: 'm3' };
+  var nomFichier  = document.getElementById('import-resultat').dataset.nomFichier || '';
+  var donnees = {
+    type_energie:    type,
+    quantite:        parseFloat(quantiteStr),
+    unite:           unites[type],
+    date_facture:    date,
+    fournisseur:     fournisseur || null,
+    montant_dh:      null,
+    source_document: nomFichier,
+    methode_saisie:  'pdf_manuel'
+  };
+
+  var btn = event.target;
+  btn.textContent = '⏳ Enregistrement...';
+  btn.disabled = true;
+
+  try {
+    var reponse = await fetch('http://localhost:8000/valider-extraction', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(donnees)
+    });
+    var data = await reponse.json();
+    if (!reponse.ok) throw new Error(data.detail || 'Erreur serveur');
+
+    document.getElementById('import-resultat').innerHTML =
+      '<div style="background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.2);' +
+      'border-radius:8px;padding:16px;font-family:Consolas;font-size:13px;color:#3fb950;">' +
+      '✅ Enregistré avec succès !<br>' +
+      'CO₂ calculé : <strong>' + data.co2_kg + ' kg</strong> (' + data.co2_tonnes + ' t)' +
+      '</div>';
+    afficherToast('Activité enregistrée', 'succes');
+  } catch (e) {
+    afficherToast('Erreur : ' + e.message, 'erreur');
+    btn.textContent = '💾 Enregistrer';
+    btn.disabled = false;
+  }
+}
+
+function importUpdateUnite() {
+  var type  = document.getElementById('edit-type').value;
+  var label = document.getElementById('edit-unite-label');
+  var unites = { electricity: '(kWh)', fuel: '(litres)', gas: '(m³)' };
+  if (label) label.textContent = unites[type] || '';
 }
 
 // Initialise la zone d'upload de la page import (clic + drag-and-drop)
@@ -2780,6 +3278,37 @@ importInitZone();
 /* ──────────────────────────────────────────────────
    PAGE CONFORMITÉ CBAM — chargement dynamique
 ────────────────────────────────────────────────── */
+function _miniBar(label, valKg, maxKg, couleur, note) {
+  var pct    = Math.min(Math.round((valKg / maxKg) * 100), 100);
+  var valT   = (valKg / 1000).toFixed(2);
+  return '<div style="margin-bottom:10px;">' +
+    '<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">' +
+      '<span style="color:var(--texte);">' + label + '</span>' +
+      '<span style="color:var(--texte-discret);">' + valT + ' t' +
+        (note ? ' <em style="color:' + couleur + ';font-style:normal;">' + note + '</em>' : '') +
+      '</span>' +
+    '</div>' +
+    '<div style="background:var(--bordure);border-radius:4px;height:8px;">' +
+      '<div style="width:' + pct + '%;height:100%;border-radius:4px;background:' + couleur + ';transition:width .6s;"></div>' +
+    '</div>' +
+  '</div>';
+}
+
+function _remplirSelectAnnees(dateMin, dateMax) {
+  var sel = document.getElementById('cbam-filtre-annee');
+  if (!sel || sel.dataset.rempli === '1') return;
+  if (!dateMin || !dateMax) return;
+  var anneeMin = new Date(dateMin).getFullYear();
+  var anneeMax = new Date(dateMax).getFullYear();
+  for (var a = anneeMax; a >= anneeMin; a--) {
+    var opt = document.createElement('option');
+    opt.value       = a;
+    opt.textContent = a;
+    sel.appendChild(opt);
+  }
+  sel.dataset.rempli = '1';
+}
+
 async function chargerConformiteCBAM() {
   document.getElementById('cbam-chargement').style.display = 'block';
   document.getElementById('cbam-contenu').style.display    = 'none';
@@ -2798,14 +3327,21 @@ async function chargerConformiteCBAM() {
 
     var p = dataP.profil;
 
+    // Lire les filtres période
+    var anneeEl     = document.getElementById('cbam-filtre-annee');
+    var trimestreEl = document.getElementById('cbam-filtre-trimestre');
+    var annee       = anneeEl     ? (parseInt(anneeEl.value)     || null) : null;
+    var trimestre   = trimestreEl ? (parseInt(trimestreEl.value) || null) : null;
+
     // 2. Appel rapport-complet avec secteur pour dériver la bonne colonne A/B
     var body = {
       production_tonnes: p.production_annuelle_tonnes,
-      secteur:           p.secteur     || null,
+      secteur:           p.secteur          || null,
       route:             p.route_production || null,
-      cn_code:           p.cn_code     || null,
-      mot_cle:           (CBAM_SECTEURS[p.secteur] ? null :
-                           (p.secteur || '').toLowerCase())
+      cn_code:           p.cn_code          || null,
+      mot_cle:           (CBAM_SECTEURS[p.secteur] ? null : (p.secteur || '').toLowerCase()),
+      annee:             annee,
+      trimestre:         trimestre,
     };
 
     var res2 = await fetch(API + '/cbam/rapport-complet', {
@@ -2914,6 +3450,58 @@ async function chargerConformiteCBAM() {
     document.getElementById('cbam-recommandation').textContent = r.recommandation || '—';
     document.getElementById('cbam-maj').textContent =
       'Calculé à ' + new Date().toLocaleTimeString('fr-FR');
+
+    // ── Remplir le sélecteur d'années (depuis les données DB) ──────────
+    _remplirSelectAnnees(r.periode_date_min, r.periode_date_max);
+
+    // ── Carte "Données utilisées" ───────────────────────────────────────
+    var dateMin = r.periode_date_min ? new Date(r.periode_date_min).toLocaleDateString('fr-FR') : '—';
+    var dateMax = r.periode_date_max ? new Date(r.periode_date_max).toLocaleDateString('fr-FR') : '—';
+    var periodeLabel = (r.filtre_trimestre ? 'Q' + r.filtre_trimestre + ' ' : '') +
+                       (r.filtre_annee    ? r.filtre_annee              : 'Toutes périodes') +
+                       '  (' + dateMin + ' → ' + dateMax + ')';
+
+    var pel = document.getElementById('cbam-periode-label');
+    if (pel) pel.textContent = periodeLabel;
+
+    var nel = document.getElementById('cbam-nb-activites');
+    if (nel) nel.textContent = (r.nb_activites || 0) + ' enregistrée(s)';
+
+    var cel = document.getElementById('cbam-co2-utilise');
+    if (cel) {
+      var s1t = ((r.co2_scope1_kg || 0) / 1000).toFixed(2);
+      var s2t = ((r.co2_scope2_kg || 0) / 1000).toFixed(2);
+      var used = ((r.co2_utilise_kg || 0) / 1000).toFixed(2);
+      cel.innerHTML = '<strong>' + used + ' tCO₂</strong>' +
+        ' <span style="font-size:11px;color:var(--texte-discret);">(S1: ' + s1t + 't | S2: ' + s2t + 't)</span>';
+    }
+
+    var expl = document.getElementById('cbam-colonne-explication');
+    if (expl) expl.textContent = r.colonne_explication || '';
+
+    // ── Barres scope ────────────────────────────────────────────────────
+    var scopeBars = document.getElementById('cbam-scope-bars');
+    if (scopeBars) {
+      var s1kg = r.co2_scope1_kg || 0;
+      var s2kg = r.co2_scope2_kg || 0;
+      var maxScope = Math.max(s1kg, s2kg, 1);
+      var usedInCalc = r.colonne_utilisee === 'A' ? 'S1 (utilisé)' : 'S1+S2 (utilisé)';
+      scopeBars.innerHTML = _miniBar('Scope 1 — Direct', s1kg, maxScope, '#4ade80',
+          r.colonne_utilisee === 'A' ? '(inclus dans calcul)' : '') +
+        _miniBar('Scope 2 — Électricité', s2kg, maxScope, '#60a5fa',
+          r.colonne_utilisee === 'B' ? '(inclus dans calcul)' : '(exclu Colonne A)');
+    }
+
+    // ── Barres sources ──────────────────────────────────────────────────
+    var srcBars = document.getElementById('cbam-source-bars');
+    if (srcBars && r.detail_sources && r.detail_sources.length) {
+      var maxSrc = Math.max(...r.detail_sources.map(function(s){ return parseFloat(s.co2_kg||0); }), 1);
+      var coulSrc = { electricity: '#60a5fa', fuel: '#f97316', gas: '#a78bfa' };
+      srcBars.innerHTML = r.detail_sources.map(function(s) {
+        var lbl = s.source === 'electricity' ? 'Électricité' : s.source === 'fuel' ? 'Fuel' : 'Gaz';
+        return _miniBar(lbl, parseFloat(s.co2_kg || 0), maxSrc, coulSrc[s.source] || '#aaa', '');
+      }).join('');
+    }
 
     document.getElementById('cbam-chargement').style.display = 'none';
     document.getElementById('cbam-contenu').style.display    = 'block';
@@ -3159,6 +3747,88 @@ async function chargerAlertes() {
         }
       }
     } catch(e) { /* optionnel */ }
+
+    // ── Check 4 : Countdown déclaration CBAM trimestrielle ────────────
+    (function() {
+      var auj = new Date();
+      var echeances = [
+        new Date(auj.getFullYear(), 0, 31),  // 31 jan
+        new Date(auj.getFullYear(), 3, 30),  // 30 avr
+        new Date(auj.getFullYear(), 6, 31),  // 31 jul
+        new Date(auj.getFullYear(), 9, 31),  // 31 oct
+      ];
+      var prochaine = echeances.find(function(d){ return d >= auj; });
+      if (!prochaine) prochaine = new Date(auj.getFullYear() + 1, 0, 31);
+      var jours = Math.ceil((prochaine - auj) / 86400000);
+      var trimLabel = ['Q1','Q2','Q3','Q4'][echeances.indexOf(prochaine)] ||
+                      (prochaine.getFullYear() > auj.getFullYear() ? 'Q1 ' + prochaine.getFullYear() : '');
+      if (jours <= 30) {
+        alertes.push({
+          type: jours <= 7 ? 'erreur' : 'warn', icone: '📅',
+          titre: 'Déclaration CBAM ' + trimLabel + ' dans ' + jours + ' jour(s)',
+          desc:  'Échéance : ' + prochaine.toLocaleDateString('fr-FR') + '. ' +
+                 (jours <= 7
+                   ? 'URGENT — vérifiez la complétude des données avant soumission.'
+                   : 'Vérifiez que toutes vos consommations sont saisies et le rapport PDF généré.'),
+          action: { label: 'Générer le rapport', fn: "naviguer('rapports')" }
+        });
+      } else {
+        alertes.push({
+          type: 'info', icone: '📅',
+          titre: 'Prochaine déclaration CBAM ' + trimLabel + ' — ' + jours + ' jours restants',
+          desc:  'Échéance : ' + prochaine.toLocaleDateString('fr-FR') + '. Suivi en cours.',
+          action: null
+        });
+      }
+    })();
+
+    // ── Check 5 : Anomalies IoT (pics > 2.5× médiane) ─────────────────
+    try {
+      var resIot  = await fetch(API + '/activities?methode=iot&limit=100');
+      var dataIot = await resIot.json();
+      var iotRows = dataIot.data || [];
+      if (iotRows.length > 0) {
+        var parCapteur = {};
+        iotRows.forEach(function(r) {
+          var k = r.source_document || r.source;
+          if (!parCapteur[k]) parCapteur[k] = [];
+          parCapteur[k].push(parseFloat(r.quantity || 0));
+        });
+        var anomaliesTotal = 0;
+        var capts = [];
+        Object.entries(parCapteur).forEach(function(entry) {
+          var k = entry[0]; var vals = entry[1];
+          var sorted = vals.slice().sort(function(a,b){return a-b;});
+          var med = sorted[Math.floor(sorted.length/2)] || 1;
+          var pics = vals.filter(function(v){ return v > med * 2.5; });
+          if (pics.length) { anomaliesTotal += pics.length; capts.push(k); }
+
+          // Silence capteur — aucune donnée récente
+          var dernierRow = iotRows.filter(function(r){ return (r.source_document||r.source) === k; })
+                                   .sort(function(a,b){ return (b.created_at||'') > (a.created_at||'') ? 1 : -1; })[0];
+          if (dernierRow && dernierRow.created_at) {
+            var diffMin = (Date.now() - new Date(dernierRow.created_at).getTime()) / 60000;
+            if (diffMin > 15) {
+              alertes.push({
+                type: 'warn', icone: '📡',
+                titre: 'Capteur silencieux : ' + k,
+                desc:  'Pas de données depuis ' + Math.round(diffMin) + ' min. Vérifiez la connexion du capteur.',
+                action: { label: 'Voir Monitoring', fn: "_demarrerAutoRefreshMonitoring();naviguer('monitoring')" }
+              });
+            }
+          }
+        });
+        if (anomaliesTotal > 0) {
+          alertes.push({
+            type: 'warn', icone: '⚠️',
+            titre: anomaliesTotal + ' pic(s) anormal(aux) détecté(s) sur capteurs IoT',
+            desc:  'Capteur(s) concerné(s) : ' + capts.join(', ') + '. ' +
+                   'Valeur > 2.5× la médiane habituelle — vérification recommandée.',
+            action: { label: 'Voir Monitoring', fn: "_demarrerAutoRefreshMonitoring();naviguer('monitoring')" }
+          });
+        }
+      }
+    } catch(e) { /* IoT optionnel */ }
 
     if (alertes.length === 0) {
       alertes.push({
@@ -3482,6 +4152,478 @@ document.addEventListener('DOMContentLoaded', function() {
   var d = document.getElementById('s3-date');
   if (d) d.valueAsDate = new Date();
 });
+</script>
+
+<!-- ═══════════════════════════════════════════
+     MODAL + TOAST — styles thème-adaptatifs
+═══════════════════════════════════════════ -->
+<style>
+#modal-raison-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(3px);
+  align-items: center;
+  justify-content: center;
+}
+.modal-boite {
+  background: var(--fond-carte);
+  border: 1px solid var(--bordure-forte);
+  border-radius: 14px;
+  padding: 28px 28px 22px;
+  width: 440px;
+  max-width: 92vw;
+  box-shadow: var(--ombre-carte);
+}
+.modal-entete {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.modal-icone  { font-size: 20px; }
+.modal-titre  { font-size: 15px; font-weight: 700; color: var(--texte); }
+.modal-sous   { font-size: 12px; color: var(--texte-discret); margin-bottom: 18px; line-height: 1.5; }
+.modal-label  {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--texte-discret);
+  margin-bottom: 6px;
+  font-family: var(--police-chiffre);
+}
+.modal-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  background: var(--fond-input);
+  border: 1px solid var(--bordure);
+  border-radius: 8px;
+  color: var(--texte);
+  font-size: 13px;
+  outline: none;
+  transition: border-color .15s;
+  font-family: var(--police-texte);
+}
+.modal-input:focus { border-color: var(--bordure-focus); }
+.modal-erreur {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  margin-top: 7px;
+  font-size: 12px;
+  color: var(--rouge);
+}
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+.modal-btn-annuler {
+  padding: 9px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--bordure-forte);
+  background: transparent;
+  color: var(--texte-discret);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.modal-btn-annuler:hover { background: var(--fond-survol); color: var(--texte); }
+.modal-btn-ok {
+  padding: 9px 22px;
+  border-radius: 8px;
+  border: none;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.modal-btn-ok:hover { opacity: .85; }
+
+/* Toast */
+#toast-notif {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9100;
+  min-width: 260px;
+  max-width: 380px;
+  padding: 13px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  box-shadow: var(--ombre);
+  transition: opacity .25s, transform .25s;
+  border: 1px solid var(--bordure);
+  background: var(--fond-carte);
+  color: var(--texte);
+}
+#toast-notif.toast-ok    { border-color: var(--vert);  color: var(--vert); }
+#toast-notif.toast-erreur{ border-color: var(--rouge); color: var(--rouge); }
+</style>
+
+<!-- MODAL -->
+<div id="modal-raison-overlay">
+  <div class="modal-boite">
+    <div class="modal-entete">
+      <span id="modal-icone" class="modal-icone">🗑️</span>
+      <span id="modal-titre" class="modal-titre"></span>
+    </div>
+    <div id="modal-sous-titre" class="modal-sous"></div>
+
+    <label class="modal-label">Raison — obligatoire (audit CBAM · ISO 14064)</label>
+    <input id="modal-raison-input" class="modal-input" type="text"
+           placeholder="Ex : données erronées, doublon, correction mesure…"
+           oninput="document.getElementById('modal-erreur').style.display='none';"
+           onkeydown="if(event.key==='Enter')_modalConfirmer();">
+
+    <div id="modal-erreur" class="modal-erreur">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm.75 4a.75.75 0 0 0-1.5 0v3.5a.75.75 0 0 0 1.5 0V5zm-.75 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+      </svg>
+      Veuillez saisir une raison avant de confirmer.
+    </div>
+
+    <div class="modal-actions">
+      <button class="modal-btn-annuler" onclick="_modalAnnuler()">Annuler</button>
+      <button id="modal-btn-ok" class="modal-btn-ok" onclick="_modalConfirmer()">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast-notif"></div>
+
+<script>
+// ── MODAL RAISON ─────────────────────────────────────────
+var _modalCallback = null;
+
+function _ouvrirModal(opts) {
+  // opts : { icone, titre, sousTitre, btnLabel, btnColor, callback }
+  return new Promise(function(resolve) {
+    _modalCallback = resolve;
+    document.getElementById('modal-icone').textContent      = opts.icone      || '🗑️';
+    document.getElementById('modal-titre').textContent      = opts.titre      || '';
+    document.getElementById('modal-sous-titre').innerHTML   = opts.sousTitre  || '';
+    var btn = document.getElementById('modal-btn-ok');
+    btn.textContent       = opts.btnLabel || 'Confirmer';
+    btn.style.background  = opts.btnColor || '#f85149';
+    document.getElementById('modal-raison-input').value     = '';
+    document.getElementById('modal-erreur').style.display   = 'none';
+    var ov = document.getElementById('modal-raison-overlay');
+    ov.style.display = 'flex';
+    setTimeout(function(){ document.getElementById('modal-raison-input').focus(); }, 80);
+  });
+}
+
+function _modalAnnuler() {
+  document.getElementById('modal-raison-overlay').style.display = 'none';
+  if (_modalCallback) { _modalCallback(null); _modalCallback = null; }
+}
+
+function _modalConfirmer() {
+  var val = document.getElementById('modal-raison-input').value.trim();
+  if (!val) {
+    var err = document.getElementById('modal-erreur');
+    err.style.display = 'flex';
+    document.getElementById('modal-raison-input').style.borderColor = '#f85149';
+    setTimeout(function(){
+      document.getElementById('modal-raison-input').style.borderColor = 'var(--bordure,#1a3828)';
+    }, 1800);
+    return;
+  }
+  document.getElementById('modal-raison-overlay').style.display = 'none';
+  if (_modalCallback) { _modalCallback(val); _modalCallback = null; }
+}
+
+// Fermer en cliquant l'overlay
+document.getElementById('modal-raison-overlay').addEventListener('click', function(e){
+  if (e.target === this) _modalAnnuler();
+});
+
+/* ──────────────────────────────────────────────────
+   PAGE MONITORING — IoT / ERP temps réel
+────────────────────────────────────────────────── */
+var _monitoringTimer = null;
+var _monitoringChart = null;
+
+// Facteurs GHG Maroc — fallback si co2_kg absent de la réponse API
+var _FACTEURS_CO2 = { electricity: 0.625, fuel: 3.24, gas: 2.02 };
+function _getCo2(r) {
+  var v = parseFloat(r.co2_kg);
+  if (v > 0) return v;
+  return parseFloat(r.quantity || 0) * (_FACTEURS_CO2[r.source] || 0);
+}
+
+var _METHODE_BADGE = {
+  iot:    { label: 'IoT',    bg: '#0d6e3b', color: '#4ade80' },
+  erp:    { label: 'ERP',    bg: '#1a3a6e', color: '#60a5fa' },
+  manuel: { label: 'Manuel', bg: '#3a2a00', color: '#fbbf24' },
+  pdf:    { label: 'PDF',    bg: '#3a1a3a', color: '#e879f9' },
+};
+
+var _SOURCE_COULEUR = {
+  electricity: '#60a5fa',
+  fuel:        '#f97316',
+  gas:         '#a78bfa',
+};
+
+function _badgeMethode(m) {
+  var b = _METHODE_BADGE[m] || { label: m || '?', bg: '#333', color: '#aaa' };
+  return '<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;background:' +
+         b.bg + ';color:' + b.color + ';">' + b.label + '</span>';
+}
+
+async function chargerMonitoring() {
+  var methode  = (document.getElementById('m-filtre-methode')  || {}).value || '';
+  var source   = (document.getElementById('m-filtre-source')   || {}).value || '';
+  var fromDate = (document.getElementById('m-filtre-from')     || {}).value || '';
+  var toDate   = (document.getElementById('m-filtre-to')       || {}).value || '';
+
+  // Construire l'URL avec filtres
+  var params = new URLSearchParams({ limit: 200 });
+  if (methode)  params.set('methode',    methode);
+  if (source)   params.set('source',     source);
+  if (fromDate) params.set('from_date',  fromDate);
+  if (toDate)   params.set('to_date',    toDate);
+
+  try {
+    var res  = await fetch(API + '/activities?' + params.toString());
+    var json = await res.json();
+    var data = json.data || [];
+
+    // Mettre à jour compteur
+    var lbl = document.getElementById('monitoring-count-label');
+    if (lbl) lbl.textContent = data.length + ' entrée(s) affichée(s)';
+
+    _renderMonitoringStatut(data);
+    _renderMonitoringTable(data);
+    _renderMonitoringChart(data);
+
+    // Badge anomalie sidebar (valeur IoT > 3× médiane)
+    var anomalies = _detecterAnomalies(data.filter(function(r){ return r.methode_saisie === 'iot'; }));
+    var badge = document.getElementById('monitoring-alerte-badge');
+    if (badge) {
+      if (anomalies > 0) {
+        badge.textContent    = anomalies;
+        badge.style.display  = 'inline-flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+  } catch(e) {
+    var tbody = document.getElementById('monitoring-tbody');
+    if (tbody) tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--danger,#f85149);">❌ API inaccessible</td></tr>';
+  }
+}
+
+function _detecterAnomalies(rows) {
+  if (!rows.length) return 0;
+  var vals = rows.map(function(r){ return parseFloat(r.quantity || 0); }).sort(function(a,b){return a-b;});
+  var med  = vals[Math.floor(vals.length / 2)] || 1;
+  return rows.filter(function(r){ return parseFloat(r.quantity) > med * 2.5; }).length;
+}
+
+function _renderMonitoringStatut(data) {
+  var cont = document.getElementById('monitoring-capteurs');
+  if (!cont) return;
+
+  // Seulement les entrées IoT et ERP (pas manuel / pdf)
+  var entrees = data.filter(function(r) {
+    return r.methode_saisie === 'iot' || r.methode_saisie === 'erp';
+  });
+
+  if (!entrees.length) {
+    cont.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--texte-discret);font-size:13px;">' +
+      '📡 Aucun capteur IoT / ERP détecté — lancez <code>python iot_simulator.py</code> pour démarrer la simulation.' +
+      '</div>';
+    return;
+  }
+
+  // Grouper par source_document — garder la mesure la plus récente
+  var parCapteur = {};
+  entrees.forEach(function(r) {
+    var key = r.source_document || (r.methode_saisie + '-' + r.source);
+    if (!parCapteur[key] || r.created_at > parCapteur[key].created_at) {
+      parCapteur[key] = r;
+    }
+  });
+
+  var maintenant = Date.now();
+  var html = Object.values(parCapteur).slice(0, 8).map(function(r) {
+    var ts      = r.created_at ? new Date(r.created_at) : null;
+    var diffSec = ts ? Math.round((maintenant - ts.getTime()) / 1000) : null;
+
+    // Seuils adaptés : IoT (données toutes les ~60s) vs ERP (import journalier)
+    var statut;
+    if (diffSec === null) {
+      statut = '⚪';
+    } else if (r.methode_saisie === 'iot') {
+      statut = diffSec < 120 ? '🟢' : diffSec < 300 ? '🟡' : '🔴';
+    } else {
+      statut = diffSec < 86400 ? '🟢' : diffSec < 259200 ? '🟡' : '🔴';
+    }
+
+    // Affichage de l'âge lisible
+    var age;
+    if (diffSec === null) {
+      age = '—';
+    } else if (diffSec < 60) {
+      age = diffSec + 's';
+    } else if (diffSec < 3600) {
+      age = Math.round(diffSec / 60) + 'min';
+    } else if (diffSec < 86400) {
+      age = Math.round(diffSec / 3600) + 'h';
+    } else {
+      age = Math.round(diffSec / 86400) + 'j';
+    }
+
+    var couleur    = _SOURCE_COULEUR[r.source] || '#aaa';
+    var nomCapteur = r.source_document || (r.methode_saisie === 'erp' ? 'Import ERP' : r.source);
+
+    return '<div class="carte" style="padding:var(--espace-md);">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+        '<div style="font-size:11px;color:var(--texte-discret);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px;" title="' + nomCapteur + '">' + nomCapteur + '</div>' +
+        statut +
+      '</div>' +
+      '<div style="font-size:20px;font-weight:700;color:' + couleur + ';">' + parseFloat(r.quantity).toFixed(1) + ' <span style="font-size:12px;font-weight:400;color:var(--texte-discret);">' + (r.unit || '') + '</span></div>' +
+      '<div style="margin-top:4px;display:flex;justify-content:space-between;align-items:center;">' +
+        _badgeMethode(r.methode_saisie) +
+        '<span style="font-size:11px;color:var(--texte-discret);">il y a ' + age + '</span>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  cont.innerHTML = html;
+}
+
+function _renderMonitoringTable(data) {
+  var tbody = document.getElementById('monitoring-tbody');
+  if (!tbody) return;
+
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--texte-discret);">Aucune donnée pour ces filtres</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = data.slice(0, 100).map(function(r) {
+    var estAnomalie = parseFloat(r.quantity) > 0 && r.methode_saisie === 'iot';
+    var rowStyle    = '';
+    var couleur     = _SOURCE_COULEUR[r.source] || 'var(--texte)';
+    var ts          = r.created_at ? new Date(r.created_at).toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '—';
+    return '<tr style="border-bottom:1px solid var(--bordure)' + rowStyle + ';transition:background .15s;" onmouseover="this.style.background=\'var(--surface-eleve)\'" onmouseout="this.style.background=\'\'">' +
+      '<td style="padding:8px 10px;color:var(--texte-discret);font-size:12px;">#' + r.id + '</td>' +
+      '<td style="padding:8px 10px;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + couleur + ';margin-right:6px;vertical-align:middle;"></span><span style="color:var(--texte);">' + (r.source || '—') + '</span></td>' +
+      '<td style="padding:8px 10px;font-size:12px;color:var(--texte-discret);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + (r.source_document || '') + '">' + (r.source_document || '<em>—</em>') + '</td>' +
+      '<td style="padding:8px 10px;text-align:right;font-weight:600;color:' + couleur + ';">' + parseFloat(r.quantity).toFixed(2) + ' <span style="font-size:11px;font-weight:400;color:var(--texte-discret);">' + (r.unit || '') + '</span></td>' +
+      '<td style="padding:8px 10px;text-align:right;color:var(--texte-discret);font-size:12px;">' + _getCo2(r).toFixed(2) + '</td>' +
+      '<td style="padding:8px 10px;font-size:12px;color:var(--texte-discret);">' + (r.date || '—') + '</td>' +
+      '<td style="padding:8px 10px;font-size:11px;color:var(--texte-tres-discret,#555);">' + ts + '</td>' +
+      '<td style="padding:8px 10px;text-align:center;">' + _badgeMethode(r.methode_saisie) + '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function _renderMonitoringChart(data) {
+  var canvas = document.getElementById('monitoring-chart');
+  if (!canvas) return;
+
+  if (_monitoringChart) { _monitoringChart.destroy(); _monitoringChart = null; }
+
+  // Grouper CO2 par période (jour ou mois selon l'étendue des données)
+  var parDate = {};
+  data.forEach(function(r) {
+    var raw = r.date || '?';
+    // Si plus de 45 jours de données → regrouper par mois (YYYY-MM)
+    var d = (data.length > 45 && raw.length >= 7) ? raw.slice(0, 7) : raw;
+    if (!parDate[d]) parDate[d] = { electricity: 0, fuel: 0, gas: 0 };
+    parDate[d][r.source] = (parDate[d][r.source] || 0) + _getCo2(r);
+  });
+
+  var dates = Object.keys(parDate).sort().slice(-20);
+  if (!dates.length) return;
+
+  var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  var gridColor = isDark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)';
+  var tickColor = isDark ? '#666' : '#999';
+
+  _monitoringChart = new Chart(canvas.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: dates,
+      datasets: [
+        { label: 'Électricité', data: dates.map(function(d){ return parDate[d].electricity.toFixed(2); }), backgroundColor: 'rgba(96,165,250,.7)', borderRadius: 3 },
+        { label: 'Fuel',        data: dates.map(function(d){ return parDate[d].fuel.toFixed(2); }),        backgroundColor: 'rgba(249,115,22,.7)',  borderRadius: 3 },
+        { label: 'Gaz',         data: dates.map(function(d){ return parDate[d].gas.toFixed(2); }),         backgroundColor: 'rgba(167,139,250,.7)', borderRadius: 3 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: tickColor, font: { size: 11 } } }, tooltip: { mode: 'index' } },
+      scales: {
+        x: { stacked: true, grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 } } },
+        y: { stacked: true, grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 } }, title: { display: true, text: 'kg CO₂', color: tickColor, font: { size: 10 } } }
+      }
+    }
+  });
+
+  var sub = document.getElementById('monitoring-chart-subtitle');
+  var modeLabel = (data.length > 45) ? 'mois' : 'jours';
+  if (sub) sub.textContent = dates.length + ' ' + modeLabel + ' affichés';
+}
+
+function exporterMonitoringCSV() {
+  var methode  = (document.getElementById('m-filtre-methode')  || {}).value || '';
+  var source   = (document.getElementById('m-filtre-source')   || {}).value || '';
+  var fromDate = (document.getElementById('m-filtre-from')     || {}).value || '';
+  var toDate   = (document.getElementById('m-filtre-to')       || {}).value || '';
+
+  var params = new URLSearchParams();
+  if (methode)  params.set('methode',   methode);
+  if (source)   params.set('source',    source);
+  if (fromDate) params.set('from_date', fromDate);
+  if (toDate)   params.set('to_date',   toDate);
+
+  window.location.href = API + '/activities/export?' + params.toString();
+}
+
+function reinitialiserFiltresMonitoring() {
+  ['m-filtre-methode','m-filtre-source','m-filtre-from','m-filtre-to'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  chargerMonitoring();
+}
+
+function _demarrerAutoRefreshMonitoring() {
+  _arreterAutoRefreshMonitoring();
+  chargerMonitoring();
+  _monitoringTimer = setInterval(chargerMonitoring, 10000);
+}
+
+function _arreterAutoRefreshMonitoring() {
+  if (_monitoringTimer) { clearInterval(_monitoringTimer); _monitoringTimer = null; }
+}
+
+// ── TOAST ─────────────────────────────────────────────────
+function afficherToast(message, type) {
+  var el = document.getElementById('toast-notif');
+  el.className = type === 'ok' ? 'toast-ok' : 'toast-erreur';
+  el.innerHTML = (type === 'ok' ? '✅ ' : '❌ ') + message;
+  el.style.display   = 'block';
+  el.style.opacity   = '1';
+  el.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(el._timer);
+  el._timer = setTimeout(function(){
+    el.style.opacity   = '0';
+    el.style.transform = 'translateX(-50%) translateY(-8px)';
+    setTimeout(function(){ el.style.display = 'none'; }, 260);
+  }, 3500);
+}
 </script>
 
 </body>
