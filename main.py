@@ -4,9 +4,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from database import create_tables, insert_default_factors
+from database import create_tables, insert_default_factors, insert_pfc_defaults, insert_cement_defaults, insert_fertilizer_defaults, insert_hydrogen_defaults
 from routers import data , pdf , erp , tracabilite , chat , cbam , company , report, scope3
-
+from routers import aluminium, ciment, engrais, hydrogene
+from routers.auth import router as auth_router
+from routers.cbam_communication import router as cbam_communication_router
+from routers.cbam_communication_template import router as cbam_communication_template_router
+from routers.operators_emissions_report import router as operators_emissions_report_router
 
 # Crée l'application FastAPI
 app = FastAPI(
@@ -32,6 +36,10 @@ def startup():
     print("🚀 Démarrage de l'application...")
     create_tables()
     insert_default_factors()
+    insert_cement_defaults()
+    insert_pfc_defaults()
+    insert_fertilizer_defaults()
+    insert_hydrogen_defaults()
     print("✅ Application prête !")
 
 # Page d'accueil de l'API
@@ -58,6 +66,14 @@ app.include_router(cbam.router)
 app.include_router(company.router)
 app.include_router(report.router)
 app.include_router(scope3.router)
+app.include_router(aluminium.router)
+app.include_router(ciment.router)
+app.include_router(engrais.router)
+app.include_router(hydrogene.router)
+app.include_router(auth_router)
+app.include_router(cbam_communication_router)
+app.include_router(cbam_communication_template_router)
+app.include_router(operators_emissions_report_router)
 
 # ── FICHIERS STATIQUES ────────────────────────────────
 # Sert tous les fichiers du dossier frontend/ directement.

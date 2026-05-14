@@ -1,8 +1,9 @@
 # routers/data.py
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from database import get_connection
+from dependencies import get_current_user
 from datetime import date
 from contextlib import contextmanager
 from typing import Optional
@@ -41,14 +42,15 @@ def get_all_activities(
     from_date: Optional[date] = Query(None),
     to_date:   Optional[date] = Query(None),
     limit: int = Query(500, le=2000),
+    current_user: dict = Depends(get_current_user),
 ):
     query  = """
         SELECT a.*, ROUND(e.co2_kg::numeric, 3) AS co2_kg, e.scope
         FROM activities a
         LEFT JOIN emissions e ON e.activity_id = a.id AND e.actif = true
-        WHERE a.actif = true
+        WHERE a.actif = true AND a.user_id = %s
     """
-    params = []
+    params = [current_user["user_id"]]
     if methode:
         query += " AND a.methode_saisie = %s"; params.append(methode)
     if source:
@@ -66,7 +68,10 @@ def get_all_activities(
 
 
 @router.get("/activities/live")
-def get_live_feed(limit: int = Query(50, le=200)):
+def get_live_feed(
+    limit: int = Query(50, le=200),
+    current_user: dict = Depends(get_current_user),
+):
     """Dernières activités toutes sources confondues — pour le flux temps réel."""
     with db_cursor() as (cursor, _):
         cursor.execute("""
@@ -75,10 +80,10 @@ def get_live_feed(limit: int = Query(50, le=200)):
                    e.co2_kg, e.scope
             FROM activities a
             LEFT JOIN emissions e ON e.activity_id = a.id AND e.actif = true
-            WHERE a.actif = true
+            WHERE a.actif = true AND a.user_id = %s
             ORDER BY a.created_at DESC
             LIMIT %s
-        """, (limit,))
+        """, (current_user["user_id"], limit))
         rows = cursor.fetchall()
     return {"data": rows, "count": len(rows)}
 
@@ -89,6 +94,7 @@ def export_activities_csv(
     source:    Optional[str]  = Query(None),
     from_date: Optional[date] = Query(None),
     to_date:   Optional[date] = Query(None),
+    current_user: dict = Depends(get_current_user),
 ):
     """Export CSV filtré des activités — téléchargement direct."""
     query  = """
@@ -97,9 +103,9 @@ def export_activities_csv(
                ROUND(e.co2_kg::numeric, 3) AS co2_kg, e.scope
         FROM activities a
         LEFT JOIN emissions e ON e.activity_id = a.id AND e.actif = true
-        WHERE a.actif = true
+        WHERE a.actif = true AND a.user_id = %s
     """
-    params = []
+    params = [current_user["user_id"]]
     if methode:
         query += " AND a.methode_saisie = %s"; params.append(methode)
     if source:
@@ -135,9 +141,10 @@ def export_activities_csv(
 
 
 @router.post("/activities")
-def add_activity(activity: ActivityInput):
-    
-    # Vérifie que la source est valide
+def add_activity(
+    activity: ActivityInput,
+    current_user: dict = Depends(get_current_user),
+):
     valid_sources = ["electricity", "fuel", "gas"]
     if activity.source not in valid_sources:
         raise HTTPException(
@@ -146,14 +153,14 @@ def add_activity(activity: ActivityInput):
         )
 
     with db_cursor() as (cursor, conn):
-        
-        # Étape 1 — Insère l'activité
+
+        # Étape 1 — Insère l'activité avec user_id
         cursor.execute("""
-            INSERT INTO activities (source, quantity, unit, date, methode_saisie, source_document)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO activities (source, quantity, unit, date, methode_saisie, source_document, user_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
             RETURNING id
         """, (activity.source, activity.quantity, activity.unit, activity.date,
-              activity.methode_saisie, activity.source_document))
+              activity.methode_saisie, activity.source_document, current_user["user_id"]))
         
         new_id = cursor.fetchone()["id"]
 
@@ -203,25 +210,16 @@ def get_emission_factors():
 
 
 @router.get("/emissions")
-def get_emissions():
+def get_emissions(current_user: dict = Depends(get_current_user)):
+    uid = current_user["user_id"]
     with db_cursor() as (cursor, _):
-        # Lit la table emissions (source de vérité = même source que le LLM)
-        # Filtre actif=true sur activities ET emissions
         cursor.execute("""
-            SELECT
-                a.id,
-                a.source,
-                a.quantity,
-                a.unit,
-                a.date,
-                e.scope,
-                e.co2_kg
+            SELECT a.id, a.source, a.quantity, a.unit, a.date, e.scope, e.co2_kg
             FROM activities a
             JOIN emissions e ON e.activity_id = a.id
-            WHERE a.actif = true
-              AND e.actif = true
+            WHERE a.actif = true AND e.actif = true AND a.user_id = %s
             ORDER BY a.date DESC
-        """)
+        """, (uid,))
         activities = cursor.fetchall()
 
         cursor.execute("""
@@ -232,11 +230,10 @@ def get_emissions():
                 ROUND(SUM(CASE WHEN e.scope = 2 THEN e.co2_kg ELSE 0 END)::numeric, 1) AS scope2_kg
             FROM activities a
             JOIN emissions e ON e.activity_id = a.id
-            WHERE a.actif = true
-              AND e.actif = true
+            WHERE a.actif = true AND e.actif = true AND a.user_id = %s
             GROUP BY TO_CHAR(a.date, 'Mon YY'), DATE_TRUNC('month', a.date)
             ORDER BY mois_date
-        """)
+        """, (uid,))
         s12_mois = {row["mois_date"]: dict(row) for row in cursor.fetchall()}
 
         cursor.execute("""
@@ -245,10 +242,10 @@ def get_emissions():
                 DATE_TRUNC('month', date) AS mois_date,
                 ROUND(SUM(co2_kg)::numeric, 1) AS scope3_kg
             FROM scope3_entries
-            WHERE actif = true
+            WHERE actif = true AND user_id = %s
             GROUP BY TO_CHAR(date, 'Mon YY'), DATE_TRUNC('month', date)
             ORDER BY mois_date
-        """)
+        """, (uid,))
         s3_mois = {row["mois_date"]: float(row["scope3_kg"]) for row in cursor.fetchall()}
 
     # Fusionner les deux séries par mois_date
@@ -269,10 +266,10 @@ def get_emissions():
 
 
 @router.get("/summary")
-def get_summary():
+def get_summary(current_user: dict = Depends(get_current_user)):
+    uid = current_user["user_id"]
     with db_cursor() as (cursor, _):
 
-        # ── 1. Détail par source — donut chart ────────────────────────────────
         cursor.execute("""
             SELECT
                 a.source,
@@ -283,28 +280,26 @@ def get_summary():
                 ef.scope
             FROM activities a
             JOIN emission_factors ef ON a.source = ef.energy_type
-            WHERE a.actif = true
+            WHERE a.actif = true AND a.user_id = %s
             GROUP BY a.source, a.unit, ef.factor, ef.scope
-        """)
+        """, (uid,))
         summary = cursor.fetchall()
 
-        # ── 2. Scope 1 & 2 ────────────────────────────────────────────────────
         cursor.execute("""
             SELECT e.scope, SUM(e.co2_kg) AS co2_kg
             FROM emissions e
             JOIN activities a ON a.id = e.activity_id
-            WHERE a.actif = true AND e.actif = true
+            WHERE a.actif = true AND e.actif = true AND a.user_id = %s
             GROUP BY e.scope
-        """)
+        """, (uid,))
         scopes = {row["scope"]: float(row["co2_kg"]) for row in cursor.fetchall()}
 
-        # ── 3. Scope 3 ────────────────────────────────────────────────────────
         cursor.execute("""
             SELECT direction, SUM(co2_kg) AS co2_kg
             FROM scope3_entries
-            WHERE actif = true
+            WHERE actif = true AND user_id = %s
             GROUP BY direction
-        """)
+        """, (uid,))
         scope3_dir = {row["direction"]: float(row["co2_kg"]) for row in cursor.fetchall()}
 
     scope1_kg            = scopes.get(1, 0.0)

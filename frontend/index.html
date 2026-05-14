@@ -753,6 +753,232 @@
       gap: 8px;
       min-height: 0;
     }
+
+    /* ════════════════════════════════════════════
+       ARCHITECTURE SECTEUR ACTIF — 3 NIVEAUX
+    ════════════════════════════════════════════ */
+
+    /* ── Level 1 : strip de chips en haut du contenu ── */
+    .secteur-strip-wrapper {
+      display: none;
+      padding: 0 0 var(--espace-md);
+      margin-bottom: var(--espace-md);
+      border-bottom: 1px solid var(--bordure);
+    }
+    .secteur-strip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .secteur-strip__label {
+      font-family: var(--police-chiffre);
+      font-size: 10px;
+      color: var(--texte-tres-discret);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+      margin-right: 2px;
+    }
+    .secteur-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px 4px 9px;
+      border-radius: 99px;
+      border: 1.5px solid var(--bordure);
+      background: transparent;
+      color: var(--texte-discret);
+      font-family: var(--police-chiffre);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .secteur-chip:hover { opacity: 0.85; }
+    .secteur-chip--actif {
+      font-weight: 700;
+    }
+    .secteur-chip__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── Level 2 : items sidebar avec couleur dédiée ── */
+    .sidebar__secteur-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: var(--arrondi-md);
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 2px;
+      border-left: 3px solid transparent;
+    }
+    .sidebar__secteur-item:hover { background: var(--fond-survol); }
+    .sidebar__secteur-item--actif { background: var(--fond-survol); }
+    .secteur-item__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .secteur-item__label {
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .secteur-item__col {
+      margin-left: auto;
+      font-family: var(--police-chiffre);
+      font-size: 9px;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    /* en mode réduit : masquer les textes, centrer le dot */
+    .sidebar--reduite .secteur-item__label,
+    .sidebar--reduite .secteur-item__col { display: none; }
+    .sidebar--reduite .sidebar__secteur-item { justify-content: center; padding: 8px 0; }
+
+    /* ── Level 1 (profil) : chips de sélection multi-secteur ── */
+    .profil-secteur-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 99px;
+      border: 1.5px solid var(--bordure);
+      background: transparent;
+      color: var(--texte-discret);
+      font-family: var(--police-chiffre);
+      font-size: 12px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .profil-secteur-chip:hover { opacity: 0.85; }
+    .profil-secteur-chip--actif { font-weight: 600; }
+
+    /* ── Dashboard : carte résultats secteur actif ── */
+    .dash-secteur-card {
+      border-radius: var(--rayon);
+      background: var(--fond-carte);
+      border: 1px solid var(--bordure);
+      padding: var(--espace-md);
+      margin-bottom: var(--espace-md);
+      border-left-width: 3px;
+      transition: border-color .3s;
+    }
+    .dash-secteur-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .dash-secteur-card__kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 700px) {
+      .dash-secteur-card__kpis { grid-template-columns: repeat(2,1fr); }
+    }
+    .dash-secteur-kpi {
+      background: var(--fond-survol);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .dash-secteur-kpi__label {
+      font-size: 9px;
+      color: var(--texte-discret);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 4px;
+    }
+    .dash-secteur-kpi__val {
+      font-family: var(--police-chiffre);
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    .dash-secteur-kpi__sub {
+      font-size: 9px;
+      color: var(--texte-discret);
+      margin-top: 2px;
+    }
+    /* Gauge bar */
+    .dash-secteur-gauge { margin-top: 2px; }
+    .dash-secteur-gauge__track {
+      height: 6px;
+      background: var(--fond-survol);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .dash-secteur-gauge__fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width .8s cubic-bezier(.4,0,.2,1);
+    }
+    /* Toast notification */
+    #secteur-calc-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      background: var(--fond-carte);
+      border: 1px solid var(--bordure);
+      border-radius: 12px;
+      padding: 14px 18px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.45);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 280px;
+      max-width: 360px;
+      transform: translateY(120%);
+      opacity: 0;
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+      pointer-events: none;
+    }
+    #secteur-calc-toast.toast--visible {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: all;
+    }
+    .toast__icon { font-size: 20px; flex-shrink: 0; }
+    .toast__body { flex: 1; min-width: 0; }
+    .toast__title { font-size: 12px; font-weight: 700; color: var(--texte); }
+    .toast__sub   { font-size: 10px; color: var(--texte-discret); margin-top: 1px; }
+    .toast__btn {
+      padding: 7px 14px;
+      border: none;
+      border-radius: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .toast__close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--texte-discret);
+      font-size: 14px;
+      padding: 2px 4px;
+      flex-shrink: 0;
+    }
   </style>
 </head>
 
@@ -803,6 +1029,13 @@
 <!-- CONTENU — colonne 1 (gauche) -->
 <main class="main">
 
+  <!-- ══ SECTEUR ACTIF STRIP — Level 1 (persistant sur toutes les pages) ══ -->
+  <div class="secteur-strip-wrapper" id="secteur-strip-wrapper">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <span class="secteur-strip__label">Secteur :</span>
+      <div class="secteur-strip" id="secteur-strip"></div>
+    </div>
+  </div>
 
   <!-- ══ PAGE : DASHBOARD ════════════════════════ -->
   <section id="page-dashboard" class="page page--active">
@@ -858,6 +1091,9 @@
       </div>
     </div>
 
+
+    <!-- ─── SECTION 1b : SECTEUR ACTIF (résultats CBAM) ─── -->
+    <div id="dash-secteur-card" style="display:none;"></div>
 
     <!-- ─── SECTION 2 : ANALYSES & FILTRES ─────────── -->
     <div class="carte" style="margin-bottom:var(--espace-md);">
@@ -1400,16 +1636,112 @@
         Générez des rapports PDF officiels conformes GHG Protocol et CBAM pour vos audits réglementaires.
       </p>
 
-      <!-- Rapport CBAM -->
+      <!-- ── Rapport v2 (nouveau format officiel) ── -->
+      <div style="border:2px solid var(--primaire);border-radius:10px;padding:20px;margin-bottom:var(--espace-md);position:relative;">
+        <span style="position:absolute;top:-10px;left:16px;background:var(--primaire);color:#fff;
+                     font-size:10px;font-weight:700;padding:2px 10px;border-radius:10px;">NOUVEAU</span>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:220px;">
+            <div style="font-weight:700;color:var(--texte);margin-bottom:6px;font-size:15px;">
+              🏛️ Rapport MRV Officiel v2
+            </div>
+            <div style="font-size:12px;color:var(--texte-discret);line-height:1.7;margin-bottom:10px;">
+              Couverture officielle · Cadre réglementaire complet · Hash SHA-256 · QR code ·
+              Bilingue FR / EN · Conforme IR (UE) 2025/2546, 2025/2547, 2025/2620, 2025/2621
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+              <span class="badge badge-ok" style="font-size:10px;">SHA-256</span>
+              <span class="badge badge-ok" style="font-size:10px;">QR Code</span>
+              <span class="badge badge-ok" style="font-size:10px;">FR / EN</span>
+              <span class="badge badge-ok" style="font-size:10px;">IR 2025/2546</span>
+              <span class="badge badge-ok" style="font-size:10px;">ISO 14064-3</span>
+            </div>
+
+            <!-- Langue -->
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+              <span style="font-size:12px;color:var(--texte-discret);">Langue :</span>
+              <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;">
+                <input type="radio" name="rapport-lang" value="fr" checked id="lang-fr"> 🇫🇷 Français
+              </label>
+              <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;">
+                <input type="radio" name="rapport-lang" value="en" id="lang-en"> 🇬🇧 English
+              </label>
+            </div>
+
+            <!-- Paramètres avancés collapsibles -->
+            <details style="border:1px solid var(--bordure);border-radius:8px;padding:10px;">
+              <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--texte-discret);
+                              list-style:none;display:flex;align-items:center;gap:6px;">
+                ⚙️ Paramètres avancés (EORI, vérificateur…)
+              </summary>
+              <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div>
+                  <label style="font-size:11px;color:var(--texte-discret);display:block;margin-bottom:3px;">N° EORI</label>
+                  <input type="text" id="v2-eori" class="champ" style="font-size:12px;padding:6px 10px;"
+                         placeholder="Ex : MA123456789012">
+                </div>
+                <div>
+                  <label style="font-size:11px;color:var(--texte-discret);display:block;margin-bottom:3px;">Code NACE</label>
+                  <input type="text" id="v2-nace" class="champ" style="font-size:12px;padding:6px 10px;"
+                         placeholder="Ex : 24.10">
+                </div>
+                <div>
+                  <label style="font-size:11px;color:var(--texte-discret);display:block;margin-bottom:3px;">ID Registre O3CI</label>
+                  <input type="text" id="v2-o3ci" class="champ" style="font-size:12px;padding:6px 10px;"
+                         placeholder="Optionnel">
+                </div>
+                <div>
+                  <label style="font-size:11px;color:var(--texte-discret);display:block;margin-bottom:3px;">Capacité nominale (t/an)</label>
+                  <input type="number" id="v2-capacite" class="champ" style="font-size:12px;padding:6px 10px;"
+                         placeholder="Ex : 750000" min="0">
+                </div>
+                <div>
+                  <label style="font-size:11px;color:var(--texte-discret);display:block;margin-bottom:3px;">Destinataire (importateur EU)</label>
+                  <input type="text" id="v2-destinataire" class="champ" style="font-size:12px;padding:6px 10px;"
+                         placeholder="Ex : ArcelorMittal SA">
+                </div>
+                <div>
+                  <label style="font-size:11px;color:var(--texte-discret);display:block;margin-bottom:3px;">Quantité importée (t)</label>
+                  <input type="number" id="v2-quantite" class="champ" style="font-size:12px;padding:6px 10px;"
+                         placeholder="0" min="0" step="0.01">
+                </div>
+                <div>
+                  <label style="font-size:11px;color:var(--texte-discret);display:block;margin-bottom:3px;">Vérificateur (organisme)</label>
+                  <input type="text" id="v2-verifier-nom" class="champ" style="font-size:12px;padding:6px 10px;"
+                         placeholder="Ex : Bureau Veritas SA">
+                </div>
+                <div>
+                  <label style="font-size:11px;color:var(--texte-discret);display:block;margin-bottom:3px;">N° Accréditation vérificateur</label>
+                  <input type="text" id="v2-verifier-accred" class="champ" style="font-size:12px;padding:6px 10px;"
+                         placeholder="Ex : FR-V-0042">
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;align-self:flex-start;">
+            <button class="btn btn-primaire" id="btn-rapport-v2-preview"
+                    onclick="actionRapportV2('preview')" style="white-space:nowrap;">
+              👁️ Prévisualiser
+            </button>
+            <button class="btn btn-secondaire" id="btn-rapport-v2-dl"
+                    onclick="actionRapportV2('download')" style="white-space:nowrap;">
+              ⬇️ Télécharger
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Rapport v1 (thème dark, 8 sections) ── -->
       <div style="border:1px solid var(--bordure);border-radius:10px;padding:20px;margin-bottom:var(--espace-md);">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
           <div style="flex:1;">
             <div style="font-weight:600;color:var(--texte);margin-bottom:6px;font-size:14px;">
-              🛡️ Rapport Conformité CBAM
+              🛡️ Rapport Conformité CBAM <span style="font-size:11px;color:var(--texte-discret);font-weight:400;">— v1 (thème sombre)</span>
             </div>
             <div style="font-size:12px;color:var(--texte-discret);line-height:1.7;margin-bottom:10px;">
               Bilan complet GHG Protocol Scope 1 &amp; 2 · Analyse conformité CBAM avec benchmarks officiels ·
-              Exposition financière EU ETS · Recommandations de réduction · Évolution mensuelle
+              Exposition financière EU ETS · Recommandations LLM · Évolution mensuelle · 8 sections
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
               <span class="badge badge-ok" style="font-size:10px;">Scope 1 &amp; 2</span>
@@ -1418,10 +1750,121 @@
               <span class="badge badge-ok" style="font-size:10px;">GHG Protocol</span>
             </div>
           </div>
-          <button class="btn btn-primaire" id="btn-rapport-cbam"
-                  onclick="telechargerRapportCBAM()" style="white-space:nowrap;flex-shrink:0;">
-            ⬇️ Générer PDF
-          </button>
+          <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;">
+            <button class="btn btn-secondaire" id="btn-rapport-v1-preview"
+                    onclick="actionRapportV1('preview')" style="white-space:nowrap;">
+              👁️ Prévisualiser
+            </button>
+            <button class="btn btn-secondaire" id="btn-rapport-cbam"
+                    onclick="actionRapportV1('download')" style="white-space:nowrap;">
+              ⬇️ Télécharger
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Communication Template Excel CBAM ── -->
+      <div style="border:1px solid rgba(63,185,80,0.35);border-radius:10px;padding:20px;margin-bottom:var(--espace-md);">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:220px;">
+            <div style="font-weight:700;color:var(--texte);margin-bottom:6px;font-size:14px;">
+              📊 Communication Template Excel CBAM
+            </div>
+            <div style="font-size:12px;color:var(--texte-discret);line-height:1.7;margin-bottom:10px;">
+              Fichier Excel officiel multi-feuilles avec les données réelles de votre installation —
+              Summary Communication · Summary Products · Summary Processes · Onglet sectoriel · Metadata.<br>
+              <span style="color:rgba(63,185,80,0.9);">Règlement UE 2025/2620 &amp; 2025/2621 · Colonne A/B automatique</span>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+              <span class="badge badge-ok" style="font-size:10px;">Excel .xlsx</span>
+              <span class="badge badge-ok" style="font-size:10px;">Scope 1 &amp; 2 réels</span>
+              <span class="badge badge-ok" style="font-size:10px;">6 feuilles</span>
+              <span class="badge badge-ok" style="font-size:10px;">UE 2025/2621</span>
+            </div>
+
+            <!-- Champ année -->
+            <div style="display:flex;align-items:center;gap:10px;">
+              <label style="font-size:12px;color:var(--texte-discret);white-space:nowrap;">
+                Année de reporting :
+              </label>
+              <input type="number" id="comm-template-year"
+                     value="2026" min="2026" max="2030"
+                     class="champ" style="width:90px;font-size:13px;padding:6px 10px;">
+            </div>
+
+            <!-- Statut téléchargement -->
+            <div id="comm-template-statut" style="display:none;margin-top:10px;padding:8px 12px;
+              border-radius:6px;font-size:12px;line-height:1.5;"></div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;align-self:flex-start;">
+            <button class="btn btn-primaire" id="btn-comm-template-preview"
+                    onclick="telechargerCommunicationTemplate('preview')"
+                    style="white-space:nowrap;background:rgba(63,185,80,0.08);
+                           border:1px solid rgba(63,185,80,0.35);color:#3fb950;">
+              👁 Visualiser
+            </button>
+            <button class="btn btn-primaire" id="btn-comm-template-dl"
+                    onclick="telechargerCommunicationTemplate('download')"
+                    style="white-space:nowrap;background:rgba(63,185,80,0.15);
+                           border:1px solid rgba(63,185,80,0.4);color:#3fb950;">
+              ⬇️ Télécharger Excel
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Operator's Emissions Report JSON ── -->
+      <div style="border:1px solid rgba(88,166,255,0.35);border-radius:10px;padding:20px;margin-bottom:var(--espace-md);">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:220px;">
+            <div style="font-weight:700;color:var(--texte);margin-bottom:6px;font-size:14px;">
+              📋 Operator's Emissions Report
+            </div>
+            <div style="font-size:12px;color:var(--texte-discret);line-height:1.7;margin-bottom:10px;">
+              Rapport JSON structuré destiné au vérificateur tiers accrédité UE —
+              6 sections obligatoires : Identification · Monitoring Plan · Électricité ·
+              Émissions Installation · Précurseurs · Prix carbone.<br>
+              <span style="color:rgba(88,166,255,0.9);">IR 2025/2547, Annexe IV §1.1 · Langue : English</span>
+            </div>
+
+            <!-- Badges -->
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+              <span style="background:rgba(88,166,255,0.1);color:#58a6ff;border:1px solid rgba(88,166,255,0.3);border-radius:10px;font-size:10px;padding:2px 8px;">JSON .json</span>
+              <span style="background:rgba(88,166,255,0.1);color:#58a6ff;border:1px solid rgba(88,166,255,0.3);border-radius:10px;font-size:10px;padding:2px 8px;">Scope 1 &amp; 2 réels</span>
+              <span style="background:rgba(88,166,255,0.1);color:#58a6ff;border:1px solid rgba(88,166,255,0.3);border-radius:10px;font-size:10px;padding:2px 8px;">6 sections</span>
+              <span style="background:rgba(88,166,255,0.1);color:#58a6ff;border:1px solid rgba(88,166,255,0.3);border-radius:10px;font-size:10px;padding:2px 8px;">IR 2025/2547</span>
+            </div>
+
+            <!-- Champ année -->
+            <div style="display:flex;align-items:center;gap:10px;">
+              <label style="font-size:12px;color:var(--texte-discret);white-space:nowrap;">
+                Année de reporting :
+              </label>
+              <input type="number" id="oper-report-year"
+                     value="2025" min="2024" max="2030"
+                     class="champ" style="width:90px;font-size:13px;padding:6px 10px;">
+            </div>
+
+            <!-- Statut téléchargement -->
+            <div id="oper-report-statut" style="display:none;margin-top:10px;padding:8px 12px;
+              border-radius:6px;font-size:12px;line-height:1.5;"></div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;align-self:flex-start;">
+            <button class="btn btn-primaire" id="btn-oper-report-preview"
+                    onclick="telechargerOperatorsReport('preview')"
+                    style="white-space:nowrap;background:rgba(88,166,255,0.08);
+                           border:1px solid rgba(88,166,255,0.35);color:#58a6ff;">
+              👁 Visualiser
+            </button>
+            <button class="btn btn-primaire" id="btn-oper-report-dl"
+                    onclick="telechargerOperatorsReport('download')"
+                    style="white-space:nowrap;background:rgba(88,166,255,0.15);
+                           border:1px solid rgba(88,166,255,0.4);color:#58a6ff;">
+              ⬇️ Télécharger JSON
+            </button>
+          </div>
         </div>
       </div>
 
@@ -1434,7 +1877,7 @@
           </div>
           <span style="background:rgba(88,166,255,0.1);color:#58a6ff;border-radius:12px;
                        font-size:10px;padding:3px 10px;border:1px solid rgba(88,166,255,0.3);">
-            Semaine 7
+            Livrable 2
           </span>
         </div>
       </div>
@@ -1479,15 +1922,22 @@
       </div>
 
       <div class="groupe-champ">
-        <label class="label" for="champ-secteur">Secteur CBAM</label>
-        <select id="champ-secteur" class="champ" onchange="mettreAJourRoute()">
+        <label class="label" for="champ-secteur">Secteur CBAM actif</label>
+        <select id="champ-secteur" class="champ" onchange="onSecteurSelectChange(this.value)">
           <option value="">-- Choisir un secteur --</option>
-          <option value="Acier/Fer">Acier / Fer (Iron &amp; Steel)</option>
-          <option value="Aluminium">Aluminium</option>
-          <option value="Ciment">Ciment (Cement)</option>
-          <option value="Engrais">Engrais (Fertilisers)</option>
-          <option value="Hydrogène">Hydrogène (Hydrogen)</option>
+          <option value="Acier/Fer">⚙️ Acier / Fer (Iron &amp; Steel) — Colonne A</option>
+          <option value="Aluminium">🔩 Aluminium — Colonne A</option>
+          <option value="Ciment">🏗️ Ciment (Cement) — Colonne B</option>
+          <option value="Engrais">🌱 Engrais (Fertilisers) — Colonne B</option>
+          <option value="Hydrogène">⚛️ Hydrogène (Hydrogen) — Colonne A</option>
         </select>
+        <!-- Badge secteur actif -->
+        <div id="secteur-actif-badge" style="display:none;margin-top:8px;padding:8px 12px;
+          border-radius:8px;font-size:12px;line-height:1.5;"></div>
+        <div id="secteurs-profil-chips" style="display:none;"></div>
+        <p style="font-size:11px;color:var(--texte-discret);margin-top:6px;line-height:1.5;">
+          Sélectionnez votre secteur CBAM — détermine automatiquement la Colonne A/B et les routes de production disponibles.
+        </p>
       </div>
 
       <div class="groupe-champ">
@@ -1509,11 +1959,833 @@
           border-radius:6px;padding:8px 10px;display:none;"></div>
       </div>
 
+      <!-- Champ spécifique Aluminium — affiché uniquement si secteur = Aluminium -->
+      <div class="groupe-champ" id="groupe-alu-type" style="display:none;">
+        <label class="label">Type de production Aluminium *</label>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;">
+
+          <label id="lbl-alu-profil-primaire" onclick="onAluProfileTypeChange('primaire')"
+            style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;
+            padding:12px 14px;border-radius:8px;flex:1;min-width:180px;
+            border:1.5px solid var(--bordure);transition:all 0.2s;">
+            <input type="radio" name="alu-profil-type" value="primaire"
+              id="alu-profil-primaire" style="accent-color:#ff4560;margin-top:3px;flex-shrink:0;">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--texte);">⚡ PRIMAIRE</div>
+              <div style="font-size:11px;color:var(--texte-discret);margin-top:3px;line-height:1.5;">
+                À partir de bauxite (ore)<br>
+                Électrolyse fused-salt<br>
+                14–16 MWh/t · 11+ tCO₂e/t<br>
+                <span style="color:#ff4560;">Émissions PFC incluses (CF₄ + C₂F₆)</span>
+              </div>
+            </div>
+          </label>
+
+          <label id="lbl-alu-profil-secondaire" onclick="onAluProfileTypeChange('secondaire')"
+            style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;
+            padding:12px 14px;border-radius:8px;flex:1;min-width:180px;
+            border:1.5px solid rgba(63,185,80,0.4);background:rgba(63,185,80,0.03);
+            transition:all 0.2s;">
+            <input type="radio" name="alu-profil-type" value="secondaire"
+              id="alu-profil-secondaire" style="accent-color:#3fb950;margin-top:3px;flex-shrink:0;">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--texte);">♻️ SECONDAIRE <span style="font-size:10px;color:#3fb950;">(Recommandé)</span></div>
+              <div style="font-size:11px;color:var(--texte-discret);margin-top:3px;line-height:1.5;">
+                À partir d'aluminium recyclé / scrap<br>
+                Fusion simple four<br>
+                0.5–1 MWh/t · 0.5–1 tCO₂e/t<br>
+                <span style="color:#3fb950;">PFC ≈ 0 — empreinte faible</span>
+              </div>
+            </div>
+          </label>
+
+        </div>
+        <!-- Badge PFC — visible uniquement si primaire -->
+        <div id="alu-pfc-info" style="display:none;margin-top:10px;padding:10px 12px;
+          border-radius:8px;font-size:11px;line-height:1.7;
+          background:rgba(255,69,96,0.06);border:1px solid rgba(255,69,96,0.25);">
+          <strong style="color:#ff4560;">⚠️ Émissions PFC — Aluminium primaire (EU 2026 · IPCC AR6)</strong><br>
+          CF₄ = <strong>0.160 kg/t Al</strong> × GWP 7 380 = <strong>1 180.8 kg CO₂e/t</strong><br>
+          C₂F₆ = <strong>0.013 kg/t Al</strong> × GWP 12 400 = <strong>161.2 kg CO₂e/t</strong><br>
+          <span style="color:#ff4560;font-weight:600;">TOTAL PFC = 1 342 kg CO₂e/t Al = <strong>1.342 tCO₂e/t Al</strong></span><br>
+          <span style="color:var(--texte-discret);font-size:10px;">Ces émissions s'ajoutent aux émissions directes Scope 1 du procédé</span>
+        </div>
+      </div>
+
+      <!-- Champ spécifique Ciment — affiché uniquement si secteur = Ciment -->
+      <div class="groupe-champ" id="groupe-ciment-type" style="display:none;">
+        <label class="label" for="champ-ciment-type">Type de ciment (EN 197-1) *</label>
+        <select id="champ-ciment-type" class="champ" onchange="onCimentProfileTypeChange(this.value)">
+          <option value="CEM_I">CEM I — Portland pur (95–100% clinker)</option>
+          <option value="CEM_II_A">CEM II/A — Portland composé (80–94% clinker)</option>
+          <option value="CEM_II_B">CEM II/B — Portland composé (65–79% clinker)</option>
+          <option value="CEM_III_A">CEM III/A — Laitier haut-fourneau (40–64% clinker)</option>
+          <option value="CEM_VI">CEM VI — Bas-carbone (35–50% clinker)</option>
+          <option value="CLINKER">CLINKER pur (100% clinker — référence)</option>
+        </select>
+        <div id="ciment-type-info" style="margin-top:8px;font-size:11px;line-height:1.6;
+          background:rgba(247,129,102,0.06);border:1px solid rgba(247,129,102,0.2);
+          border-radius:6px;padding:8px 10px;display:none;"></div>
+        <p style="font-size:11px;color:var(--texte-discret);margin-top:6px;line-height:1.5;">
+          Calcination = clinker × 0.525 · Combustible = Scope 1 réel · Électricité = Scope 2 réel
+        </p>
+      </div>
+
+      <!-- Champ spécifique Engrais — affiché uniquement si secteur = Engrais -->
+      <div class="groupe-champ" id="groupe-engrais-type" style="display:none;">
+        <label class="label" for="champ-engrais-type">Type d'engrais exporté *</label>
+        <select id="champ-engrais-type" class="champ" onchange="onEngraisProfileTypeChange(this.value)">
+          <option value="AMMONIA">Ammonia (NH₃) 99.8% — CN 2814</option>
+          <option value="UREA">Urea 46% N — CN 3105</option>
+          <option value="AN_34">Ammonium Nitrate 34.5% N — CN 3102</option>
+          <option value="AN_28">Ammonium Nitrate 28% N — CN 3102 10</option>
+          <option value="AS_21">Ammonium Sulphate 21% N — CN 3104</option>
+          <option value="NITRIC_ACID">Nitric Acid (HNO₃) 15% N — CN 2819</option>
+        </select>
+        <div id="engrais-type-info" style="margin-top:8px;font-size:11px;line-height:1.6;
+          background:rgba(63,185,80,0.06);border:1px solid rgba(63,185,80,0.2);
+          border-radius:6px;padding:8px 10px;display:none;"></div>
+        <p style="font-size:11px;color:var(--texte-discret);margin-top:6px;line-height:1.5;">
+          Détermine le code NC et le benchmark CBAM Colonne B applicable
+        </p>
+      </div>
+
+      <!-- Champ spécifique Hydrogène — affiché uniquement si secteur = Hydrogène -->
+      <div class="groupe-champ" id="groupe-h2-methode" style="display:none;">
+        <label class="label" for="champ-h2-methode">Méthode de production H₂ *</label>
+        <select id="champ-h2-methode" class="champ" onchange="onH2MethodeChange(this.value)">
+          <option value="smr_gaz">SMR — Vaporeformage gaz naturel (gris · 11.1 kgCO₂/kgH₂)</option>
+          <option value="electrolyse_reseau">Électrolyse — Réseau Maroc</option>
+          <option value="electrolyse_renouvelable">Électrolyse — Renouvelable certifiée</option>
+          <option value="biomasse">Reformage biomasse (bas carbone · 2.0 kgCO₂/kgH₂)</option>
+          <option value="electrolyse_nucleaire">Électrolyse nucléaire (futur)</option>
+        </select>
+        <div id="h2-methode-info" style="margin-top:8px;font-size:11px;line-height:1.6;
+          background:rgba(86,211,100,0.06);border:1px solid rgba(86,211,100,0.2);
+          border-radius:6px;padding:8px 10px;display:none;"></div>
+        <p style="font-size:11px;color:var(--texte-discret);margin-top:6px;line-height:1.5;">
+          Détermine l'intensité carbone estimée vs benchmark CBAM unique : <strong>5.089 tCO₂/t</strong>
+        </p>
+      </div>
+
       <div style="display:flex;gap:12px;margin-top:8px;">
         <button class="btn btn-primaire" onclick="sauvegarderProfil()">💾 Enregistrer</button>
         <span id="profil-msg" style="font-size:12px;align-self:center;color:#3fb950;"></span>
       </div>
     </div>
+
+    <!-- ══ PANNEAUX SECTORIELS — apparaissent selon les secteurs actifs ══ -->
+
+    <!-- ── Panel Aluminium ── -->
+    <div class="carte" id="panel-secteur-aluminium"
+         style="display:none;margin-top:var(--espace-md);border-left:3px solid #bc8cff;">
+      <div class="carte__entete">
+        <div>
+          <div class="carte__titre" style="color:#bc8cff;">🔩 Paramètres Aluminium</div>
+          <div class="carte__sous-titre">Spécifique CBAM — Règl. UE 2025/2621 · Colonne A</div>
+        </div>
+        <span class="badge" style="background:rgba(188,140,255,0.12);color:#bc8cff;
+          border:1px solid rgba(188,140,255,0.3);font-size:10px;">Scope 1 · PFC inclus</span>
+      </div>
+
+      <!-- Type de production -->
+      <div class="groupe-champ">
+        <label class="label">Type de production</label>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;">
+          <label id="lbl-alu-primaire" style="display:flex;align-items:flex-start;gap:10px;
+            cursor:pointer;padding:12px 16px;border-radius:8px;flex:1;min-width:200px;
+            border:1.5px solid var(--bordure);transition:all 0.2s;">
+            <input type="radio" name="alu-production-type" value="primary"
+                   id="alu-type-primaire" onchange="onAluTypeChange()"
+                   style="accent-color:#bc8cff;margin-top:2px;flex-shrink:0;">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--texte);">Primaire</div>
+              <div style="font-size:11px;color:var(--texte-discret);margin-top:2px;line-height:1.4;">
+                Depuis bauxite — électrolyse Hall-Héroult<br>
+                <span style="color:#f78166;">Émissions PFC liées aux effets d'anode</span>
+              </div>
+            </div>
+          </label>
+          <label id="lbl-alu-secondaire" style="display:flex;align-items:flex-start;gap:10px;
+            cursor:pointer;padding:12px 16px;border-radius:8px;flex:1;min-width:200px;
+            border:1.5px solid var(--bordure);transition:all 0.2s;">
+            <input type="radio" name="alu-production-type" value="secondary"
+                   id="alu-type-secondaire" onchange="onAluTypeChange()"
+                   style="accent-color:#bc8cff;margin-top:2px;flex-shrink:0;">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--texte);">Secondaire</div>
+              <div style="font-size:11px;color:var(--texte-discret);margin-top:2px;line-height:1.4;">
+                Depuis ferraille recyclée — refonte<br>
+                <span style="color:#3fb950;">Intensité carbone ~10× inférieure · PFC ≈ 0</span>
+              </div>
+            </div>
+          </label>
+        </div>
+        <p style="font-size:11px;color:var(--texte-discret);margin-top:8px;">
+          Le type de production conditionne les émissions PFC et le benchmark CBAM applicable.
+        </p>
+      </div>
+
+      <!-- Résultats PFC auto-calculés -->
+      <div id="alu-pfc-loading" style="display:none;text-align:center;padding:16px;
+           font-size:12px;color:var(--texte-discret);">⏳ Calcul PFC en cours...</div>
+
+      <div id="alu-pfc-resultats" style="display:none;">
+        <div style="background:rgba(188,140,255,0.06);border:1px solid rgba(188,140,255,0.2);
+             border-radius:8px;padding:14px 16px;">
+          <div style="font-family:var(--police-chiffre);font-size:10px;color:#bc8cff;
+               text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">
+            ⚛ Émissions PFC — IPCC AR6 GWP · Valeurs EU 2025/2621
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+            <div style="background:var(--fond-carte);border-radius:6px;padding:10px 12px;">
+              <div style="font-size:10px;color:var(--texte-discret);text-transform:uppercase;
+                   letter-spacing:0.06em;margin-bottom:4px;">CF₄ (kg/t Al)</div>
+              <div id="alu-cf4-val" style="font-family:var(--police-chiffre);font-size:1.3rem;
+                   font-weight:700;color:#bc8cff;">—</div>
+              <div style="font-size:10px;color:var(--texte-discret);margin-top:2px;">GWP = 7 380</div>
+            </div>
+            <div style="background:var(--fond-carte);border-radius:6px;padding:10px 12px;">
+              <div style="font-size:10px;color:var(--texte-discret);text-transform:uppercase;
+                   letter-spacing:0.06em;margin-bottom:4px;">C₂F₆ (kg/t Al)</div>
+              <div id="alu-c2f6-val" style="font-family:var(--police-chiffre);font-size:1.3rem;
+                   font-weight:700;color:#bc8cff;">—</div>
+              <div style="font-size:10px;color:var(--texte-discret);margin-top:2px;">GWP = 12 400</div>
+            </div>
+            <div style="background:var(--fond-carte);border-radius:6px;padding:10px 12px;
+                 border:1px solid rgba(188,140,255,0.25);">
+              <div style="font-size:10px;color:#bc8cff;text-transform:uppercase;
+                   letter-spacing:0.06em;margin-bottom:4px;">PFC CO₂e/t Al</div>
+              <div id="alu-pfc-co2eq-val" style="font-family:var(--police-chiffre);font-size:1.3rem;
+                   font-weight:700;color:#bc8cff;">—</div>
+              <div style="font-size:10px;color:var(--texte-discret);margin-top:2px;">tCO₂e / tonne</div>
+            </div>
+          </div>
+          <div id="alu-pfc-method"
+               style="margin-top:10px;font-size:10px;color:var(--texte-tres-discret);font-style:italic;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Panel Acier / Fer ── -->
+    <div class="carte" id="panel-secteur-acier"
+         style="display:none;margin-top:var(--espace-md);border-left:3px solid #58a6ff;">
+      <div class="carte__entete">
+        <div>
+          <div class="carte__titre" style="color:#58a6ff;">⚙️ Paramètres Acier / Fer</div>
+          <div class="carte__sous-titre">Spécifique CBAM — Règl. UE 2025/2621 · Colonne A</div>
+        </div>
+        <span class="badge" style="background:rgba(88,166,255,0.12);color:#58a6ff;
+          border:1px solid rgba(88,166,255,0.3);font-size:10px;">Scope 1 uniquement</span>
+      </div>
+      <div class="groupe-champ">
+        <label class="label">Type de four</label>
+        <select id="acier-type-four" class="champ">
+          <option value="eaf">EAF — Four Électrique à Arc (ferraille)</option>
+          <option value="bof">BOF — Convertisseur à oxygène basique (minerai)</option>
+          <option value="eaf_dri">EAF + DRI — Réduction directe du minerai</option>
+        </select>
+      </div>
+      <div class="groupe-champ">
+        <label class="label">Taux de ferraille recyclée (%)</label>
+        <input type="number" id="acier-pct-ferraille" class="champ"
+               min="0" max="100" step="0.1" placeholder="Ex : 85">
+        <p style="font-size:11px;color:var(--texte-discret);margin-top:4px;">
+          Proportion de ferraille dans la charge totale (EAF ≈ 90–100%, BOF ≈ 25%).
+        </p>
+      </div>
+    </div>
+
+    <!-- ── Panel Ciment ── -->
+    <div class="carte" id="panel-secteur-ciment"
+         style="display:none;margin-top:var(--espace-md);border-left:3px solid #f78166;">
+      <div class="carte__entete">
+        <div>
+          <div class="carte__titre" style="color:#f78166;">🏗️ Paramètres Ciment</div>
+          <div class="carte__sous-titre">Spécifique CBAM — Règl. UE 2025/2621 · Colonne B · EN 197-1</div>
+        </div>
+        <span class="badge" style="background:rgba(247,129,102,0.12);color:#f78166;
+          border:1px solid rgba(247,129,102,0.3);font-size:10px;">Scope 1 + 2</span>
+      </div>
+
+      <!-- ── Sélection du type de ciment ── -->
+      <div class="groupe-champ">
+        <label class="label">Type de ciment (EN 197-1)</label>
+        <div id="ciment-type-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px;">
+
+          <!-- CEM I -->
+          <label id="lbl-cem-CEM_I" style="display:flex;flex-direction:column;cursor:pointer;padding:10px 12px;
+            border-radius:8px;border:1.5px solid var(--bordure);transition:all 0.2s;gap:4px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <input type="radio" name="ciment-type" value="CEM_I" onchange="onCimentTypeChange()" style="accent-color:#f78166;flex-shrink:0;">
+              <span style="font-size:12px;font-weight:700;color:var(--texte);">CEM I</span>
+            </div>
+            <div style="font-size:10px;color:var(--texte-discret);">Portland pur</div>
+            <div style="height:4px;border-radius:2px;background:rgba(247,129,102,0.9);width:97.5%;margin-top:2px;"></div>
+            <div style="font-family:var(--police-chiffre);font-size:10px;color:#f78166;">95–100% clinker</div>
+          </label>
+
+          <!-- CEM II/A -->
+          <label id="lbl-cem-CEM_II_A" style="display:flex;flex-direction:column;cursor:pointer;padding:10px 12px;
+            border-radius:8px;border:1.5px solid var(--bordure);transition:all 0.2s;gap:4px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <input type="radio" name="ciment-type" value="CEM_II_A" onchange="onCimentTypeChange()" style="accent-color:#f78166;flex-shrink:0;">
+              <span style="font-size:12px;font-weight:700;color:var(--texte);">CEM II/A</span>
+            </div>
+            <div style="font-size:10px;color:var(--texte-discret);">Composite (80–94%)</div>
+            <div style="height:4px;border-radius:2px;background:rgba(247,129,102,0.75);width:87%;margin-top:2px;"></div>
+            <div style="font-family:var(--police-chiffre);font-size:10px;color:#f78166;">87% clinker moy.</div>
+          </label>
+
+          <!-- CEM II/B -->
+          <label id="lbl-cem-CEM_II_B" style="display:flex;flex-direction:column;cursor:pointer;padding:10px 12px;
+            border-radius:8px;border:1.5px solid var(--bordure);transition:all 0.2s;gap:4px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <input type="radio" name="ciment-type" value="CEM_II_B" onchange="onCimentTypeChange()" style="accent-color:#f78166;flex-shrink:0;">
+              <span style="font-size:12px;font-weight:700;color:var(--texte);">CEM II/B</span>
+            </div>
+            <div style="font-size:10px;color:var(--texte-discret);">Composite (65–79%)</div>
+            <div style="height:4px;border-radius:2px;background:rgba(247,129,102,0.60);width:72%;margin-top:2px;"></div>
+            <div style="font-family:var(--police-chiffre);font-size:10px;color:#f78166;">72% clinker moy.</div>
+          </label>
+
+          <!-- CEM III/A -->
+          <label id="lbl-cem-CEM_III_A" style="display:flex;flex-direction:column;cursor:pointer;padding:10px 12px;
+            border-radius:8px;border:1.5px solid var(--bordure);transition:all 0.2s;gap:4px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <input type="radio" name="ciment-type" value="CEM_III_A" onchange="onCimentTypeChange()" style="accent-color:#f78166;flex-shrink:0;">
+              <span style="font-size:12px;font-weight:700;color:var(--texte);">CEM III/A</span>
+            </div>
+            <div style="font-size:10px;color:var(--texte-discret);">Laitier (40–64%)</div>
+            <div style="height:4px;border-radius:2px;background:rgba(247,129,102,0.42);width:52%;margin-top:2px;"></div>
+            <div style="font-family:var(--police-chiffre);font-size:10px;color:#f78166;">52% clinker moy.</div>
+          </label>
+
+          <!-- CEM VI -->
+          <label id="lbl-cem-CEM_VI" style="display:flex;flex-direction:column;cursor:pointer;padding:10px 12px;
+            border-radius:8px;border:1.5px solid rgba(63,185,80,0.4);transition:all 0.2s;gap:4px;
+            background:rgba(63,185,80,0.03);">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <input type="radio" name="ciment-type" value="CEM_VI" onchange="onCimentTypeChange()" style="accent-color:#3fb950;flex-shrink:0;">
+              <span style="font-size:12px;font-weight:700;color:var(--texte);">CEM VI</span>
+              <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(63,185,80,0.12);color:#3fb950;font-family:var(--police-chiffre);">ECO</span>
+            </div>
+            <div style="font-size:10px;color:var(--texte-discret);">Bas-carbone (35–50%)</div>
+            <div style="height:4px;border-radius:2px;background:rgba(63,185,80,0.7);width:42.5%;margin-top:2px;"></div>
+            <div style="font-family:var(--police-chiffre);font-size:10px;color:#3fb950;">42.5% clinker moy.</div>
+          </label>
+
+          <!-- CLINKER -->
+          <label id="lbl-cem-CLINKER" style="display:flex;flex-direction:column;cursor:pointer;padding:10px 12px;
+            border-radius:8px;border:1.5px solid var(--bordure);transition:all 0.2s;gap:4px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <input type="radio" name="ciment-type" value="CLINKER" onchange="onCimentTypeChange()" style="accent-color:#f78166;flex-shrink:0;">
+              <span style="font-size:12px;font-weight:700;color:var(--texte);">CLINKER</span>
+              <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(247,129,102,0.12);color:#f78166;font-family:var(--police-chiffre);">RAW</span>
+            </div>
+            <div style="font-size:10px;color:var(--texte-discret);">Clinker pur (100%)</div>
+            <div style="height:4px;border-radius:2px;background:rgba(247,129,102,1.0);width:100%;margin-top:2px;"></div>
+            <div style="font-family:var(--police-chiffre);font-size:10px;color:#f78166;">100% clinker</div>
+          </label>
+
+        </div>
+      </div>
+
+      <!-- ── Sélecteur d'année CBAM ── -->
+      <div class="groupe-champ">
+        <label class="label">Année CBAM</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;" id="ciment-year-btns">
+          <button type="button" class="dash-periode-btn dash-periode-btn--actif" data-year="2026"
+            onclick="selectCimentYear(this,2026)">2026 <span style="font-size:9px;opacity:0.7;">2.5%</span></button>
+          <button type="button" class="dash-periode-btn" data-year="2027"
+            onclick="selectCimentYear(this,2027)">2027 <span style="font-size:9px;opacity:0.7;">5%</span></button>
+          <button type="button" class="dash-periode-btn" data-year="2028"
+            onclick="selectCimentYear(this,2028)">2028 <span style="font-size:9px;opacity:0.7;">10%</span></button>
+          <button type="button" class="dash-periode-btn" data-year="2029"
+            onclick="selectCimentYear(this,2029)">2029 <span style="font-size:9px;opacity:0.7;">22.5%</span></button>
+          <button type="button" class="dash-periode-btn" data-year="2030"
+            onclick="selectCimentYear(this,2030)">2030 <span style="font-size:9px;opacity:0.7;">48.5%</span></button>
+        </div>
+        <p style="font-size:10px;color:var(--texte-tres-discret);margin-top:4px;">
+          % = part des émissions soumise à certificats CBAM cette année-là.
+        </p>
+      </div>
+
+      <!-- ── Loading ── -->
+      <div id="ciment-calc-loading" style="display:none;text-align:center;padding:16px;
+           font-size:12px;color:var(--texte-discret);">⏳ Calcul CBAM en cours...</div>
+
+      <!-- ── Résultats ── -->
+      <div id="ciment-calc-resultats" style="display:none;">
+
+        <!-- Décomposition émissions -->
+        <div style="background:rgba(247,129,102,0.06);border:1px solid rgba(247,129,102,0.2);
+             border-radius:8px;padding:14px 16px;margin-bottom:10px;">
+          <div style="font-family:var(--police-chiffre);font-size:10px;color:#f78166;
+               text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">
+            🔥 Émissions intrinsèques (tCO₂/tonne ciment)
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;">
+              <div style="font-size:9px;color:var(--texte-discret);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Calcination</div>
+              <div id="cim-em-calc" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;color:#f78166;">—</div>
+              <div style="font-size:9px;color:var(--texte-discret);margin-top:1px;">= ratio × 0.525</div>
+            </div>
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;">
+              <div style="font-size:9px;color:var(--texte-discret);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Combustible</div>
+              <div id="cim-em-fuel" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;color:#f78166;">0.285</div>
+              <div style="font-size:9px;color:var(--texte-discret);margin-top:1px;">défaut Maroc</div>
+            </div>
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;">
+              <div style="font-size:9px;color:var(--texte-discret);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Électricité</div>
+              <div id="cim-em-elec" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;color:#f78166;">0.080</div>
+              <div style="font-size:9px;color:var(--texte-discret);margin-top:1px;">réseau Maroc</div>
+            </div>
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;
+                 border:1px solid rgba(247,129,102,0.3);">
+              <div style="font-size:9px;color:#f78166;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">TOTAL</div>
+              <div id="cim-em-total" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;color:#f78166;">—</div>
+              <div style="font-size:9px;color:var(--texte-discret);margin-top:1px;">tCO₂e/t</div>
+            </div>
+          </div>
+          <!-- Barre de décomposition visuelle -->
+          <div style="margin-top:10px;">
+            <div id="cim-barre-decomp" style="display:flex;height:6px;border-radius:3px;overflow:hidden;gap:1px;">
+              <div id="cim-bar-calc" style="background:#f78166;transition:width 0.5s;"></div>
+              <div id="cim-bar-fuel" style="background:#e3b341;transition:width 0.5s;"></div>
+              <div id="cim-bar-elec" style="background:#58a6ff;transition:width 0.5s;"></div>
+            </div>
+            <div style="display:flex;gap:14px;margin-top:5px;font-family:var(--police-chiffre);font-size:9px;">
+              <span style="color:#f78166;">■ Calcination</span>
+              <span style="color:#e3b341;">■ Combustible</span>
+              <span style="color:#58a6ff;">■ Électricité</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Benchmark + coût CBAM -->
+        <div style="background:rgba(247,129,102,0.04);border:1px solid rgba(247,129,102,0.15);
+             border-radius:8px;padding:14px 16px;">
+          <div style="font-family:var(--police-chiffre);font-size:10px;color:#f78166;
+               text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">
+            🛡️ Conformité CBAM — <span id="cim-year-label">2026</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;">
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;">
+              <div style="font-size:9px;color:var(--texte-discret);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Benchmark UE</div>
+              <div id="cim-benchmark" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;color:#e3b341;">—</div>
+              <div style="font-size:9px;color:var(--texte-discret);margin-top:1px;">tCO₂e/t · Col. B</div>
+            </div>
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;">
+              <div style="font-size:9px;color:var(--texte-discret);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Écart / benchmark</div>
+              <div id="cim-chargeable" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;">—</div>
+              <div style="font-size:9px;margin-top:1px;" id="cim-statut-txt">—</div>
+            </div>
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;border:1px solid rgba(247,129,102,0.25);">
+              <div style="font-size:9px;color:#f78166;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Coût CBAM estimé</div>
+              <div id="cim-cout-total" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;color:#f78166;">—</div>
+              <div id="cim-cout-detail" style="font-size:9px;color:var(--texte-discret);margin-top:1px;">EUR</div>
+            </div>
+          </div>
+          <div id="cim-notes" style="font-size:10px;color:var(--texte-tres-discret);font-style:italic;margin-top:4px;"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Panel Engrais ── -->
+    <div class="carte" id="panel-secteur-engrais"
+         style="display:none;margin-top:var(--espace-md);border-left:3px solid #3fb950;">
+      <div class="carte__entete">
+        <div>
+          <div class="carte__titre" style="color:#3fb950;">🌱 Paramètres Engrais Azotés</div>
+          <div class="carte__sous-titre">Spécifique CBAM — Règl. UE 2025/2621 · Colonne B · N-based intensity</div>
+        </div>
+        <span class="badge" style="background:rgba(63,185,80,0.12);color:#3fb950;
+          border:1px solid rgba(63,185,80,0.3);font-size:10px;">Scope 1 + 2</span>
+      </div>
+
+      <!-- ── Sélection du type d'engrais ── -->
+      <div class="groupe-champ">
+        <label class="label">Type d'engrais azoté (CBAM · Règl. UE 2025/2621)</label>
+        <select id="engrais-type" class="champ" onchange="onEngraisTypeChange()">
+          <option value="">— Sélectionner un type —</option>
+          <option value="AMMONIA">Ammonia NH₃ 99.8% — N : 82.4% · CN 2814.10</option>
+          <option value="UREA">Urée 46% N — (NH₂)₂CO · CN 3102.10</option>
+          <option value="AN_34">Ammonitrate 34.5% N — NH₄NO₃ · CN 3102.30</option>
+          <option value="AN_28">Ammonitrate 28% N — NH₄NO₃ · CN 3102.30</option>
+          <option value="AS_21">Sulfate d'ammonium 21% N — (NH₄)₂SO₄ · CN 3102.21</option>
+          <option value="HNO3_15">Acide nitrique 15% N — HNO₃ · CN 2808.00</option>
+        </select>
+      </div>
+
+      <!-- Fiche info du type sélectionné -->
+      <div id="engrais-type-info" style="display:none;background:rgba(63,185,80,0.05);
+           border:1px solid rgba(63,185,80,0.2);border-radius:8px;padding:10px 14px;margin-bottom:4px;">
+        <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:11px;">
+          <span style="color:var(--texte-discret);">Formule <b id="engrais-info-formula" style="color:var(--texte);">—</b></span>
+          <span style="color:var(--texte-discret);">N standard <b id="engrais-info-nstd" style="color:#3fb950;">—</b>%</span>
+          <span style="color:var(--texte-discret);">Tolérance <b id="engrais-info-tol" style="color:#e3b341;">±10%</b></span>
+          <span style="color:var(--texte-discret);">Intensité base <b id="engrais-info-intensity" style="color:var(--texte);">—</b> tCO₂/t</span>
+          <span style="color:var(--texte-discret);">Code NC <b id="engrais-info-cn" style="color:var(--texte);">—</b></span>
+        </div>
+      </div>
+
+      <!-- ── Teneur en azote réelle ── -->
+      <div class="groupe-champ" id="engrais-n-group" style="display:none;">
+        <label class="label" style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+          <span>Teneur en azote réelle (%) <span style="color:var(--texte-discret);font-weight:400;">— optionnel</span></span>
+          <span id="engrais-n-range" style="font-family:var(--police-chiffre);font-size:10px;
+                background:rgba(227,179,65,0.12);color:#e3b341;border:1px solid rgba(227,179,65,0.3);
+                padding:2px 8px;border-radius:4px;white-space:nowrap;">Plage : —</span>
+        </label>
+        <input type="number" id="engrais-n-input" class="champ" min="0" max="100" step="0.1"
+               oninput="onEngraisNInput()"
+               placeholder="Laisser vide pour utiliser la valeur standard">
+        <div id="engrais-n-warning" style="display:none;font-size:11px;color:#f78166;
+             margin-top:4px;padding:6px 10px;background:rgba(247,129,102,0.08);
+             border-radius:6px;border:1px solid rgba(247,129,102,0.2);">
+          ⚠️ Hors tolérance ±10% — valeur refusée par l'API CBAM
+        </div>
+      </div>
+
+      <!-- ── Production annuelle ── -->
+      <div class="groupe-champ" id="engrais-prod-group" style="display:none;">
+        <label class="label">Production annuelle (tonnes)</label>
+        <input type="number" id="engrais-production" class="champ" min="1" step="100"
+               placeholder="Ex : 22 000 t/an" oninput="onEngraisInputChange()">
+      </div>
+
+      <!-- ── Sélecteur d'année CBAM ── -->
+      <div class="groupe-champ" id="engrais-year-group" style="display:none;">
+        <label class="label">Année CBAM</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;" id="engrais-year-btns">
+          <button type="button" class="dash-periode-btn dash-periode-btn--actif" data-year="2026"
+            onclick="selectEngraisYear(this,2026)">2026 <span style="font-size:9px;opacity:0.7;">2.5%</span></button>
+          <button type="button" class="dash-periode-btn" data-year="2027"
+            onclick="selectEngraisYear(this,2027)">2027 <span style="font-size:9px;opacity:0.7;">5%</span></button>
+          <button type="button" class="dash-periode-btn" data-year="2028"
+            onclick="selectEngraisYear(this,2028)">2028 <span style="font-size:9px;opacity:0.7;">10%</span></button>
+          <button type="button" class="dash-periode-btn" data-year="2029"
+            onclick="selectEngraisYear(this,2029)">2029 <span style="font-size:9px;opacity:0.7;">22.5%</span></button>
+          <button type="button" class="dash-periode-btn" data-year="2030"
+            onclick="selectEngraisYear(this,2030)">2030 <span style="font-size:9px;opacity:0.7;">48.5%</span></button>
+        </div>
+        <p style="font-size:10px;color:var(--texte-tres-discret);margin-top:4px;">
+          % = part des émissions soumise à certificats CBAM cette année-là.
+        </p>
+        <button type="button" onclick="_fetchEngraisCalc()"
+                style="margin-top:10px;width:100%;padding:10px 0;border:none;border-radius:8px;
+                       background:#3fb950;color:#000;font-weight:700;font-size:13px;cursor:pointer;">
+          🌱 Calculer les émissions CBAM
+        </button>
+      </div>
+
+      <!-- ── Loading ── -->
+      <div id="engrais-calc-loading" style="display:none;text-align:center;padding:16px;
+           font-size:12px;color:var(--texte-discret);">⏳ Calcul CBAM en cours...</div>
+
+      <!-- ── Résultats ── -->
+      <div id="engrais-calc-resultats" style="display:none;">
+
+        <!-- Intensité émissions -->
+        <div style="background:rgba(63,185,80,0.06);border:1px solid rgba(63,185,80,0.2);
+             border-radius:8px;padding:14px 16px;margin-bottom:10px;">
+          <div style="font-family:var(--police-chiffre);font-size:10px;color:#3fb950;
+               text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">
+            🌿 Émissions intrinsèques (tCO₂ / tonne produit)
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;">
+              <div style="font-size:9px;color:var(--texte-discret);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Intensité standard</div>
+              <div id="eng-intensity-std" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;color:#3fb950;">—</div>
+              <div style="font-size:9px;color:var(--texte-discret);margin-top:1px;">tCO₂/t · N std</div>
+            </div>
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;">
+              <div style="font-size:9px;color:var(--texte-discret);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Intensité utilisée</div>
+              <div id="eng-intensity-adj" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;color:#e3b341;">—</div>
+              <div style="font-size:9px;color:var(--texte-discret);margin-top:1px;">ajustée si %N fourni</div>
+            </div>
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;
+                 border:1px solid rgba(63,185,80,0.3);">
+              <div style="font-size:9px;color:#3fb950;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Total CO₂ annuel</div>
+              <div id="eng-total-co2" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;color:#3fb950;">—</div>
+              <div style="font-size:9px;color:var(--texte-discret);margin-top:1px;">tCO₂e / an</div>
+            </div>
+          </div>
+          <div id="eng-n-adj-note" style="display:none;margin-top:8px;font-size:10px;
+               color:#e3b341;padding:4px 8px;background:rgba(227,179,65,0.08);
+               border-radius:4px;border-left:2px solid #e3b341;"></div>
+        </div>
+
+        <!-- Benchmark + coût CBAM -->
+        <div style="background:rgba(63,185,80,0.04);border:1px solid rgba(63,185,80,0.15);
+             border-radius:8px;padding:14px 16px;">
+          <div style="font-family:var(--police-chiffre);font-size:10px;color:#3fb950;
+               text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">
+            🛡️ Conformité CBAM — <span id="eng-year-label">2026</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;">
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;">
+              <div style="font-size:9px;color:var(--texte-discret);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Benchmark UE</div>
+              <div id="eng-benchmark" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;color:#e3b341;">—</div>
+              <div style="font-size:9px;color:var(--texte-discret);margin-top:1px;">tCO₂e/t · Col. B</div>
+            </div>
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;">
+              <div style="font-size:9px;color:var(--texte-discret);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Écart / benchmark</div>
+              <div id="eng-chargeable" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;">—</div>
+              <div id="eng-statut-txt" style="font-size:9px;margin-top:1px;">—</div>
+            </div>
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;
+                 border:1px solid rgba(63,185,80,0.25);">
+              <div style="font-size:9px;color:#3fb950;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Coût CBAM estimé</div>
+              <div id="eng-cout-total" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;color:#3fb950;">—</div>
+              <div id="eng-cout-detail" style="font-size:9px;color:var(--texte-discret);margin-top:1px;">EUR</div>
+            </div>
+          </div>
+          <div id="eng-notes" style="font-size:10px;color:var(--texte-tres-discret);font-style:italic;margin-top:4px;"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Panel Hydrogène ── -->
+    <div class="carte" id="panel-secteur-hydrogene"
+         style="display:none;margin-top:var(--espace-md);border-left:3px solid #56d364;">
+      <div class="carte__entete">
+        <div>
+          <div class="carte__titre" style="color:#56d364;">⚛️ Paramètres Hydrogène</div>
+          <div class="carte__sous-titre">Spécifique CBAM — Règl. UE 2025/2621 · Colonne A (Scope 1)</div>
+        </div>
+        <span class="badge" style="background:rgba(86,211,100,0.12);color:#56d364;
+          border:1px solid rgba(86,211,100,0.3);font-size:10px;">BMG unique : 5.089 tCO₂/t H₂</span>
+      </div>
+
+      <!-- 1️⃣ Méthode de production -->
+      <div class="groupe-champ">
+        <label class="label">1️⃣ Méthode de production <span style="color:#f78166;">*</span></label>
+        <select id="h2-method" class="champ" onchange="onH2MethodChange()">
+          <option value="">— Sélectionner un procédé —</option>
+          <option value="SMR_NG">SMR — Vaporeformage gaz naturel (H₂ gris · 11.1 tCO₂/t)</option>
+          <option value="ELEC_GRID">Électrolyse — Réseau électrique Maroc</option>
+          <option value="ELEC_RE">Électrolyse — Renouvelable certifiée</option>
+          <option value="BIOMASS_REFORM">Reformage biomasse (H₂ bas carbone · 2.0 tCO₂/t)</option>
+          <option value="ELEC_NUCLEAR">Électrolyse nucléaire (H₂ futur)</option>
+        </select>
+      </div>
+
+      <!-- 2️⃣ Production annuelle -->
+      <div class="groupe-champ" id="h2-prod-group" style="display:none;">
+        <label class="label">2️⃣ Production annuelle (tonnes H₂/an) <span style="color:#f78166;">*</span></label>
+        <input type="number" id="h2-production" class="champ" min="1" step="100"
+               placeholder="Ex : 5 000 t H₂/an" oninput="onH2InputChange()">
+      </div>
+
+      <!-- 3️⃣ Source électricité (électrolyse seulement) -->
+      <div class="groupe-champ" id="h2-elec-source-group" style="display:none;">
+        <label class="label">3️⃣ Source électricité <span style="color:var(--texte-discret);font-weight:400;">— électrolyse</span></label>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;" id="h2-elec-source-list">
+
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px 12px;
+                 border-radius:8px;border:1.5px solid var(--bordure);transition:all 0.2s;"
+                 id="lbl-src-GRID_MAROC">
+            <input type="radio" name="h2-elec-src" value="GRID_MAROC"
+                   onchange="onH2ElecSrcChange()" style="accent-color:#56d364;">
+            <span style="flex:1;">
+              <span style="font-size:12px;font-weight:600;color:var(--texte);">Réseau Maroc (ONEE)</span>
+              <span style="font-family:var(--police-chiffre);font-size:11px;color:#56d364;margin-left:8px;">0.08 tCO₂/MWh</span>
+            </span>
+          </label>
+
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px 12px;
+                 border-radius:8px;border:1.5px solid var(--bordure);transition:all 0.2s;"
+                 id="lbl-src-RE_CERTIFIED">
+            <input type="radio" name="h2-elec-src" value="RE_CERTIFIED"
+                   onchange="onH2ElecSrcChange()" style="accent-color:#56d364;">
+            <span style="flex:1;">
+              <span style="font-size:12px;font-weight:600;color:var(--texte);">Renouvelable certifiée</span>
+              <span style="font-family:var(--police-chiffre);font-size:11px;color:#3fb950;margin-left:8px;">0.00 tCO₂/MWh</span>
+              <span style="font-size:9px;margin-left:6px;padding:1px 5px;border-radius:3px;
+                     background:rgba(63,185,80,0.12);color:#3fb950;">H₂ VERT</span>
+            </span>
+          </label>
+
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px 12px;
+                 border-radius:8px;border:1.5px solid var(--bordure);transition:all 0.2s;"
+                 id="lbl-src-GAS_CCS">
+            <input type="radio" name="h2-elec-src" value="GAS_CCS"
+                   onchange="onH2ElecSrcChange()" style="accent-color:#56d364;">
+            <span style="flex:1;">
+              <span style="font-size:12px;font-weight:600;color:var(--texte);">Gaz naturel + CCS</span>
+              <span style="font-family:var(--police-chiffre);font-size:11px;color:#e3b341;margin-left:8px;">1.50 tCO₂/MWh</span>
+            </span>
+          </label>
+
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px 12px;
+                 border-radius:8px;border:1.5px solid var(--bordure);transition:all 0.2s;"
+                 id="lbl-src-NUCLEAR">
+            <input type="radio" name="h2-elec-src" value="NUCLEAR"
+                   onchange="onH2ElecSrcChange()" style="accent-color:#56d364;">
+            <span style="flex:1;">
+              <span style="font-size:12px;font-weight:600;color:var(--texte);">Nucléaire (faible carbone)</span>
+              <span style="font-family:var(--police-chiffre);font-size:11px;color:#56d364;margin-left:8px;">0.012 tCO₂/MWh</span>
+              <span style="font-size:9px;margin-left:6px;padding:1px 5px;border-radius:3px;
+                     background:rgba(86,211,100,0.12);color:#56d364;">FUTUR</span>
+            </span>
+          </label>
+
+        </div>
+      </div>
+
+      <!-- 4️⃣ Type d'électrolyseur (électrolyse seulement) -->
+      <div class="groupe-champ" id="h2-elec-type-group" style="display:none;">
+        <label class="label">4️⃣ Type d'électrolyseur <span style="color:var(--texte-discret);font-weight:400;">— consommation électrique</span></label>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px;">
+
+          <label id="lbl-et-STANDARD_AEL" style="display:flex;flex-direction:column;cursor:pointer;
+                 padding:10px 12px;border-radius:8px;border:1.5px solid var(--bordure);transition:all 0.2s;gap:3px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <input type="radio" name="h2-elec-type" value="STANDARD_AEL"
+                     onchange="onH2ElecTypeChange()" style="accent-color:#56d364;">
+              <span style="font-size:11px;font-weight:700;color:var(--texte);">Standard AEL</span>
+            </div>
+            <div style="font-family:var(--police-chiffre);font-size:12px;color:#56d364;font-weight:700;">48 kWh/kg</div>
+            <div style="font-size:9px;color:var(--texte-discret);">Alkaline industriel · IEA 2024</div>
+          </label>
+
+          <label id="lbl-et-PEM" style="display:flex;flex-direction:column;cursor:pointer;
+                 padding:10px 12px;border-radius:8px;border:1.5px solid var(--bordure);transition:all 0.2s;gap:3px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <input type="radio" name="h2-elec-type" value="PEM"
+                     onchange="onH2ElecTypeChange()" style="accent-color:#56d364;">
+              <span style="font-size:11px;font-weight:700;color:var(--texte);">PEM</span>
+            </div>
+            <div style="font-family:var(--police-chiffre);font-size:12px;color:#56d364;font-weight:700;">50 kWh/kg</div>
+            <div style="font-size:9px;color:var(--texte-discret);">Proton Exchange · haute pureté</div>
+          </label>
+
+          <label id="lbl-et-ALKALINE_ADV" style="display:flex;flex-direction:column;cursor:pointer;
+                 padding:10px 12px;border-radius:8px;border:1.5px solid var(--bordure);transition:all 0.2s;gap:3px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <input type="radio" name="h2-elec-type" value="ALKALINE_ADV"
+                     onchange="onH2ElecTypeChange()" style="accent-color:#56d364;">
+              <span style="font-size:11px;font-weight:700;color:var(--texte);">Alkaline avancé</span>
+            </div>
+            <div style="font-family:var(--police-chiffre);font-size:12px;color:#56d364;font-weight:700;">55 kWh/kg</div>
+            <div style="font-size:9px;color:var(--texte-discret);">Haute performance · IRENA 2023</div>
+          </label>
+
+        </div>
+        <!-- Custom kWh/kg -->
+        <div style="margin-top:8px;display:flex;align-items:center;gap:10px;">
+          <label style="font-size:11px;color:var(--texte-discret);white-space:nowrap;">
+            Valeur personnalisée :
+          </label>
+          <input type="number" id="h2-custom-kwh" class="champ" min="20" max="100" step="0.5"
+                 placeholder="kWh/kg H₂ — laissez vide"
+                 style="max-width:180px;font-size:12px;padding:6px 10px;"
+                 oninput="onH2InputChange()">
+          <span style="font-size:11px;color:var(--texte-discret);">kWh/kg H₂</span>
+        </div>
+        <p style="font-size:10px;color:var(--texte-tres-discret);margin-top:4px;">
+          Valeur personnalisée prioritaire sur le type sélectionné si renseignée.
+        </p>
+      </div>
+
+      <!-- Sélecteur d'année CBAM -->
+      <div class="groupe-champ" id="h2-year-group" style="display:none;">
+        <label class="label">Année CBAM</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;" id="h2-year-btns">
+          <button type="button" class="dash-periode-btn dash-periode-btn--actif" data-year="2026"
+            onclick="selectH2Year(this,2026)">2026 <span style="font-size:9px;opacity:0.7;">2.5%</span></button>
+          <button type="button" class="dash-periode-btn" data-year="2027"
+            onclick="selectH2Year(this,2027)">2027 <span style="font-size:9px;opacity:0.7;">5%</span></button>
+          <button type="button" class="dash-periode-btn" data-year="2028"
+            onclick="selectH2Year(this,2028)">2028 <span style="font-size:9px;opacity:0.7;">10%</span></button>
+          <button type="button" class="dash-periode-btn" data-year="2029"
+            onclick="selectH2Year(this,2029)">2029 <span style="font-size:9px;opacity:0.7;">22.5%</span></button>
+          <button type="button" class="dash-periode-btn" data-year="2030"
+            onclick="selectH2Year(this,2030)">2030 <span style="font-size:9px;opacity:0.7;">48.5%</span></button>
+        </div>
+        <p style="font-size:10px;color:var(--texte-tres-discret);margin-top:4px;">
+          % = part des émissions soumise à certificats CBAM cette année-là.
+        </p>
+        <button type="button" onclick="_fetchH2Calc()"
+                style="margin-top:10px;width:100%;padding:10px 0;border:none;border-radius:8px;
+                       background:#56d364;color:#000;font-weight:700;font-size:13px;cursor:pointer;">
+          ⚛️ Calculer les émissions CBAM H₂
+        </button>
+      </div>
+
+      <!-- Loading -->
+      <div id="h2-calc-loading" style="display:none;text-align:center;padding:16px;
+           font-size:12px;color:var(--texte-discret);">⏳ Calcul CBAM en cours...</div>
+
+      <!-- Résultats -->
+      <div id="h2-calc-resultats" style="display:none;">
+
+        <!-- Émissions -->
+        <div style="background:rgba(86,211,100,0.06);border:1px solid rgba(86,211,100,0.2);
+             border-radius:8px;padding:14px 16px;margin-bottom:10px;">
+          <div style="font-family:var(--police-chiffre);font-size:10px;color:#56d364;
+               text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">
+            ⚡ Émissions intrinsèques (tCO₂ / tonne H₂)
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;">
+              <div style="font-size:9px;color:var(--texte-discret);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Procédé</div>
+              <div id="h2-res-method" style="font-size:10px;font-weight:600;color:var(--texte);">—</div>
+            </div>
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;">
+              <div style="font-size:9px;color:var(--texte-discret);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Intensité</div>
+              <div id="h2-res-intensity" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;color:#56d364;">—</div>
+              <div style="font-size:9px;color:var(--texte-discret);margin-top:1px;">tCO₂/t H₂</div>
+            </div>
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;
+                 border:1px solid rgba(86,211,100,0.3);">
+              <div style="font-size:9px;color:#56d364;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Total CO₂ annuel</div>
+              <div id="h2-res-total" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;color:#56d364;">—</div>
+              <div style="font-size:9px;color:var(--texte-discret);margin-top:1px;">tCO₂e / an</div>
+            </div>
+          </div>
+          <!-- Détail électrolyse -->
+          <div id="h2-elec-detail" style="display:none;margin-top:10px;font-size:10px;
+               color:#56d364;padding:6px 10px;background:rgba(86,211,100,0.06);border-radius:6px;
+               border-left:2px solid #56d364;font-family:var(--police-chiffre);"></div>
+        </div>
+
+        <!-- Benchmark + coût CBAM -->
+        <div style="background:rgba(86,211,100,0.04);border:1px solid rgba(86,211,100,0.15);
+             border-radius:8px;padding:14px 16px;">
+          <div style="font-family:var(--police-chiffre);font-size:10px;color:#56d364;
+               text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">
+            🛡️ Conformité CBAM — <span id="h2-year-label">2026</span>
+            <span style="font-weight:400;color:var(--texte-discret);margin-left:8px;">Colonne A · Scope 1</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;">
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;">
+              <div style="font-size:9px;color:var(--texte-discret);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Benchmark UE</div>
+              <div id="h2-res-benchmark" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;color:#e3b341;">5.089</div>
+              <div style="font-size:9px;color:var(--texte-discret);margin-top:1px;">tCO₂e/t · Col. A</div>
+            </div>
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;">
+              <div style="font-size:9px;color:var(--texte-discret);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Écart / benchmark</div>
+              <div id="h2-res-chargeable" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;">—</div>
+              <div id="h2-res-statut" style="font-size:9px;margin-top:1px;">—</div>
+            </div>
+            <div style="background:var(--fond-carte);border-radius:6px;padding:8px 10px;
+                 border:1px solid rgba(86,211,100,0.25);">
+              <div style="font-size:9px;color:#56d364;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;">Coût CBAM estimé</div>
+              <div id="h2-res-cout" style="font-family:var(--police-chiffre);font-size:1.1rem;font-weight:700;color:#56d364;">—</div>
+              <div id="h2-res-cout-detail" style="font-size:9px;color:var(--texte-discret);margin-top:1px;">EUR</div>
+            </div>
+          </div>
+          <div id="h2-res-notes" style="font-size:10px;color:var(--texte-tres-discret);font-style:italic;margin-top:4px;"></div>
+        </div>
+
+      </div>
+    </div>
+
   </section>
 
 
@@ -1735,6 +3007,12 @@
 
   <nav>
 
+    <!-- ── Secteur Actif — Level 2 ── -->
+    <div id="sidebar-secteurs-wrapper" style="display:none;margin-bottom:4px;">
+      <div class="sidebar__section-titre" id="sidebar-secteur-titre">Secteur Actif</div>
+      <div id="sidebar-secteurs-list"></div>
+    </div>
+
     <div class="sidebar__section-titre">Principal</div>
 
     <a class="sidebar__lien sidebar__lien--actif" data-page="dashboard" href="#" data-tooltip="Dashboard">
@@ -1792,13 +3070,17 @@
     <div class="footer-dot-seul">
       <span id="sidebar-api-dot" class="point-vert"></span>
     </div>
-    <!-- État OUVERT : nom + statut -->
+    <!-- État OUVERT : nom + statut + logout -->
     <div class="footer-complet">
       <div id="sidebar-footer-nom" class="sidebar__footer-entreprise">—</div>
+      <div id="auth-user-email"></div>
       <div class="sidebar__footer-statut">
         <span id="sidebar-api-dot2" class="point-vert"></span>
         <span id="sidebar-api-texte">Connexion…</span>
       </div>
+      <button id="auth-logout-btn" onclick="authLogout()" style="display:none;">
+        ⎋ Déconnexion
+      </button>
     </div>
   </div>
 
@@ -1984,6 +3266,8 @@ function allerPage(nomPage) {
   if (nomPage === 'cbam')      chargerConformiteCBAM();
   if (nomPage === 'alertes')   chargerAlertes();
   if (nomPage === 'scope3')    chargerScope3();
+  if (nomPage === 'parametres') { renderProfilSecteurChips(); updateSecteurPanels(); mettreAJourRoute(); }
+  if (nomPage === 'dashboard') { renderDashSecteurCard(); _hideCalcToast(); }
   if (nomPage === 'monitoring') _demarrerAutoRefreshMonitoring();
   else _arreterAutoRefreshMonitoring();
 }
@@ -2503,61 +3787,6 @@ function toggleChatOverlay() {
 
 // Thème géré par js/theme.js
 
-// ── LANCEMENT ─────────────────────────────────────
-chargerSuggestions();
-chargerProfil();
-chargerDashboardCBAM();
-chargerAlertes();
-setInterval(chargerDashboardCBAM, 30000);
-setInterval(chargerAlertes, 30000);
-
-// ── PROFIL ENTREPRISE ─────────────────────────────
-async function chargerProfil() {
-  try {
-    const res  = await fetch('http://localhost:8000/company/profile');
-    const data = await res.json();
-    const badge  = document.getElementById('chat-cbam-badge');
-    const banner = document.getElementById('chat-profil-banner');
-
-    if (data.configure && data.profil) {
-      const p = data.profil;
-      // Remplit le formulaire
-      document.getElementById('champ-entreprise').value = p.nom_entreprise || '';
-      document.getElementById('champ-production').value = p.production_annuelle_tonnes || '';
-      document.getElementById('champ-cn').value         = p.cn_code || '';
-      document.getElementById('champ-secteur').value    = p.secteur || '';
-      mettreAJourRoute();
-      document.getElementById('champ-route').value = p.route_production || '';
-      // Déclenche le lookup pour afficher le badge produit si CN code présent
-      if (p.cn_code) lookupCnCode(p.cn_code);
-
-      // Badge chat = vert CBAM actif
-      if (badge)  { badge.className = 'badge badge-ok'; badge.innerHTML = '<span class="badge__point"></span>CBAM actif'; }
-      if (banner) banner.style.display = 'none';
-
-      // Statut dans la page paramètres
-      const st = document.getElementById('profil-statut');
-      if (st) st.innerHTML =
-        '<div style="background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.3);' +
-        'border-radius:8px;padding:10px 14px;font-size:12px;color:#3fb950;">' +
-        '✅ Profil configuré — ' + p.nom_entreprise + ' · ' + p.secteur +
-        ' · ' + p.production_annuelle_tonnes + ' t/an</div>';
-    } else {
-      // Pas de profil → bannière d'avertissement
-      if (badge)  { badge.className = 'badge badge-warn'; badge.innerHTML = '⚠️ Profil CBAM'; }
-      if (banner) banner.style.display = 'block';
-
-      const st = document.getElementById('profil-statut');
-      if (st) st.innerHTML =
-        '<div style="background:rgba(255,166,0,0.08);border:1px solid rgba(255,166,0,0.3);' +
-        'border-radius:8px;padding:10px 14px;font-size:12px;color:#e3b341;">' +
-        '⚠️ Profil non configuré — remplissez le formulaire ci-dessous pour activer l\'analyse CBAM</div>';
-    }
-  } catch(e) {
-    console.log('Profil non chargé :', e);
-  }
-}
-
 // ── RÉFÉRENCE CBAM — SECTEURS / ROUTES / COLONNES ─
 // Règle fondamentale :
 //   Colonne A = Scope 1 uniquement (électricité EXCLUE)
@@ -2618,6 +3847,872 @@ var CBAM_SECTEURS = {
   }
 };
 
+// ═══════════════════════════════════════════════════════════
+//  ARCHITECTURE SECTEUR ACTIF — 3 NIVEAUX
+// ═══════════════════════════════════════════════════════════
+
+var SECTEUR_CONFIG = {
+  'Acier/Fer': { couleur: '#58a6ff', bg: 'rgba(88,166,255,0.10)',   icone: '⚙️',  label: 'Acier / Fer', colonne: 'A' },
+  'Aluminium': { couleur: '#bc8cff', bg: 'rgba(188,140,255,0.10)', icone: '🔩',  label: 'Aluminium',   colonne: 'A' },
+  'Ciment':    { couleur: '#f78166', bg: 'rgba(247,129,102,0.10)', icone: '🏗️', label: 'Ciment',       colonne: 'B' },
+  'Engrais':   { couleur: '#3fb950', bg: 'rgba(63,185,80,0.10)',   icone: '🌱',  label: 'Engrais',      colonne: 'B' },
+  'Hydrogène': { couleur: '#56d364', bg: 'rgba(86,211,100,0.10)',  icone: '⚛️', label: 'Hydrogène',    colonne: 'A' }
+};
+
+var SECTEUR_ACTIF        = null;
+var SECTEURS_ENREGISTRES = [];
+
+// ── DONNÉES SECTORIELLES — Ciment & Hydrogène ─────
+var CIMENT_TYPES = {
+  CEM_I:     { label: 'CEM I — Portland pur',              clinker: '95–100%', intensite: '~0.86–0.89 tCO₂/t', couleur: '#ff4560', bmg: '0.666' },
+  CEM_II_A:  { label: 'CEM II/A — Portland composé',       clinker: '80–94%',  intensite: '~0.78–0.86 tCO₂/t', couleur: '#e3b341', bmg: '0.666' },
+  CEM_II_B:  { label: 'CEM II/B — Portland composé',       clinker: '65–79%',  intensite: '~0.71–0.78 tCO₂/t', couleur: '#e3b341', bmg: '0.666' },
+  CEM_III_A: { label: 'CEM III/A — Laitier haut-fourneau', clinker: '40–64%',  intensite: '~0.58–0.70 tCO₂/t', couleur: '#3fb950', bmg: '0.666' },
+  CEM_VI:    { label: 'CEM VI — Bas-carbone',              clinker: '35–50%',  intensite: '~0.55–0.63 tCO₂/t', couleur: '#56d364', bmg: '0.666' },
+  CLINKER:   { label: 'CLINKER pur — référence',           clinker: '100%',    intensite: '~0.89 tCO₂/t',      couleur: '#ff4560', bmg: '0.666' }
+};
+
+var H2_METHODES = {
+  smr_gaz:                 { label: 'SMR — Gaz naturel (hydrogène gris)',         intensite: '~11.1 kgCO₂/kgH₂',  couleur: '#ff4560' },
+  electrolyse_reseau:      { label: 'Électrolyse — Réseau Maroc (mix national)',   intensite: '~20–35 kgCO₂/kgH₂', couleur: '#e3b341' },
+  electrolyse_renouvelable:{ label: 'Électrolyse — Renouvelable certifiée (vert)', intensite: '~0.5–2.0 kgCO₂/kgH₂',couleur: '#3fb950' },
+  biomasse:                { label: 'Reformage biomasse (bas carbone)',             intensite: '~2.0 kgCO₂/kgH₂',  couleur: '#56d364' },
+  electrolyse_nucleaire:   { label: 'Électrolyse nucléaire (futur)',               intensite: '~0.5 kgCO₂/kgH₂',  couleur: '#bc8cff' }
+};
+
+var ENGRAIS_TYPES = {
+  AMMONIA:      { label: 'Ammonia (NH₃) 99.8%',          cn: '2814',    n_pct: null  },
+  UREA:         { label: 'Urea 46% N',                    cn: '3105',    n_pct: '46%' },
+  AN_34:        { label: 'Ammonium Nitrate 34.5% N',      cn: '3102',    n_pct: '34.5%' },
+  AN_28:        { label: 'Ammonium Nitrate 28% N',        cn: '3102 10', n_pct: '28%' },
+  AS_21:        { label: 'Ammonium Sulphate 21% N',       cn: '3104',    n_pct: '21%' },
+  NITRIC_ACID:  { label: 'Nitric Acid (HNO₃) 15% N',     cn: '2819',    n_pct: '15%' }
+};
+
+// ── Constantes PFC Aluminium primaire (IPCC AR6 · EU 2026) ─────────────
+var ALU_PFC = {
+  cf4_kg_per_t:    0.160,    // kg CF₄ / tonne Al primaire
+  c2f6_kg_per_t:   0.013,    // kg C₂F₆ / tonne Al primaire
+  gwp_cf4:         7380,     // GWP CF₄  (IPCC AR6, 100 ans)
+  gwp_c2f6:        12400,    // GWP C₂F₆ (IPCC AR6, 100 ans)
+  // Résultat : (0.160×7380 + 0.013×12400) / 1000 = 1.342 tCO₂e/t Al
+  pfc_tco2e_per_t: 1.342
+};
+
+var ALUMINIUM_TYPES = {
+  primaire:   {
+    label:     'Aluminium primaire',
+    source:    'À partir de bauxite — électrolyse fused-salt (Hall-Héroult)',
+    energie:   '14–16 MWh/t Al',
+    intensite: '11+ tCO₂e/t (avec PFC)',
+    couleur:   '#ff4560',
+    pfc:       true
+  },
+  secondaire: {
+    label:     'Aluminium secondaire',
+    source:    'À partir d\'aluminium recyclé / scrap',
+    energie:   '0.5–1 MWh/t Al',
+    intensite: '0.5–1 tCO₂e/t',
+    couleur:   '#3fb950',
+    pfc:       false
+  }
+};
+
+// ── LANCEMENT — protégé par auth ──────────────────
+// Lance les chargements seulement si un token existe.
+// Si non, l'overlay auth s'affiche et les fonctions sont
+// rappelées par authHideOverlay() après connexion.
+var _appIntervals = [];
+function lancerApp() {
+  chargerSuggestions();
+  chargerProfil();
+  chargerDashboardCBAM();
+  chargerAlertes();
+  // Nettoie les anciens intervalles avant d'en créer de nouveaux
+  _appIntervals.forEach(function(id) { clearInterval(id); });
+  _appIntervals = [
+    setInterval(chargerDashboardCBAM, 30000),
+    setInterval(chargerAlertes, 30000)
+  ];
+  setTimeout(renderDashSecteurCard, 300);
+}
+if (localStorage.getItem('carboniq_token')) {
+  lancerApp();
+}
+
+// ── PROFIL ENTREPRISE ─────────────────────────────
+async function chargerProfil() {
+  try {
+    const res  = await fetch('http://localhost:8000/company/profile');
+    const data = await res.json();
+    const badge  = document.getElementById('chat-cbam-badge');
+    const banner = document.getElementById('chat-profil-banner');
+
+    if (data.configure && data.profil) {
+      const p = data.profil;
+      // Remplit le formulaire
+      document.getElementById('champ-entreprise').value = p.nom_entreprise || '';
+      document.getElementById('champ-production').value = p.production_annuelle_tonnes || '';
+      document.getElementById('champ-cn').value         = p.cn_code || '';
+      document.getElementById('champ-secteur').value    = p.secteur || '';
+      mettreAJourRoute();
+      document.getElementById('champ-route').value = p.route_production || '';
+      // Déclenche le lookup pour afficher le badge produit si CN code présent
+      if (p.cn_code) lookupCnCode(p.cn_code);
+
+      // Badge chat = vert CBAM actif
+      if (badge)  { badge.className = 'badge badge-ok'; badge.innerHTML = '<span class="badge__point"></span>CBAM actif'; }
+      if (banner) banner.style.display = 'none';
+
+      // Statut dans la page paramètres
+      const st = document.getElementById('profil-statut');
+      if (st) st.innerHTML =
+        '<div style="background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.3);' +
+        'border-radius:8px;padding:10px 14px;font-size:12px;color:#3fb950;">' +
+        '✅ Profil configuré — ' + p.nom_entreprise + ' · ' + p.secteur +
+        ' · ' + p.production_annuelle_tonnes + ' t/an</div>';
+
+      // Architecture secteur actif — initialise avec le secteur du profil
+      initSecteurs(p.secteur);
+    } else {
+      // Pas de profil → bannière d'avertissement
+      if (badge)  { badge.className = 'badge badge-warn'; badge.innerHTML = '⚠️ Profil CBAM'; }
+      if (banner) banner.style.display = 'block';
+
+      const st = document.getElementById('profil-statut');
+      if (st) st.innerHTML =
+        '<div style="background:rgba(255,166,0,0.08);border:1px solid rgba(255,166,0,0.3);' +
+        'border-radius:8px;padding:10px 14px;font-size:12px;color:#e3b341;">' +
+        '⚠️ Profil non configuré — remplissez le formulaire ci-dessous pour activer l\'analyse CBAM</div>';
+    }
+  } catch(e) {
+    console.log('Profil non chargé :', e);
+  }
+}
+
+// ── Définit le secteur actif et met à jour toute l'UI ──
+function setActiveSecteur(secteur) {
+  SECTEUR_ACTIF = secteur;
+  localStorage.setItem('carboniq-secteur-actif', secteur);
+  renderSecteurStrip();
+  renderSidebarSecteurs();
+  _appliquerContexteSecteur(secteur);
+  renderDashSecteurCard();
+}
+
+// ── Met à jour la couleur CSS + labels contextuels ──
+function _appliquerContexteSecteur(secteur) {
+  if (!secteur) return;
+  var cfg = SECTEUR_CONFIG[secteur] || {};
+  var couleur = cfg.couleur || 'var(--vert)';
+
+  // Variable CSS racine pour la couleur du secteur actif
+  document.documentElement.style.setProperty('--couleur-secteur', couleur);
+  document.documentElement.style.setProperty('--couleur-secteur-bg', cfg.bg || 'transparent');
+
+  // Sous-titre de la carte CBAM
+  var cbamInfo = document.getElementById('cbam-secteur-info');
+  if (cbamInfo) {
+    cbamInfo.textContent = (cfg.label || secteur) + ' · UE 2025/2620 · Colonne ' + (cfg.colonne || '—');
+  }
+
+  // Badge CBAM topbar — contour coloré
+  var topBadge = document.getElementById('topbar-cbam-badge');
+  if (topBadge) topBadge.style.borderColor = couleur;
+
+  // Titre du dashboard mis en contexte
+  var titreEl = document.getElementById('titre-page');
+  if (titreEl && titreEl.textContent.includes('Tableau')) {
+    // le titre est géré par allerPage, pas besoin de le changer ici
+  }
+
+  // Rafraîchit la page CBAM si elle est visible
+  var cbamPage = document.getElementById('page-cbam');
+  if (cbamPage && cbamPage.classList.contains('page--active')) {
+    chargerDashboardCBAM();
+  }
+}
+
+// ── Rendu du strip Level 1 (chips en haut du contenu) ──
+function renderSecteurStrip() {
+  var strip   = document.getElementById('secteur-strip');
+  var wrapper = document.getElementById('secteur-strip-wrapper');
+  if (!strip || !wrapper) return;
+
+  if (!SECTEURS_ENREGISTRES.length) {
+    wrapper.style.display = 'none';
+    return;
+  }
+  wrapper.style.display = 'block';
+
+  strip.innerHTML = SECTEURS_ENREGISTRES.map(function(s) {
+    var cfg    = SECTEUR_CONFIG[s] || {};
+    var isActif = s === SECTEUR_ACTIF;
+    return '<button class="secteur-chip' + (isActif ? ' secteur-chip--actif' : '') + '" ' +
+      'onclick="setActiveSecteur(\'' + s.replace(/'/g, "\\'") + '\')" ' +
+      'style="border-color:' + (isActif ? cfg.couleur : 'var(--bordure)') + ';' +
+      'background:' + (isActif ? cfg.bg : 'transparent') + ';' +
+      'color:' + (isActif ? cfg.couleur : 'var(--texte-discret)') + ';">' +
+      '<span class="secteur-chip__dot" style="background:' + cfg.couleur + ';' +
+        (isActif ? '' : 'opacity:0.4;') + '"></span>' +
+      (cfg.icone || '') + ' ' + (cfg.label || s) +
+      '</button>';
+  }).join('');
+}
+
+// ── Rendu des items sidebar Level 2 ──
+function renderSidebarSecteurs() {
+  var list    = document.getElementById('sidebar-secteurs-list');
+  var wrapper = document.getElementById('sidebar-secteurs-wrapper');
+  if (!list || !wrapper) return;
+
+  if (!SECTEURS_ENREGISTRES.length) {
+    wrapper.style.display = 'none';
+    return;
+  }
+  wrapper.style.display = 'block';
+
+  list.innerHTML = SECTEURS_ENREGISTRES.map(function(s) {
+    var cfg    = SECTEUR_CONFIG[s] || {};
+    var isActif = s === SECTEUR_ACTIF;
+    return '<div class="sidebar__secteur-item' + (isActif ? ' sidebar__secteur-item--actif' : '') + '" ' +
+      'onclick="setActiveSecteur(\'' + s.replace(/'/g, "\\'") + '\')" ' +
+      'data-tooltip="' + (cfg.label || s) + ' · Col. ' + (cfg.colonne || '?') + '" ' +
+      'style="border-left-color:' + (isActif ? cfg.couleur : 'transparent') + ';' +
+      'background:' + (isActif ? cfg.bg : 'transparent') + ';">' +
+      '<span class="secteur-item__dot" style="background:' + cfg.couleur + ';"></span>' +
+      '<span class="secteur-item__label" style="color:' + (isActif ? cfg.couleur : 'var(--texte-discret)') + ';' +
+        'font-weight:' + (isActif ? '600' : '400') + ';">' +
+        cfg.icone + ' ' + (cfg.label || s) + '</span>' +
+      '<span class="secteur-item__col" style="background:' + cfg.bg + ';color:' + cfg.couleur + ';">Col. ' + (cfg.colonne || '?') + '</span>' +
+      '</div>';
+  }).join('');
+}
+
+// ── Rendu des chips dans la page Paramètres ──
+function renderProfilSecteurChips() {
+  var container = document.getElementById('secteurs-profil-chips');
+  if (!container) return;
+
+  container.innerHTML = Object.keys(SECTEUR_CONFIG).map(function(key) {
+    var cfg        = SECTEUR_CONFIG[key];
+    var isSelected = SECTEURS_ENREGISTRES.indexOf(key) >= 0;
+    return '<button type="button" class="profil-secteur-chip' + (isSelected ? ' profil-secteur-chip--actif' : '') + '" ' +
+      'onclick="toggleSecteurProfil(\'' + key.replace(/'/g, "\\'") + '\')" ' +
+      'style="border-color:' + (isSelected ? cfg.couleur : 'var(--bordure)') + ';' +
+      'background:' + (isSelected ? cfg.bg : 'transparent') + ';' +
+      'color:' + (isSelected ? cfg.couleur : 'var(--texte-discret)') + ';">' +
+      cfg.icone + ' ' + cfg.label +
+      (isSelected ? ' <span style="font-size:10px;">✓</span>' : '') +
+      '</button>';
+  }).join('');
+}
+
+// ── Bascule un secteur dans le profil ──
+function toggleSecteurProfil(secteur) {
+  var idx = SECTEURS_ENREGISTRES.indexOf(secteur);
+  if (idx >= 0) {
+    SECTEURS_ENREGISTRES.splice(idx, 1);
+  } else {
+    SECTEURS_ENREGISTRES.push(secteur);
+  }
+  localStorage.setItem('carboniq-secteurs-enregistres', JSON.stringify(SECTEURS_ENREGISTRES));
+
+  // Synchronise le <select> avec le premier secteur actif
+  var sel = document.getElementById('champ-secteur');
+  if (sel) {
+    sel.value = SECTEURS_ENREGISTRES.length > 0 ? SECTEURS_ENREGISTRES[0] : '';
+    mettreAJourRoute();
+  }
+
+  // Ajuste le secteur actif si nécessaire
+  if (!SECTEUR_ACTIF && SECTEURS_ENREGISTRES.length > 0) {
+    SECTEUR_ACTIF = SECTEURS_ENREGISTRES[0];
+    localStorage.setItem('carboniq-secteur-actif', SECTEUR_ACTIF);
+  } else if (SECTEUR_ACTIF && SECTEURS_ENREGISTRES.indexOf(SECTEUR_ACTIF) < 0 && SECTEURS_ENREGISTRES.length > 0) {
+    SECTEUR_ACTIF = SECTEURS_ENREGISTRES[0];
+    localStorage.setItem('carboniq-secteur-actif', SECTEUR_ACTIF);
+  } else if (SECTEURS_ENREGISTRES.length === 0) {
+    SECTEUR_ACTIF = null;
+    localStorage.removeItem('carboniq-secteur-actif');
+  }
+
+  renderProfilSecteurChips();
+  renderSecteurStrip();
+  renderSidebarSecteurs();
+  updateSecteurPanels();
+  if (SECTEUR_ACTIF) _appliquerContexteSecteur(SECTEUR_ACTIF);
+}
+
+// ── Initialisation au démarrage (appelée après chargerProfil) ──
+function initSecteurs(secteurProfil) {
+  // Charge les secteurs sauvegardés
+  var stored = localStorage.getItem('carboniq-secteurs-enregistres');
+  if (stored) {
+    try { SECTEURS_ENREGISTRES = JSON.parse(stored); } catch(e) { SECTEURS_ENREGISTRES = []; }
+  }
+
+  // Intègre automatiquement le secteur du profil backend s'il est nouveau
+  if (secteurProfil && SECTEURS_ENREGISTRES.indexOf(secteurProfil) < 0) {
+    SECTEURS_ENREGISTRES.push(secteurProfil);
+    localStorage.setItem('carboniq-secteurs-enregistres', JSON.stringify(SECTEURS_ENREGISTRES));
+  }
+
+  // Détermine le secteur actif
+  var lastActif = localStorage.getItem('carboniq-secteur-actif');
+  if (lastActif && SECTEURS_ENREGISTRES.indexOf(lastActif) >= 0) {
+    SECTEUR_ACTIF = lastActif;
+  } else if (SECTEURS_ENREGISTRES.length > 0) {
+    SECTEUR_ACTIF = SECTEURS_ENREGISTRES[0];
+    localStorage.setItem('carboniq-secteur-actif', SECTEUR_ACTIF);
+  }
+
+  // Synchronise le <select> visible avec le secteur actif
+  var sel = document.getElementById('champ-secteur');
+  if (sel && SECTEURS_ENREGISTRES.length > 0) {
+    sel.value = secteurProfil || SECTEURS_ENREGISTRES[0];
+    mettreAJourRoute();
+  }
+
+  renderSecteurStrip();
+  renderSidebarSecteurs();
+  updateSecteurPanels();
+  if (SECTEUR_ACTIF) _appliquerContexteSecteur(SECTEUR_ACTIF);
+}
+
+// ═══════════════════════════════════════════════════════
+//  PANNEAUX SECTORIELS — affichage / masquage / logique
+// ═══════════════════════════════════════════════════════
+
+var PANEL_MAP = {
+  'Aluminium': 'panel-secteur-aluminium',
+  'Acier/Fer': 'panel-secteur-acier',
+  'Ciment':    'panel-secteur-ciment',
+  'Engrais':   'panel-secteur-engrais',
+  'Hydrogène': 'panel-secteur-hydrogene',
+};
+
+function updateSecteurPanels() {
+  Object.keys(PANEL_MAP).forEach(function(secteur) {
+    var panel = document.getElementById(PANEL_MAP[secteur]);
+    if (!panel) return;
+    var visible = SECTEURS_ENREGISTRES.indexOf(secteur) >= 0;
+    panel.style.display = visible ? 'block' : 'none';
+  });
+
+  // Si Ciment visible, restaure le type de ciment sauvegardé
+  if (SECTEURS_ENREGISTRES.indexOf('Ciment') >= 0) {
+    var savedCim = localStorage.getItem('ciment-type');
+    if (savedCim) {
+      var radioCim = document.querySelector('input[name="ciment-type"][value="' + savedCim + '"]');
+      if (radioCim) {
+        radioCim.checked = true;
+        var ptCim = parseFloat(document.getElementById('champ-production').value);
+        if (ptCim > 0) _fetchCimentCalc(savedCim);
+      }
+    }
+  }
+
+  // Si Aluminium visible, restaure le type de production sauvegardé
+  if (SECTEURS_ENREGISTRES.indexOf('Aluminium') >= 0) {
+    var saved = localStorage.getItem('alu-production-type');
+    if (saved) {
+      var radio = document.querySelector('input[name="alu-production-type"][value="' + saved + '"]');
+      if (radio) {
+        radio.checked = true;
+        _highlightAluCards(saved);
+        // Lance le calcul si la production est connue
+        var pt = parseFloat(document.getElementById('champ-production').value);
+        if (pt > 0) _fetchPFC(saved, pt);
+      }
+    }
+  }
+}
+
+// ── Mise en évidence des cartes primaire/secondaire ──
+function _highlightAluCards(type) {
+  var lblP = document.getElementById('lbl-alu-primaire');
+  var lblS = document.getElementById('lbl-alu-secondaire');
+  if (lblP) {
+    lblP.style.borderColor = type === 'primary' ? '#bc8cff' : 'var(--bordure)';
+    lblP.style.background  = type === 'primary' ? 'rgba(188,140,255,0.07)' : 'transparent';
+  }
+  if (lblS) {
+    lblS.style.borderColor = type === 'secondary' ? '#bc8cff' : 'var(--bordure)';
+    lblS.style.background  = type === 'secondary' ? 'rgba(188,140,255,0.07)' : 'transparent';
+  }
+}
+
+// ── Appel API PFC ──
+async function _fetchPFC(productionType, productionTonnes) {
+  var loading   = document.getElementById('alu-pfc-loading');
+  var resultats = document.getElementById('alu-pfc-resultats');
+  if (loading)   loading.style.display   = 'block';
+  if (resultats) resultats.style.display = 'none';
+  try {
+    var res = await fetch(
+      API + '/aluminium/pfc/calculate?production_type=' + productionType +
+      '&production_tonnes=' + productionTonnes
+    );
+    if (!res.ok) throw new Error('API ' + res.status);
+    var d = await res.json();
+
+    document.getElementById('alu-cf4-val').textContent      = d.cf4_kg_t   != null ? d.cf4_kg_t.toFixed(4)   : '0';
+    document.getElementById('alu-c2f6-val').textContent     = d.c2f6_kg_t  != null ? d.c2f6_kg_t.toFixed(6)  : '0';
+    document.getElementById('alu-pfc-co2eq-val').textContent = d.pfc_co2eq_t != null ? d.pfc_co2eq_t.toFixed(6) : '0';
+    var m = document.getElementById('alu-pfc-method');
+    if (m) m.textContent = d.notes || '';
+
+    if (loading)   loading.style.display   = 'none';
+    if (resultats) resultats.style.display = 'block';
+    // Adapte pour le dashboard (pas de benchmark CBAM pour l'alu PFC seul)
+    _saveSecteurResult('Aluminium', {
+      emission_intensity_tco2_t: d.pfc_co2eq_t,
+      total_embedded_tco2: d.pfc_co2eq_t != null ? d.pfc_co2eq_t * productionTonnes : null,
+      label: productionType === 'primary' ? 'Primaire (bauxite)' : 'Secondaire (recyclé)',
+      notes: d.notes || '',
+      avantage: null,
+    });
+  } catch(e) {
+    if (loading)   loading.style.display   = 'none';
+    console.warn('Calcul PFC échoué :', e);
+  }
+}
+
+// ── Déclencheur onChange des radios Aluminium ──
+function onAluTypeChange() {
+  var radio = document.querySelector('input[name="alu-production-type"]:checked');
+  if (!radio) return;
+  var type = radio.value;
+  localStorage.setItem('alu-production-type', type);
+  _highlightAluCards(type);
+  var tonnes = parseFloat(document.getElementById('champ-production').value) || 1000;
+  _fetchPFC(type, tonnes);
+}
+
+// ═══════════════════════════════════════════════════════
+//  PANNEAU CIMENT — sélection type + calcul CBAM
+// ═══════════════════════════════════════════════════════
+
+var _cimentYear = 2026;
+
+// Couleur par type : les 5 CEM = orange dégradé, CEM_VI = vert, CLINKER = orange foncé
+var CIMENT_COULEUR = {
+  'CEM_I': '#f78166', 'CEM_II_A': '#f78166', 'CEM_II_B': '#f78166',
+  'CEM_III_A': '#f78166', 'CEM_VI': '#3fb950', 'CLINKER': '#f78166'
+};
+
+function selectCimentYear(btn, year) {
+  _cimentYear = year;
+  document.querySelectorAll('#ciment-year-btns .dash-periode-btn').forEach(function(b) {
+    b.classList.remove('dash-periode-btn--actif');
+  });
+  btn.classList.add('dash-periode-btn--actif');
+  var lbl = document.getElementById('cim-year-label');
+  if (lbl) lbl.textContent = year;
+  // Relance le calcul si un type est déjà sélectionné
+  var checked = document.querySelector('input[name="ciment-type"]:checked');
+  if (checked) _fetchCimentCalc(checked.value);
+}
+
+function onCimentTypeChange() {
+  var radio = document.querySelector('input[name="ciment-type"]:checked');
+  if (!radio) return;
+  var type = radio.value;
+  localStorage.setItem('ciment-type', type);
+
+  // Highlight de la carte sélectionnée
+  ['CEM_I','CEM_II_A','CEM_II_B','CEM_III_A','CEM_VI','CLINKER'].forEach(function(c) {
+    var lbl = document.getElementById('lbl-cem-' + c);
+    if (!lbl) return;
+    var isActive = c === type;
+    var col = CIMENT_COULEUR[c] || '#f78166';
+    lbl.style.borderColor = isActive ? col : (c === 'CEM_VI' ? 'rgba(63,185,80,0.4)' : 'var(--bordure)');
+    lbl.style.background  = isActive ? (c === 'CEM_VI' ? 'rgba(63,185,80,0.08)' : 'rgba(247,129,102,0.07)')
+                                      : (c === 'CEM_VI' ? 'rgba(63,185,80,0.03)' : 'transparent');
+  });
+
+  _fetchCimentCalc(type);
+}
+
+async function _fetchCimentCalc(cementType) {
+  var loading  = document.getElementById('ciment-calc-loading');
+  var results  = document.getElementById('ciment-calc-resultats');
+  if (loading)  loading.style.display  = 'block';
+  if (results)  results.style.display  = 'none';
+
+  var tonnes = parseFloat(document.getElementById('champ-production').value) || 1000;
+  try {
+    var res = await fetch(
+      API + '/ciment/calculate?cement_type=' + encodeURIComponent(cementType) +
+      '&production_tonnes=' + tonnes + '&year=' + _cimentYear
+    );
+    if (!res.ok) throw new Error('API ' + res.status);
+    var d = await res.json();
+
+    // ── Émissions ──
+    document.getElementById('cim-em-calc').textContent  = d.em_calcination_tco2_t  != null ? d.em_calcination_tco2_t.toFixed(4) : '—';
+    document.getElementById('cim-em-fuel').textContent  = d.em_combustible_tco2_t  != null ? d.em_combustible_tco2_t.toFixed(3)  : '—';
+    document.getElementById('cim-em-elec').textContent  = d.em_electricite_tco2_t  != null ? d.em_electricite_tco2_t.toFixed(3)  : '—';
+    document.getElementById('cim-em-total').textContent = d.total_embedded_tco2_t  != null ? d.total_embedded_tco2_t.toFixed(4) : '—';
+
+    // Barre de décomposition
+    var total = d.total_embedded_tco2_t || 1;
+    var pCalc = (d.em_calcination_tco2_t / total * 100).toFixed(1);
+    var pFuel = (d.em_combustible_tco2_t / total * 100).toFixed(1);
+    var pElec = (d.em_electricite_tco2_t / total * 100).toFixed(1);
+    document.getElementById('cim-bar-calc').style.width = pCalc + '%';
+    document.getElementById('cim-bar-fuel').style.width = pFuel + '%';
+    document.getElementById('cim-bar-elec').style.width = pElec + '%';
+
+    // ── Benchmark + coût ──
+    var bmk = d.benchmark_tco2_t;
+    var chg = d.chargeable_per_t;
+    var avantage = d.avantage;
+    document.getElementById('cim-year-label').textContent = d.year || _cimentYear;
+    document.getElementById('cim-benchmark').textContent  = bmk != null ? bmk.toFixed(4) : '—';
+    document.getElementById('cim-chargeable').textContent = chg != null ? (chg >= 0 ? '+' : '') + chg.toFixed(4) : '—';
+    document.getElementById('cim-chargeable').style.color = avantage ? '#3fb950' : '#f78166';
+    document.getElementById('cim-statut-txt').innerHTML   = avantage
+      ? '<span style="color:#3fb950;">✅ Sous le benchmark — pas de taxe</span>'
+      : '<span style="color:#f78166;">⚠ Au-dessus du benchmark</span>';
+
+    var cout = d.total_cost_eur;
+    document.getElementById('cim-cout-total').textContent = cout != null
+      ? (cout <= 0 ? '0 €' : cout.toLocaleString('fr-FR', {style:'currency', currency:'EUR', maximumFractionDigits:0}))
+      : '—';
+    document.getElementById('cim-cout-detail').textContent = cout != null && cout > 0
+      ? (d.cbam_obligation_pct || '') + '% obligation · ' + (d.prix_carbone_eur || '') + ' €/tCO₂'
+      : 'Aucune taxe CBAM';
+
+    if (d.notes) document.getElementById('cim-notes').textContent = d.notes;
+
+    if (loading) loading.style.display = 'none';
+    if (results) results.style.display = 'block';
+    _saveSecteurResult('Ciment', d);
+  } catch(e) {
+    if (loading) loading.style.display = 'none';
+    console.warn('Calcul ciment échoué :', e);
+  }
+}
+
+// ── ENGRAIS CBAM ──────────────────────────────────
+var _engraisYear  = 2026;
+var _engraisTypes = {};
+
+function selectEngraisYear(btn, year) {
+  _engraisYear = year;
+  document.querySelectorAll('#engrais-year-btns .dash-periode-btn').forEach(function(b) {
+    b.classList.remove('dash-periode-btn--actif');
+  });
+  btn.classList.add('dash-periode-btn--actif');
+  var lbl = document.getElementById('eng-year-label');
+  if (lbl) lbl.textContent = year;
+}
+
+async function onEngraisTypeChange() {
+  var sel = document.getElementById('engrais-type');
+  if (!sel || !sel.value) return;
+  var type = sel.value;
+  localStorage.setItem('engrais-type', type);
+
+  if (!Object.keys(_engraisTypes).length) {
+    try {
+      var r = await fetch(API + '/engrais/types');
+      var d = await r.json();
+      d.types.forEach(function(t) { _engraisTypes[t.code] = t; });
+    } catch(e) { console.warn('Engrais types load failed:', e); }
+  }
+
+  var info = _engraisTypes[type];
+  if (!info) return;
+
+  document.getElementById('engrais-info-formula').textContent   = info.formula    || '—';
+  document.getElementById('engrais-info-nstd').textContent      = info.n_pct_std  || '—';
+  document.getElementById('engrais-info-tol').textContent       = '±' + (info.n_pct_tolerance || 10) + '%';
+  document.getElementById('engrais-info-intensity').textContent = info.emission_intensity || '—';
+  document.getElementById('engrais-info-cn').textContent        = info.cn_code    || '—';
+
+  var rangeEl = document.getElementById('engrais-n-range');
+  if (rangeEl && info.n_pct_min != null)
+    rangeEl.textContent = 'Plage : ' + info.n_pct_min.toFixed(1) + '% – ' + info.n_pct_max.toFixed(1) + '%';
+
+  var nInput = document.getElementById('engrais-n-input');
+  if (nInput) {
+    nInput.value       = '';
+    nInput.placeholder = 'Standard : ' + info.n_pct_std + '% (laisser vide)';
+  }
+
+  document.getElementById('engrais-type-info').style.display  = 'block';
+  document.getElementById('engrais-n-group').style.display    = 'block';
+  document.getElementById('engrais-prod-group').style.display = 'block';
+  document.getElementById('engrais-year-group').style.display = 'block';
+  document.getElementById('engrais-n-warning').style.display  = 'none';
+  document.getElementById('engrais-calc-resultats').style.display = 'none';
+}
+
+function onEngraisNInput() {
+  var sel  = document.getElementById('engrais-type');
+  var type = sel ? sel.value : '';
+  var info = _engraisTypes[type];
+  if (!info) return;
+  var val = parseFloat(document.getElementById('engrais-n-input').value);
+  var w   = document.getElementById('engrais-n-warning');
+  if (isNaN(val) || document.getElementById('engrais-n-input').value === '') {
+    if (w) w.style.display = 'none';
+    return;
+  }
+  var inRange = val >= info.n_pct_min && val <= info.n_pct_max;
+  if (w) w.style.display = inRange ? 'none' : 'block';
+}
+
+function onEngraisInputChange() {
+  var r = document.getElementById('engrais-calc-resultats');
+  if (r) r.style.display = 'none';
+}
+
+async function _fetchEngraisCalc() {
+  var sel = document.getElementById('engrais-type');
+  if (!sel || !sel.value) { alert('Sélectionnez un type d\'engrais.'); return; }
+  var type   = sel.value;
+  var tonnes = parseFloat(document.getElementById('engrais-production').value);
+  if (!tonnes || tonnes <= 0) { alert('Saisissez une production annuelle valide.'); return; }
+
+  var nInputEl = document.getElementById('engrais-n-input');
+  var nVal     = (nInputEl && nInputEl.value !== '') ? parseFloat(nInputEl.value) : null;
+
+  var loading = document.getElementById('engrais-calc-loading');
+  var results = document.getElementById('engrais-calc-resultats');
+  if (loading) loading.style.display = 'block';
+  if (results) results.style.display = 'none';
+
+  var url = API + '/engrais/calculate?fertilizer_type=' + encodeURIComponent(type) +
+            '&production_tonnes=' + tonnes + '&year=' + _engraisYear;
+  if (nVal !== null && !isNaN(nVal)) url += '&n_pct=' + nVal;
+
+  try {
+    var res = await fetch(url);
+    if (!res.ok) {
+      var err = await res.json().catch(function() { return {detail: 'Erreur ' + res.status}; });
+      throw new Error(err.detail || 'API ' + res.status);
+    }
+    var d = await res.json();
+
+    var info = _engraisTypes[type] || {};
+    document.getElementById('eng-intensity-std').textContent = info.emission_intensity != null
+      ? parseFloat(info.emission_intensity).toFixed(4) : '—';
+    document.getElementById('eng-intensity-adj').textContent = d.emission_intensity_tco2_t != null
+      ? d.emission_intensity_tco2_t.toFixed(4) : '—';
+    document.getElementById('eng-total-co2').textContent = d.total_embedded_tco2 != null
+      ? d.total_embedded_tco2.toLocaleString('fr-FR') : '—';
+
+    var noteEl = document.getElementById('eng-n-adj-note');
+    if (d.n_adjusted) {
+      noteEl.style.display = 'block';
+      noteEl.textContent   = '⚡ N ajusté : ' + d.n_pct_standard + '% (std) → ' + d.n_pct_used + '% (réel)';
+    } else {
+      noteEl.style.display = 'none';
+    }
+
+    document.getElementById('eng-year-label').textContent = d.year || _engraisYear;
+    document.getElementById('eng-benchmark').textContent  = d.benchmark_tco2_t != null
+      ? d.benchmark_tco2_t.toFixed(4) : '—';
+    var chg = d.chargeable_per_t;
+    document.getElementById('eng-chargeable').textContent = chg != null
+      ? (chg >= 0 ? '+' : '') + chg.toFixed(4) : '—';
+    document.getElementById('eng-chargeable').style.color = d.avantage ? '#3fb950' : '#f78166';
+    document.getElementById('eng-statut-txt').innerHTML   = d.avantage
+      ? '<span style="color:#3fb950;">✅ Sous le benchmark — pas de taxe</span>'
+      : '<span style="color:#f78166;">⚠ Au-dessus du benchmark</span>';
+
+    var cout = d.total_cost_eur;
+    document.getElementById('eng-cout-total').textContent = cout != null
+      ? (cout <= 0 ? '0 €' : cout.toLocaleString('fr-FR', {style:'currency',currency:'EUR',maximumFractionDigits:0}))
+      : '—';
+    document.getElementById('eng-cout-detail').textContent = cout != null && cout > 0
+      ? (d.cbam_obligation_pct || '') + '% obligation · ' + (d.prix_carbone_eur || '') + ' €/tCO₂'
+      : 'Aucune taxe CBAM';
+    if (d.notes) document.getElementById('eng-notes').textContent = d.notes;
+
+    if (loading) loading.style.display = 'none';
+    if (results) results.style.display = 'block';
+
+    _saveSecteurResult('Engrais', d);
+    localStorage.setItem('engrais-production', tonnes);
+    if (nVal) localStorage.setItem('engrais-n-pct', nVal);
+  } catch(e) {
+    if (loading) loading.style.display = 'none';
+    alert('Erreur calcul engrais : ' + e.message);
+  }
+}
+
+// ── HYDROGÈNE CBAM ────────────────────────────────
+var _h2Year    = 2026;
+var _h2Methods = {};
+
+var H2_ELEC_METHODS = ['ELEC_GRID', 'ELEC_RE', 'ELEC_NUCLEAR'];
+
+// Default elec source per method
+var H2_DEFAULT_SRC = {
+  'ELEC_GRID':    'GRID_MAROC',
+  'ELEC_RE':      'RE_CERTIFIED',
+  'ELEC_NUCLEAR': 'NUCLEAR',
+};
+
+function selectH2Year(btn, year) {
+  _h2Year = year;
+  document.querySelectorAll('#h2-year-btns .dash-periode-btn').forEach(function(b) {
+    b.classList.remove('dash-periode-btn--actif');
+  });
+  btn.classList.add('dash-periode-btn--actif');
+  var lbl = document.getElementById('h2-year-label');
+  if (lbl) lbl.textContent = year;
+}
+
+function onH2MethodChange() {
+  var sel    = document.getElementById('h2-method');
+  var method = sel ? sel.value : '';
+  if (!method) return;
+  localStorage.setItem('h2-method', method);
+
+  var isElec = H2_ELEC_METHODS.indexOf(method) !== -1;
+
+  document.getElementById('h2-prod-group').style.display       = 'block';
+  document.getElementById('h2-year-group').style.display       = 'block';
+  document.getElementById('h2-elec-source-group').style.display = isElec ? 'block' : 'none';
+  document.getElementById('h2-elec-type-group').style.display   = isElec ? 'block'  : 'none';
+  document.getElementById('h2-calc-resultats').style.display    = 'none';
+
+  if (isElec) {
+    var defSrc = H2_DEFAULT_SRC[method] || 'GRID_MAROC';
+    var radio  = document.querySelector('input[name="h2-elec-src"][value="' + defSrc + '"]');
+    if (radio) { radio.checked = true; _highlightH2ElecSrc(defSrc); }
+    // Default electrolysis type: STANDARD_AEL
+    var et = document.querySelector('input[name="h2-elec-type"][value="STANDARD_AEL"]');
+    if (et) { et.checked = true; _highlightH2ElecType('STANDARD_AEL'); }
+  }
+}
+
+function onH2ElecSrcChange() {
+  var radio = document.querySelector('input[name="h2-elec-src"]:checked');
+  if (radio) _highlightH2ElecSrc(radio.value);
+  document.getElementById('h2-calc-resultats').style.display = 'none';
+}
+
+function onH2ElecTypeChange() {
+  var radio = document.querySelector('input[name="h2-elec-type"]:checked');
+  if (radio) _highlightH2ElecType(radio.value);
+  document.getElementById('h2-calc-resultats').style.display = 'none';
+}
+
+function onH2InputChange() {
+  document.getElementById('h2-calc-resultats').style.display = 'none';
+}
+
+function _highlightH2ElecSrc(active) {
+  ['GRID_MAROC','RE_CERTIFIED','GAS_CCS','NUCLEAR'].forEach(function(code) {
+    var lbl = document.getElementById('lbl-src-' + code);
+    if (!lbl) return;
+    lbl.style.borderColor  = code === active ? '#56d364' : 'var(--bordure)';
+    lbl.style.background   = code === active ? 'rgba(86,211,100,0.07)' : 'transparent';
+  });
+}
+
+function _highlightH2ElecType(active) {
+  ['STANDARD_AEL','PEM','ALKALINE_ADV'].forEach(function(code) {
+    var lbl = document.getElementById('lbl-et-' + code);
+    if (!lbl) return;
+    lbl.style.borderColor  = code === active ? '#56d364' : 'var(--bordure)';
+    lbl.style.background   = code === active ? 'rgba(86,211,100,0.07)' : 'transparent';
+  });
+}
+
+async function _fetchH2Calc() {
+  var sel    = document.getElementById('h2-method');
+  var method = sel ? sel.value : '';
+  if (!method) { alert('Sélectionnez un procédé de production.'); return; }
+
+  var tonnes = parseFloat(document.getElementById('h2-production').value);
+  if (!tonnes || tonnes <= 0) { alert('Saisissez une production annuelle valide.'); return; }
+
+  var isElec  = H2_ELEC_METHODS.indexOf(method) !== -1;
+  var elecSrc = null, elecType = null, customKwh = null;
+
+  if (isElec) {
+    var srcRadio  = document.querySelector('input[name="h2-elec-src"]:checked');
+    var typeRadio = document.querySelector('input[name="h2-elec-type"]:checked');
+    elecSrc  = srcRadio  ? srcRadio.value  : null;
+    elecType = typeRadio ? typeRadio.value : null;
+    var customEl = document.getElementById('h2-custom-kwh');
+    if (customEl && customEl.value) customKwh = parseFloat(customEl.value);
+  }
+
+  var loading = document.getElementById('h2-calc-loading');
+  var results = document.getElementById('h2-calc-resultats');
+  if (loading) loading.style.display = 'block';
+  if (results) results.style.display = 'none';
+
+  var url = API + '/hydrogene/calculate?method=' + encodeURIComponent(method) +
+            '&production_tonnes=' + tonnes + '&year=' + _h2Year;
+  if (elecSrc)  url += '&elec_source=' + encodeURIComponent(elecSrc);
+  if (elecType) url += '&elec_type='   + encodeURIComponent(elecType);
+  if (customKwh && !isNaN(customKwh)) url += '&custom_kwh_per_kg=' + customKwh;
+
+  try {
+    var res = await fetch(url);
+    if (!res.ok) {
+      var err = await res.json().catch(function() { return {detail: 'Erreur ' + res.status}; });
+      throw new Error(err.detail || 'API ' + res.status);
+    }
+    var d = await res.json();
+
+    document.getElementById('h2-res-method').textContent    = d.method_label || method;
+    document.getElementById('h2-res-intensity').textContent = d.emission_intensity_tco2_t != null
+      ? d.emission_intensity_tco2_t.toFixed(4) : '—';
+    document.getElementById('h2-res-total').textContent     = d.total_embedded_tco2 != null
+      ? d.total_embedded_tco2.toLocaleString('fr-FR') : '—';
+
+    var detEl = document.getElementById('h2-elec-detail');
+    if (d.is_electrolysis && d.calculation_detail) {
+      detEl.style.display = 'block';
+      detEl.textContent   = '⚡ ' + d.calculation_detail;
+    } else {
+      detEl.style.display = 'none';
+    }
+
+    document.getElementById('h2-year-label').textContent    = d.year || _h2Year;
+    document.getElementById('h2-res-benchmark').textContent = d.benchmark_tco2_t != null
+      ? d.benchmark_tco2_t.toFixed(3) : '5.089';
+
+    var chg = d.chargeable_per_t;
+    document.getElementById('h2-res-chargeable').textContent = chg != null
+      ? (chg >= 0 ? '+' : '') + chg.toFixed(4) : '—';
+    document.getElementById('h2-res-chargeable').style.color = d.avantage ? '#3fb950' : '#f78166';
+    document.getElementById('h2-res-statut').innerHTML = d.avantage
+      ? '<span style="color:#3fb950;">✅ Sous le benchmark — pas de taxe</span>'
+      : '<span style="color:#f78166;">⚠ Au-dessus du benchmark</span>';
+
+    var cout = d.total_cost_eur;
+    document.getElementById('h2-res-cout').textContent = cout != null
+      ? (cout <= 0 ? '0 €' : cout.toLocaleString('fr-FR', {style:'currency',currency:'EUR',maximumFractionDigits:0}))
+      : '—';
+    document.getElementById('h2-res-cout-detail').textContent = cout != null && cout > 0
+      ? (d.cbam_obligation_pct || '') + '% obligation · ' + (d.prix_carbone_eur || '') + ' €/tCO₂'
+      : 'Aucune taxe CBAM';
+
+    if (d.notes) document.getElementById('h2-res-notes').textContent = d.notes;
+
+    if (loading) loading.style.display = 'none';
+    if (results) results.style.display = 'block';
+
+    _saveSecteurResult('Hydrogène', d);
+    localStorage.setItem('h2-production', tonnes);
+  } catch(e) {
+    if (loading) loading.style.display = 'none';
+    alert('Erreur calcul hydrogène : ' + e.message);
+  }
+}
+
 // ── AUTO-FILL PAR CODE NC ──────────────────────────
 var _cnTimer = null;
 
@@ -2636,14 +4731,18 @@ function lookupCnCode(val) {
     resultDiv.innerHTML = '<span style="color:var(--texte-discret);">⏳ Recherche...</span>';
 
     try {
-      var res  = await fetch(API + '/cbam/lookup?cn_code=' + encodeURIComponent(val));
-      var data = await res.json();
+      var res = await fetch(API + '/cbam/lookup?cn_code=' + encodeURIComponent(val));
 
       if (!res.ok) {
+        var errBody = null;
+        try { errBody = await res.json(); } catch(_) {}
+        var detail = errBody && errBody.detail ? errBody.detail : ('Erreur ' + res.status);
         resultDiv.innerHTML =
-          '<span style="color:#ff4560;">❌ Code NC non reconnu dans les benchmarks CBAM</span>';
+          '<span style="color:#ff4560;">❌ ' + detail + '</span>';
         return;
       }
+
+      var data = await res.json();
 
       // Auto-remplit le secteur
       if (data.secteur_fr) {
@@ -2655,7 +4754,8 @@ function lookupCnCode(val) {
       if (data.routes_disponibles && data.routes_disponibles.length > 0) {
         var routeSel  = document.getElementById('champ-route');
         var secteur   = document.getElementById('champ-secteur').value;
-        var infoSect  = CBAM_SECTEURS[secteur] || { routes: [] };
+        var _secteurs2 = (typeof CBAM_SECTEURS !== 'undefined') ? CBAM_SECTEURS : {};
+        var infoSect  = _secteurs2[secteur] || { routes: [] };
 
         // Filtre les routes du secteur à celles disponibles pour ce CN
         var routesFiltrees = infoSect.routes.filter(function(r) {
@@ -2680,21 +4780,78 @@ function lookupCnCode(val) {
         '✅ <strong>' + data.cn_code + '</strong> — ' + data.description;
 
     } catch(e) {
-      resultDiv.innerHTML =
-        '<span style="color:#ff4560;">❌ Erreur de connexion à l\'API</span>';
+      var isNetworkErr = e instanceof TypeError && e.message.toLowerCase().includes('fetch');
+      resultDiv.innerHTML = isNetworkErr
+        ? '<span style="color:#ff4560;">🔌 Serveur API inaccessible — démarrez l\'API : <code style="font-size:10px;">uvicorn main:app --reload</code></span>'
+        : '<span style="color:#ff4560;">❌ Erreur inattendue : ' + e.message + '</span>';
     }
   }, 500);
+}
+
+function onSecteurSelectChange(secteur) {
+  // Synchronise SECTEURS_ENREGISTRES et SECTEUR_ACTIF avec le select visible
+  if (secteur) {
+    if (SECTEURS_ENREGISTRES.indexOf(secteur) < 0) {
+      SECTEURS_ENREGISTRES = [secteur];
+    } else {
+      SECTEURS_ENREGISTRES = [secteur].concat(
+        SECTEURS_ENREGISTRES.filter(function(s) { return s !== secteur; })
+      );
+    }
+    SECTEUR_ACTIF = secteur;
+    localStorage.setItem('carboniq-secteurs-enregistres', JSON.stringify(SECTEURS_ENREGISTRES));
+    localStorage.setItem('carboniq-secteur-actif', secteur);
+  } else {
+    SECTEUR_ACTIF = null;
+    localStorage.removeItem('carboniq-secteur-actif');
+  }
+  mettreAJourRoute();
+  renderSecteurStrip();
+  renderSidebarSecteurs();
+  updateSecteurPanels();
+  if (secteur && typeof _appliquerContexteSecteur === 'function') {
+    _appliquerContexteSecteur(secteur);
+  }
 }
 
 function mettreAJourRoute() {
   var secteur  = document.getElementById('champ-secteur').value;
   var routeSel = document.getElementById('champ-route');
   var infoDiv  = document.getElementById('route-info');
-  var info     = CBAM_SECTEURS[secteur];
+  if (!routeSel || !infoDiv) return;
+  var _secteurs = (typeof CBAM_SECTEURS !== 'undefined') ? CBAM_SECTEURS : {};
+  var info     = _secteurs[secteur];
+
+  // Met à jour le badge secteur actif
+  var badge = document.getElementById('secteur-actif-badge');
+  if (badge) {
+    if (info) {
+      var cfg = (typeof SECTEUR_CONFIG !== 'undefined' && SECTEUR_CONFIG[secteur]) || {};
+      badge.style.display = 'block';
+      badge.style.background = cfg.bg || 'rgba(88,166,255,0.08)';
+      badge.style.border = '1px solid ' + (cfg.couleur || '#58a6ff') + '33';
+      badge.style.color = cfg.couleur || '#58a6ff';
+      badge.innerHTML =
+        '<strong>' + (cfg.icone || '') + ' ' + (cfg.label || secteur) + '</strong>' +
+        ' — <strong>Colonne ' + info.colonne + '</strong>' +
+        '<br><span style="font-size:11px;opacity:0.8;">' + info.raison + '</span>' +
+        (info.alerte ? '<br><span style="color:#e3b341;font-size:11px;">' + info.alerte + '</span>' : '');
+    } else {
+      badge.style.display = 'none';
+    }
+  }
 
   if (!info) {
     routeSel.innerHTML = '<option value="">-- Choisir un secteur d\'abord --</option>';
     infoDiv.style.display = 'none';
+    var _ga = document.getElementById('groupe-alu-type');
+    if (_ga) _ga.style.display = 'none';
+    var _ge = document.getElementById('groupe-engrais-type');
+    if (_ge) _ge.style.display = 'none';
+    var _gc = document.getElementById('groupe-ciment-type');
+    if (_gc) _gc.style.display = 'none';
+    var _gh2 = document.getElementById('groupe-h2-methode');
+    if (_gh2) _gh2.style.display = 'none';
     return;
   }
 
@@ -2712,6 +4869,110 @@ function mettreAJourRoute() {
   }
   infoDiv.innerHTML = html;
   infoDiv.style.display = 'block';
+
+  // Sélecteur type aluminium — visible uniquement pour Aluminium
+  var groupeAlu = document.getElementById('groupe-alu-type');
+  if (groupeAlu) {
+    groupeAlu.style.display = (secteur === 'Aluminium') ? 'block' : 'none';
+    if (secteur === 'Aluminium') {
+      var savedAlu = localStorage.getItem('carboniq-alu-type') || 'secondaire';
+      var radioAlu = document.getElementById('alu-profil-' + savedAlu);
+      if (radioAlu) { radioAlu.checked = true; onAluProfileTypeChange(savedAlu); }
+    }
+  }
+
+  // Champ type d'engrais — visible uniquement pour Engrais
+  var groupeEngrais = document.getElementById('groupe-engrais-type');
+  if (groupeEngrais) {
+    groupeEngrais.style.display = (secteur === 'Engrais') ? 'block' : 'none';
+    if (secteur === 'Engrais') {
+      var savedEngrais = localStorage.getItem('carboniq-engrais-type') || 'UREA';
+      var selEngrais   = document.getElementById('champ-engrais-type');
+      if (selEngrais) { selEngrais.value = savedEngrais; onEngraisProfileTypeChange(savedEngrais); }
+    }
+  }
+
+  // Champ type de ciment — visible uniquement pour Ciment
+  var groupeCiment = document.getElementById('groupe-ciment-type');
+  if (groupeCiment) {
+    groupeCiment.style.display = (secteur === 'Ciment') ? 'block' : 'none';
+    if (secteur === 'Ciment') {
+      var savedCiment = localStorage.getItem('carboniq-ciment-type') || 'CEM_I';
+      var selCiment   = document.getElementById('champ-ciment-type');
+      if (selCiment) { selCiment.value = savedCiment; onCimentProfileTypeChange(savedCiment); }
+    }
+  }
+
+  // Champ méthode de production — visible uniquement pour Hydrogène
+  var groupeH2 = document.getElementById('groupe-h2-methode');
+  if (groupeH2) {
+    groupeH2.style.display = (secteur === 'Hydrogène') ? 'block' : 'none';
+    if (secteur === 'Hydrogène') {
+      var savedH2 = localStorage.getItem('carboniq-h2-methode') || 'smr_gaz';
+      var selH2   = document.getElementById('champ-h2-methode');
+      if (selH2) { selH2.value = savedH2; onH2MethodeChange(savedH2); }
+    }
+  }
+}
+
+
+function onCimentProfileTypeChange(val) {
+  if (!val) return;
+  localStorage.setItem('carboniq-ciment-type', val);
+  var infoDiv = document.getElementById('ciment-type-info');
+  if (!infoDiv) return;
+  var m = CIMENT_TYPES[val];
+  if (!m) { infoDiv.style.display = 'none'; return; }
+  infoDiv.style.display = 'block';
+  infoDiv.innerHTML =
+    '<strong style="color:#f78166;">' + m.label + '</strong>' +
+    ' &nbsp;·&nbsp; Clinker : <strong>' + m.clinker + '</strong>';
+}
+
+function onAluProfileTypeChange(val) {
+  if (!val) return;
+  localStorage.setItem('carboniq-alu-type', val);
+  // Highlight des cartes
+  var m = ALUMINIUM_TYPES[val] || {};
+  ['primaire', 'secondaire'].forEach(function(t) {
+    var lbl = document.getElementById('lbl-alu-profil-' + t);
+    if (!lbl) return;
+    var isActive = t === val;
+    var col = t === 'secondaire' ? '#3fb950' : '#ff4560';
+    lbl.style.borderColor = isActive ? col : (t === 'secondaire' ? 'rgba(63,185,80,0.4)' : 'var(--bordure)');
+    lbl.style.background  = isActive ? (t === 'secondaire' ? 'rgba(63,185,80,0.08)' : 'rgba(255,69,96,0.07)') : (t === 'secondaire' ? 'rgba(63,185,80,0.03)' : 'transparent');
+  });
+  // Badge PFC : visible uniquement pour primaire
+  var pfcDiv = document.getElementById('alu-pfc-info');
+  if (pfcDiv) pfcDiv.style.display = (val === 'primaire') ? 'block' : 'none';
+}
+
+function onEngraisProfileTypeChange(val) {
+  if (!val) return;
+  localStorage.setItem('carboniq-engrais-type', val);
+  var infoDiv = document.getElementById('engrais-type-info');
+  if (!infoDiv) return;
+  var m = ENGRAIS_TYPES[val];
+  if (!m) { infoDiv.style.display = 'none'; return; }
+  infoDiv.style.display = 'block';
+  infoDiv.innerHTML =
+    '<strong style="color:#3fb950;">' + m.label + '</strong>' +
+    ' &nbsp;·&nbsp; Code NC : <strong>' + m.cn + '</strong>' +
+    (m.n_pct ? ' &nbsp;·&nbsp; Teneur N : <strong>' + m.n_pct + '</strong>' : '');
+}
+
+function onH2MethodeChange(val) {
+  if (!val) return;
+  localStorage.setItem('carboniq-h2-methode', val);
+  var infoDiv = document.getElementById('h2-methode-info');
+  if (!infoDiv) return;
+  var m = H2_METHODES[val];
+  if (!m) { infoDiv.style.display = 'none'; return; }
+  infoDiv.style.display = 'block';
+  infoDiv.innerHTML =
+    '<strong style="color:#56d364;">' + m.label + '</strong><br>' +
+    'Intensité estimée : <span style="color:' + m.couleur + ';font-weight:600;">' + m.intensite + '</span>' +
+    ' &nbsp;·&nbsp; Benchmark CBAM unique : <strong style="color:#56d364;">5.089 tCO₂/t</strong>';
 }
 
 async function sauvegarderProfil() {
@@ -3339,7 +5600,7 @@ async function chargerConformiteCBAM() {
       secteur:           p.secteur          || null,
       route:             p.route_production || null,
       cn_code:           p.cn_code          || null,
-      mot_cle:           (CBAM_SECTEURS[p.secteur] ? null : (p.secteur || '').toLowerCase()),
+      mot_cle:           ((typeof CBAM_SECTEURS !== 'undefined' && CBAM_SECTEURS && CBAM_SECTEURS[p.secteur]) ? null : (p.secteur || '').toLowerCase()),
       annee:             annee,
       trimestre:         trimestre,
     };
@@ -3895,58 +6156,332 @@ async function chargerAlertes() {
 /* ──────────────────────────────────────────────────
    PAGE RAPPORTS — Téléchargement PDF
 ────────────────────────────────────────────────── */
-async function telechargerRapportCBAM() {
-  var btn = document.getElementById('btn-rapport-cbam');
-  var msg = document.getElementById('rapports-statut');
+// ── Helpers communs rapport PDF ───────────────────────────────────────────
+
+function _setBtnsRapport(ids, loading) {
+  ids.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.disabled = loading;
+    if (loading) el.dataset.orig = el.textContent;
+    else         el.textContent  = el.dataset.orig || el.textContent;
+  });
+}
+
+async function _genererRapport(endpoint, body, filename, mode) {
+  /* mode: 'preview' → nouvel onglet  |  'download' → fichier */
+  var msg      = document.getElementById('rapports-statut');
   var msgInner = document.getElementById('rapports-statut-msg');
+  if (msg) msg.style.display = 'none';
 
-  btn.textContent = '⏳ Génération en cours...';
-  btn.disabled    = true;
+  var res = await fetch(API + endpoint, {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify(body),
+  });
 
-  try {
-    var trimestre = Math.ceil((new Date().getMonth() + 1) / 3);
-    var res = await fetch(API + '/generate-report', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ trimestre: trimestre, annee: new Date().getFullYear() })
-    });
+  if (!res.ok) {
+    var err = await res.json().catch(function(){ return {}; });
+    throw new Error(err.detail || 'Erreur serveur ' + res.status);
+  }
 
-    if (!res.ok) {
-      var err = await res.json();
-      throw new Error(err.detail || 'Erreur serveur ' + res.status);
-    }
+  var blob = await res.blob();
+  var url  = URL.createObjectURL(blob);
 
-    var blob     = await res.blob();
-    var url      = URL.createObjectURL(blob);
-    var a        = document.createElement('a');
-    a.href       = url;
-    a.download   = 'CarbonIQ_Rapport_CBAM_' + new Date().toISOString().slice(0,10) + '.pdf';
+  if (mode === 'preview') {
+    window.open(url, '_blank');
+    // Révoquer après un délai pour laisser le temps au navigateur d'ouvrir
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 10000);
+  } else {
+    var a      = document.createElement('a');
+    a.href     = url;
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }
 
-    if (msg && msgInner) {
-      msg.style.display    = 'block';
-      msgInner.style.color = '#3fb950';
-      msgInner.innerHTML   =
-        '✅ Rapport généré et téléchargé le ' +
-        new Date().toLocaleString('fr-FR') +
-        ' &nbsp;·&nbsp; Format PDF officiel CBAM';
+  if (msg && msgInner) {
+    var actionLabel = mode === 'preview' ? 'ouvert en prévisualisation' : 'téléchargé';
+    msg.style.display    = 'block';
+    msgInner.style.color = 'var(--vert-clair, #3fb950)';
+    msgInner.innerHTML   = '✅ Rapport ' + actionLabel + ' · ' + new Date().toLocaleString('fr-FR');
+  }
+}
+
+// ── Communication Template Excel CBAM ─────────────────────────────────────
+
+async function telechargerCommunicationTemplate(mode) {
+  var btnPrev = document.getElementById('btn-comm-template-preview');
+  var btnDl   = document.getElementById('btn-comm-template-dl');
+  var statut  = document.getElementById('comm-template-statut');
+  var yearEl  = document.getElementById('comm-template-year');
+  var year    = yearEl ? parseInt(yearEl.value, 10) : 2026;
+
+  if (!year || year < 2026 || year > 2030) {
+    if (statut) {
+      statut.style.display    = 'block';
+      statut.style.background = 'rgba(247,129,102,0.12)';
+      statut.style.border     = '1px solid rgba(247,129,102,0.35)';
+      statut.style.color      = '#f78166';
+      statut.textContent      = '❌ Année invalide — choisissez entre 2026 et 2030.';
+    }
+    return;
+  }
+
+  if (btnPrev) btnPrev.disabled = true;
+  if (btnDl)   btnDl.disabled   = true;
+  if (mode === 'preview') { if (btnPrev) btnPrev.textContent = '⏳…'; }
+  else                    { if (btnDl)   btnDl.textContent   = '⏳…'; }
+  if (statut) {
+    statut.style.display    = 'block';
+    statut.style.background = 'rgba(63,185,80,0.08)';
+    statut.style.border     = '1px solid rgba(63,185,80,0.25)';
+    statut.style.color      = '#8b949e';
+    statut.textContent      = mode === 'preview' ? '⏳ Chargement des données…' : '⏳ Génération du fichier Excel…';
+  }
+
+  try {
+    if (mode === 'preview') {
+      var res = await fetch(API + '/cbam/communication-template-preview?year=' + year);
+      if (!res.ok) { var e2 = await res.json().catch(function(){return{};}); throw new Error(e2.detail || 'Erreur ' + res.status); }
+      var data = await res.json();
+
+      /* Construit une page HTML avec toutes les feuilles en tableaux */
+      var html = '<!DOCTYPE html><html><head><meta charset="utf-8">' +
+        '<title>Communication Template CBAM ' + year + '</title>' +
+        '<style>' +
+        'body{background:#0d1117;color:#c9d1d9;font-family:system-ui,monospace;font-size:13px;padding:24px;margin:0;}' +
+        'h1{color:#3fb950;font-size:16px;margin-bottom:4px;}' +
+        'p.sub{color:#8b949e;font-size:11px;margin-bottom:24px;}' +
+        'h2{color:#58a6ff;font-size:13px;margin:24px 0 8px;border-bottom:1px solid #30363d;padding-bottom:6px;}' +
+        'table{border-collapse:collapse;width:100%;margin-bottom:8px;}' +
+        'th{background:#1f4e78;color:#fff;padding:6px 10px;text-align:left;font-size:11px;white-space:nowrap;}' +
+        'td{padding:5px 10px;border-bottom:1px solid #21262d;font-size:12px;}' +
+        'tr:hover td{background:#161b22;}' +
+        '</style></head><body>';
+
+      html += '<h1>📊 Communication Template Excel CBAM — ' + year + '</h1>' +
+              '<p class="sub">Prévisualisation · UE 2025/2620 &amp; UE 2025/2621 · Généré le ' +
+              new Date().toLocaleString('fr-FR') + '</p>';
+
+      Object.keys(data.sheets).forEach(function(sheetName) {
+        var sheet = data.sheets[sheetName];
+        html += '<h2>📄 ' + sheetName + '</h2><table>';
+        html += '<tr>' + sheet.headers.map(function(h){ return '<th>' + h + '</th>'; }).join('') + '</tr>';
+        sheet.rows.forEach(function(row) {
+          html += '<tr>' + row.map(function(v){ return '<td>' + (v !== null && v !== undefined ? v : '—') + '</td>'; }).join('') + '</tr>';
+        });
+        html += '</table>';
+      });
+
+      html += '</body></html>';
+      var win = window.open('', '_blank');
+      win.document.write(html);
+      win.document.close();
+
+      if (statut) {
+        statut.style.background = 'rgba(63,185,80,0.12)';
+        statut.style.border     = '1px solid rgba(63,185,80,0.35)';
+        statut.style.color      = '#3fb950';
+        statut.textContent      = '👁 Prévisualisation ouverte dans un nouvel onglet · ' + new Date().toLocaleString('fr-FR');
+      }
+
+    } else {
+      var res = await fetch(API + '/cbam/communication-template-v2?year=' + year);
+      if (!res.ok) { var e3 = await res.json().catch(function(){return{};}); throw new Error(e3.detail || 'Erreur ' + res.status); }
+
+      var blob     = await res.blob();
+      var url      = URL.createObjectURL(blob);
+      var filename = 'CBAM_Communication_Template_' + year + '.xlsx';
+      var a        = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      if (statut) {
+        statut.style.background = 'rgba(63,185,80,0.12)';
+        statut.style.border     = '1px solid rgba(63,185,80,0.35)';
+        statut.style.color      = '#3fb950';
+        statut.innerHTML        = '✅ <strong>' + filename + '</strong> téléchargé · ' + new Date().toLocaleString('fr-FR');
+      }
+    }
+  } catch(e) {
+    if (statut) {
+      statut.style.background = 'rgba(247,129,102,0.12)';
+      statut.style.border     = '1px solid rgba(247,129,102,0.35)';
+      statut.style.color      = '#f78166';
+      statut.textContent      = '❌ ' + e.message;
+    }
+  } finally {
+    if (btnPrev) { btnPrev.disabled = false; btnPrev.textContent = '👁 Visualiser'; }
+    if (btnDl)   { btnDl.disabled   = false; btnDl.textContent   = '⬇️ Télécharger Excel'; }
+  }
+}
+
+// ── Operator's Emissions Report JSON ──────────────────────────────────────
+
+async function telechargerOperatorsReport(mode) {
+  var btnPreview = document.getElementById('btn-oper-report-preview');
+  var btnDl      = document.getElementById('btn-oper-report-dl');
+  var statut     = document.getElementById('oper-report-statut');
+  var yearEl     = document.getElementById('oper-report-year');
+  var year       = yearEl ? parseInt(yearEl.value, 10) : 2025;
+
+  if (!year || year < 2024 || year > 2030) {
+    if (statut) {
+      statut.style.display    = 'block';
+      statut.style.background = 'rgba(247,129,102,0.12)';
+      statut.style.border     = '1px solid rgba(247,129,102,0.35)';
+      statut.style.color      = '#f78166';
+      statut.textContent      = '❌ Année invalide — choisissez entre 2024 et 2030.';
+    }
+    return;
+  }
+
+  if (btnPreview) btnPreview.disabled = true;
+  if (btnDl)      btnDl.disabled      = true;
+  if (mode === 'preview') {
+    if (btnPreview) btnPreview.textContent = '⏳…';
+  } else {
+    if (btnDl) btnDl.textContent = '⏳…';
+  }
+  if (statut) {
+    statut.style.display    = 'block';
+    statut.style.background = 'rgba(88,166,255,0.08)';
+    statut.style.border     = '1px solid rgba(88,166,255,0.25)';
+    statut.style.color      = '#8b949e';
+    statut.textContent      = '⏳ Génération du rapport en cours…';
+  }
+
+  try {
+    var res = await fetch(API + '/cbam/operators-emissions-report?year=' + year);
+
+    if (!res.ok) {
+      var err = {};
+      try { err = await res.json(); } catch(e) {}
+      throw new Error(err.detail || 'Erreur serveur ' + res.status);
     }
 
+    var text     = await res.text();
+    var filename = 'Operators_Emissions_Report_' + year + '.json';
+
+    if (mode === 'preview') {
+      /* Ouvre le JSON formaté dans un nouvel onglet */
+      var formatted = JSON.stringify(JSON.parse(text), null, 2);
+      var win = window.open('', '_blank');
+      win.document.write(
+        '<html><head><title>' + filename + '</title>' +
+        '<style>body{background:#0d1117;color:#c9d1d9;font-family:monospace;font-size:13px;' +
+        'white-space:pre-wrap;padding:24px;line-height:1.6;margin:0;}' +
+        'h2{color:#58a6ff;font-size:14px;margin-bottom:16px;border-bottom:1px solid #30363d;padding-bottom:8px;}' +
+        '</style></head><body>' +
+        '<h2>📋 ' + filename + ' — IR 2025/2547, Annexe IV §1.1</h2>' +
+        formatted.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') +
+        '</body></html>'
+      );
+      win.document.close();
+      if (statut) {
+        statut.style.background = 'rgba(88,166,255,0.12)';
+        statut.style.border     = '1px solid rgba(88,166,255,0.35)';
+        statut.style.color      = '#58a6ff';
+        statut.innerHTML        = '👁 Rapport ouvert en prévisualisation · ' + new Date().toLocaleString('fr-FR');
+      }
+    } else {
+      var blob = new Blob([text], { type: 'application/json' });
+      var url  = URL.createObjectURL(blob);
+      var a    = document.createElement('a');
+      a.href   = url; a.download = filename;
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      if (statut) {
+        statut.style.background = 'rgba(88,166,255,0.12)';
+        statut.style.border     = '1px solid rgba(88,166,255,0.35)';
+        statut.style.color      = '#58a6ff';
+        statut.innerHTML        = '✅ <strong>' + filename + '</strong> téléchargé · ' +
+                                   new Date().toLocaleString('fr-FR');
+      }
+    }
   } catch(e) {
+    if (statut) {
+      statut.style.background = 'rgba(247,129,102,0.12)';
+      statut.style.border     = '1px solid rgba(247,129,102,0.35)';
+      statut.style.color      = '#f78166';
+      statut.textContent      = '❌ ' + e.message;
+    }
+  } finally {
+    if (btnPreview) { btnPreview.disabled = false; btnPreview.textContent = '👁 Visualiser'; }
+    if (btnDl)      { btnDl.disabled      = false; btnDl.textContent      = '⬇️ Télécharger JSON'; }
+  }
+}
+
+// ── Rapport v1 (thème dark) ────────────────────────────────────────────────
+
+async function actionRapportV1(mode) {
+  var btnIds = ['btn-rapport-v1-preview', 'btn-rapport-cbam'];
+  _setBtnsRapport(btnIds, true);
+  document.getElementById('btn-rapport-v1-preview').textContent = '⏳…';
+  document.getElementById('btn-rapport-cbam').textContent       = '⏳…';
+
+  try {
+    var trimestre = Math.ceil((new Date().getMonth() + 1) / 3);
+    var body      = { trimestre: trimestre, annee: new Date().getFullYear() };
+    var filename  = 'CarbonIQ_CBAM_v1_' + new Date().toISOString().slice(0, 10) + '.pdf';
+    await _genererRapport('/generate-report', body, filename, mode);
+  } catch(e) {
+    var msg = document.getElementById('rapports-statut');
+    var msgInner = document.getElementById('rapports-statut-msg');
     if (msg && msgInner) {
       msg.style.display    = 'block';
       msgInner.style.color = '#f78166';
-      msgInner.innerHTML   =
-        '❌ Erreur : ' + e.message +
-        '<br><span style="font-size:11px;color:var(--texte-discret);">' +
-        'Si reportlab n\'est pas installé : <code>pip install reportlab</code></span>';
+      msgInner.innerHTML   = '❌ ' + e.message +
+        '<br><small>Si reportlab manque : <code>pip install reportlab</code></small>';
     }
   } finally {
-    btn.textContent = '⬇️ Générer PDF';
-    btn.disabled    = false;
+    _setBtnsRapport(btnIds, false);
+  }
+}
+
+// ── Rapport v2 (officiel, SHA-256, QR, bilingue) ───────────────────────────
+
+async function actionRapportV2(mode) {
+  var btnIds = ['btn-rapport-v2-preview', 'btn-rapport-v2-dl'];
+  _setBtnsRapport(btnIds, true);
+  document.getElementById('btn-rapport-v2-preview').textContent = '⏳…';
+  document.getElementById('btn-rapport-v2-dl').textContent      = '⏳…';
+
+  try {
+    var lang      = document.querySelector('input[name="rapport-lang"]:checked')?.value || 'fr';
+    var trimestre = Math.ceil((new Date().getMonth() + 1) / 3);
+    var body      = {
+      trimestre:              trimestre,
+      annee:                  new Date().getFullYear(),
+      lang:                   lang,
+      eori:                   document.getElementById('v2-eori')?.value              || '',
+      nace:                   document.getElementById('v2-nace')?.value              || '',
+      o3ci_id:                document.getElementById('v2-o3ci')?.value              || '',
+      capacite_t_an:          parseFloat(document.getElementById('v2-capacite')?.value)   || 0,
+      destinataire:           document.getElementById('v2-destinataire')?.value      || '',
+      quantite_importee:      parseFloat(document.getElementById('v2-quantite')?.value)   || 0,
+      verifier_nom:           document.getElementById('v2-verifier-nom')?.value      || '',
+      verifier_accreditation: document.getElementById('v2-verifier-accred')?.value   || '',
+    };
+    var filename = 'CarbonIQ_MRV_v2_' + new Date().toISOString().slice(0, 10) +
+                   '_' + lang.toUpperCase() + '.pdf';
+    await _genererRapport('/generate-report/v2', body, filename, mode);
+  } catch(e) {
+    var msg = document.getElementById('rapports-statut');
+    var msgInner = document.getElementById('rapports-statut-msg');
+    if (msg && msgInner) {
+      msg.style.display    = 'block';
+      msgInner.style.color = '#f78166';
+      msgInner.innerHTML   = '❌ ' + e.message;
+    }
+  } finally {
+    _setBtnsRapport(btnIds, false);
   }
 }
 
@@ -4624,6 +7159,674 @@ function afficherToast(message, type) {
     setTimeout(function(){ el.style.display = 'none'; }, 260);
   }, 3500);
 }
+
+
+// ── SECTEUR DASHBOARD CARD & TOAST ────────────────────────────────────────
+
+var _toastTimer = null;
+
+/**
+ * Persiste le résultat d'un calcul secteur + déclenche le toast CTA.
+ * Appelé depuis chaque _fetch*Calc() après succès.
+ */
+function _saveSecteurResult(secteur, result) {
+  if (!secteur) return;
+  localStorage.setItem('carboniq-last-calc-' + secteur, JSON.stringify(result));
+  _showCalcToast(secteur, result);
+  // Rafraîchit la carte si on est déjà sur le dashboard
+  renderDashSecteurCard();
+}
+
+function _showCalcToast(secteur, result) {
+  var cfg    = SECTEUR_CONFIG[secteur] || {};
+  var cout   = result.total_cost_eur;
+  var avocat = result.avantage;
+
+  var toast = document.getElementById('secteur-calc-toast');
+  if (!toast) return;
+
+  document.getElementById('toast-secteur-icone').textContent = cfg.icone || '📊';
+  document.getElementById('toast-secteur-icone').style.color = cfg.couleur || 'var(--vert)';
+  document.getElementById('toast-secteur-name').textContent  = cfg.label || secteur;
+  document.getElementById('toast-secteur-statut').innerHTML  = avocat
+    ? '<span style="color:#3fb950">✅ Conforme au benchmark</span>'
+    : (cout != null && cout > 0
+        ? '<span style="color:#f78166">⚠ Coût estimé : ' + cout.toLocaleString('fr-FR', {style:'currency',currency:'EUR',maximumFractionDigits:0}) + '</span>'
+        : '<span style="color:#f78166">⚠ Au-dessus du benchmark</span>');
+
+  var btn = document.getElementById('toast-dash-btn');
+  if (btn) {
+    btn.style.background = cfg.couleur || '#3fb950';
+    btn.style.color = '#000';
+  }
+
+  toast.classList.add('toast--visible');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function() { _hideCalcToast(); }, 8000);
+}
+
+function _hideCalcToast() {
+  var toast = document.getElementById('secteur-calc-toast');
+  if (toast) toast.classList.remove('toast--visible');
+}
+
+function _goToDashboard() {
+  _hideCalcToast();
+  allerPage('dashboard');
+}
+
+/**
+ * Normalise le résultat d'un calcul secteur en structure commune.
+ */
+function _normCalcResult(result, secteur) {
+  if (!result) return null;
+  return {
+    intensity:  result.emission_intensity_tco2_t  || result.total_embedded_tco2_t || result.pfc_intensity_tco2_t || null,
+    total_co2:  result.total_embedded_tco2        || result.total_embedded_annual  || result.total_co2_tco2e      || null,
+    benchmark:  result.benchmark_tco2_t           || null,
+    cout:       result.total_cost_eur             || 0,
+    avantage:   result.avantage                   || false,
+    oblig_pct:  result.cbam_obligation_pct        || 0,
+    year:       result.year                       || 2026,
+    label:      result.method_label || result.label || result.cement_type_code || result.fertilizer_code || secteur,
+    notes:      result.notes                      || '',
+  };
+}
+
+/**
+ * Génère/rafraîchit la carte "Secteur Actif" sur le tableau de bord.
+ */
+function renderDashSecteurCard() {
+  var container = document.getElementById('dash-secteur-card');
+  if (!container) return;
+
+  if (!SECTEUR_ACTIF) { container.style.display = 'none'; return; }
+
+  var cfg = SECTEUR_CONFIG[SECTEUR_ACTIF] || {};
+  var raw = null;
+  try { raw = JSON.parse(localStorage.getItem('carboniq-last-calc-' + SECTEUR_ACTIF)); } catch(e) {}
+
+  if (!raw) {
+    // Pas encore de calcul — afficher une invitation
+    container.style.display = 'block';
+    container.innerHTML = '<div class="dash-secteur-card" style="border-left-color:' + (cfg.couleur || 'var(--vert)') + '">' +
+      '<div class="dash-secteur-card__header">' +
+        '<div style="display:flex;align-items:center;gap:10px;">' +
+          '<span style="font-size:20px;">' + (cfg.icone || '📊') + '</span>' +
+          '<div>' +
+            '<div style="font-size:13px;font-weight:700;color:' + (cfg.couleur || 'var(--vert)') + ';">' + (cfg.label || SECTEUR_ACTIF) + '</div>' +
+            '<div style="font-size:10px;color:var(--texte-discret);">Colonne ' + (cfg.colonne || 'B') + ' · Aucun calcul enregistré</div>' +
+          '</div>' +
+        '</div>' +
+        '<button onclick="allerPage(\'parametres\')" style="font-size:11px;padding:6px 14px;' +
+          'border:1px solid ' + (cfg.couleur || 'var(--vert)') + ';border-radius:6px;background:transparent;' +
+          'color:' + (cfg.couleur || 'var(--vert)') + ';cursor:pointer;font-weight:600;">⚙️ Configurer ce secteur</button>' +
+      '</div>' +
+      '<div style="font-size:12px;color:var(--texte-discret);text-align:center;padding:16px 0;">' +
+        'Allez dans <b>Paramètres</b> pour calculer les émissions et le coût CBAM de ce secteur.' +
+      '</div>' +
+    '</div>';
+    return;
+  }
+
+  var d       = _normCalcResult(raw, SECTEUR_ACTIF);
+  var couleur = cfg.couleur || 'var(--vert)';
+  var bmk     = d.benchmark;
+  var pct     = (bmk && d.intensity) ? Math.min((d.intensity / bmk) * 100, 150) : null;
+  var gaugeW  = pct !== null ? Math.min(pct, 100).toFixed(1) : '0';
+  var gaugeColor = d.avantage ? '#3fb950' : couleur;
+
+  var fmtEur  = function(v) {
+    if (v == null) return '—';
+    if (v <= 0) return '<span style="color:#3fb950;">0 €</span>';
+    return v.toLocaleString('fr-FR', {style:'currency',currency:'EUR',maximumFractionDigits:0});
+  };
+  var fmtT    = function(v) { return v != null ? v.toLocaleString('fr-FR') : '—'; };
+  var fmtI    = function(v) { return v != null ? parseFloat(v).toFixed(3) : '—'; };
+
+  container.style.display = 'block';
+  container.innerHTML =
+    '<div class="dash-secteur-card" style="border-left-color:' + couleur + '">' +
+
+      // Header
+      '<div class="dash-secteur-card__header">' +
+        '<div style="display:flex;align-items:center;gap:12px;">' +
+          '<span style="font-size:22px;">' + (cfg.icone||'📊') + '</span>' +
+          '<div>' +
+            '<div style="font-size:14px;font-weight:700;color:' + couleur + ';">' + (cfg.label||SECTEUR_ACTIF) + '</div>' +
+            '<div style="font-size:10px;color:var(--texte-discret);">' +
+              'Colonne ' + (cfg.colonne||'B') + ' · ' + d.label + ' · CBAM ' + d.year +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:8px;">' +
+          '<span style="font-size:10px;padding:4px 10px;border-radius:5px;font-weight:600;' +
+            'background:' + (d.avantage ? 'rgba(63,185,80,0.12)' : 'rgba(247,129,102,0.12)') + ';' +
+            'color:' + (d.avantage ? '#3fb950' : '#f78166') + ';' +
+            'border:1px solid ' + (d.avantage ? 'rgba(63,185,80,0.3)' : 'rgba(247,129,102,0.3)') + ';">' +
+            (d.avantage ? '✅ Conforme' : '⚠ Hors benchmark') +
+          '</span>' +
+          '<button onclick="allerPage(\'parametres\')" ' +
+            'style="font-size:11px;padding:5px 12px;border:1px solid ' + couleur + ';border-radius:6px;' +
+            'background:transparent;color:' + couleur + ';cursor:pointer;font-weight:600;">⚙️ Reconfigurer</button>' +
+        '</div>' +
+      '</div>' +
+
+      // KPIs grid
+      '<div class="dash-secteur-card__kpis">' +
+        '<div class="dash-secteur-kpi">' +
+          '<div class="dash-secteur-kpi__label">Intensité réelle</div>' +
+          '<div class="dash-secteur-kpi__val" style="color:' + couleur + ';">' + fmtI(d.intensity) + '</div>' +
+          '<div class="dash-secteur-kpi__sub">tCO₂e / t produit</div>' +
+        '</div>' +
+        '<div class="dash-secteur-kpi">' +
+          '<div class="dash-secteur-kpi__label">Benchmark UE</div>' +
+          '<div class="dash-secteur-kpi__val" style="color:#e3b341;">' + (bmk != null ? parseFloat(bmk).toFixed(3) : '—') + '</div>' +
+          '<div class="dash-secteur-kpi__sub">tCO₂e/t · Col. ' + (cfg.colonne||'B') + '</div>' +
+        '</div>' +
+        '<div class="dash-secteur-kpi">' +
+          '<div class="dash-secteur-kpi__label">Total CO₂ annuel</div>' +
+          '<div class="dash-secteur-kpi__val" style="color:' + couleur + ';">' + fmtT(d.total_co2) + '</div>' +
+          '<div class="dash-secteur-kpi__sub">tCO₂e / an</div>' +
+        '</div>' +
+        '<div class="dash-secteur-kpi" style="border:1px solid ' + (d.avantage ? 'rgba(63,185,80,0.3)' : 'rgba(247,129,102,0.3)') + ';">' +
+          '<div class="dash-secteur-kpi__label" style="color:' + (d.avantage?'#3fb950':'#f78166') + ';">Coût CBAM estimé</div>' +
+          '<div class="dash-secteur-kpi__val" style="color:' + (d.avantage?'#3fb950':'#f78166') + ';">' + fmtEur(d.cout) + '</div>' +
+          '<div class="dash-secteur-kpi__sub">' + (d.oblig_pct||0) + '% obligation · ' + d.year + '</div>' +
+        '</div>' +
+      '</div>' +
+
+      // Gauge intensité vs benchmark
+      (bmk && d.intensity ? (
+        '<div class="dash-secteur-gauge">' +
+          '<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--texte-discret);margin-bottom:3px;">' +
+            '<span>Intensité vs Benchmark</span>' +
+            '<span style="color:' + gaugeColor + ';font-weight:700;">' + (pct !== null ? pct.toFixed(0) + '%' : '—') + '</span>' +
+          '</div>' +
+          '<div class="dash-secteur-gauge__track">' +
+            '<div class="dash-secteur-gauge__fill" style="width:' + gaugeW + '%;background:' + gaugeColor + ';"></div>' +
+          '</div>' +
+          '<div style="display:flex;justify-content:space-between;font-size:9px;margin-top:3px;">' +
+            '<span style="color:var(--texte-tres-discret);">0</span>' +
+            '<span style="color:#e3b341;">⬆ Benchmark ' + parseFloat(bmk).toFixed(3) + '</span>' +
+            '<span style="color:var(--texte-tres-discret);">' + (bmk * 1.5).toFixed(2) + ' (+50%)</span>' +
+          '</div>' +
+        '</div>'
+      ) : '') +
+
+      // Notes
+      (d.notes ? '<div style="font-size:10px;color:var(--texte-tres-discret);font-style:italic;margin-top:8px;">' + d.notes + '</div>' : '') +
+
+    '</div>';
+}
+
+</script>
+
+<!-- ── Toast notification calcul secteur ─────────────────────── -->
+<div id="secteur-calc-toast">
+  <span class="toast__icon" id="toast-secteur-icone">📊</span>
+  <div class="toast__body">
+    <div class="toast__title">Calcul effectué — <span id="toast-secteur-name"></span></div>
+    <div class="toast__sub"   id="toast-secteur-statut"></div>
+  </div>
+  <button class="toast__btn" id="toast-dash-btn" onclick="_goToDashboard()">📊 Tableau de bord →</button>
+  <button class="toast__close" onclick="_hideCalcToast()">✕</button>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     AUTH OVERLAY — Login / Inscription
+══════════════════════════════════════════════════════════ -->
+<style>
+/* ── Auth overlay — visible par défaut, caché après login ── */
+#auth-overlay {
+  position: fixed; inset: 0; z-index: 99999;
+  display: flex; align-items: stretch;
+  background: var(--fond-page);
+}
+/* Masque l'appli tant que l'overlay est visible */
+body:not(.auth-ready) .main-wrapper,
+body:not(.auth-ready) .page-header { visibility: hidden; }
+.auth-left {
+  flex: 0 0 42%;
+  background: linear-gradient(155deg, #0c1f15 0%, #091413 45%, #1a3828 100%);
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 56px 44px; position: relative; overflow: hidden;
+}
+.auth-left::before {
+  content: ''; position: absolute; top: -100px; left: -100px;
+  width: 380px; height: 380px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(63,185,80,.18) 0%, transparent 68%);
+}
+.auth-left::after {
+  content: ''; position: absolute; bottom: -80px; right: -60px;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(63,185,80,.09) 0%, transparent 70%);
+}
+.auth-logo { position: relative; z-index:1; margin-bottom: 36px; }
+.auth-logo-icon { font-size: 52px; line-height:1; margin-bottom: 14px; }
+.auth-logo-name {
+  font-size: 34px; font-weight: 800; color: #e6edf3;
+  letter-spacing: -.03em; line-height:1;
+}
+.auth-logo-tag {
+  font-family: var(--police-chiffre); font-size: 12px;
+  color: #3fb950; letter-spacing: .1em; margin-top: 7px;
+  text-transform: uppercase;
+}
+.auth-desc {
+  font-size: 14px; color: rgba(230,237,243,.65); line-height: 1.65;
+  margin-bottom: 36px; position: relative; z-index:1;
+}
+.auth-badges { display: flex; flex-direction: column; gap: 10px; position: relative; z-index:1; }
+.auth-badge {
+  display: flex; align-items: center; gap: 9px;
+  font-size: 12px; color: rgba(230,237,243,.55);
+  font-family: var(--police-chiffre);
+}
+.auth-badge-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #3fb950; flex-shrink:0;
+}
+/* Right panel */
+.auth-right {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  padding: 48px 40px; background: var(--fond-page); overflow-y: auto;
+}
+.auth-card { width: 100%; max-width: 420px; }
+.auth-card-title {
+  font-size: 26px; font-weight: 700; color: var(--texte);
+  margin-bottom: 6px; letter-spacing: -.02em;
+}
+.auth-card-sub { font-size: 13px; color: var(--texte-discret); margin-bottom: 28px; }
+.auth-error {
+  background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3);
+  border-radius: var(--arrondi-md); padding: 10px 14px; font-size: 12px;
+  color: #ef4444; margin-bottom: 16px; display: none;
+}
+.auth-field { margin-bottom: 14px; }
+.auth-label {
+  display: block; font-size: 10px; text-transform: uppercase;
+  letter-spacing: .09em; color: var(--texte-discret); margin-bottom: 5px;
+  font-family: var(--police-chiffre);
+}
+.auth-input {
+  width: 100%; box-sizing: border-box; padding: 11px 14px;
+  background: var(--fond-input); border: 1px solid var(--bordure);
+  border-radius: var(--arrondi-md); color: var(--texte); font-size: 14px;
+  outline: none; transition: border-color .2s, box-shadow .2s;
+  font-family: var(--police-texte);
+}
+.auth-input:focus {
+  border-color: var(--bordure-focus);
+  box-shadow: 0 0 0 3px rgba(63,185,80,.15);
+}
+.auth-btn {
+  width: 100%; padding: 12px 24px; background: var(--vert); color: #0a0e0d;
+  border: none; border-radius: var(--arrondi-md); font-size: 14px;
+  font-weight: 700; cursor: pointer; transition: all .2s; margin-top: 6px;
+  font-family: var(--police-texte);
+}
+.auth-btn:hover:not(:disabled) {
+  background: #4fd164; transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(63,185,80,.3);
+}
+.auth-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+.auth-toggle {
+  text-align: center; margin-top: 20px; font-size: 13px;
+  color: var(--texte-discret);
+}
+.auth-toggle-link {
+  color: var(--vert); text-decoration: none; font-weight: 600;
+  cursor: pointer; background: none; border: none; font-size: 13px;
+  font-family: var(--police-texte); padding: 0;
+}
+.auth-toggle-link:hover { text-decoration: underline; }
+.auth-divider {
+  display: flex; align-items: center; gap: 10px;
+  margin: 8px 0 16px; color: var(--texte-tres-discret); font-size: 11px;
+}
+.auth-divider::before, .auth-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--bordure);
+}
+/* Sector cards */
+.auth-sectors {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px; margin-bottom: 14px;
+}
+.auth-sector {
+  padding: 12px 6px; border: 1.5px solid var(--bordure);
+  border-radius: var(--arrondi-md); text-align: center; cursor: pointer;
+  transition: all .18s; background: var(--fond-input);
+}
+.auth-sector:hover { border-color: rgba(63,185,80,.5); background: var(--fond-survol); }
+.auth-sector.sel {
+  border-color: var(--vert); background: rgba(63,185,80,.1);
+  box-shadow: 0 0 0 2px rgba(63,185,80,.2);
+}
+.auth-sector-icon { font-size: 22px; line-height:1; margin-bottom: 5px; }
+.auth-sector-name { font-size: 10px; font-weight: 700; color: var(--texte); }
+.auth-sector-sub  { font-size: 9px; color: var(--texte-discret); margin-top: 2px; }
+/* Logout btn in sidebar */
+#auth-logout-btn {
+  width: 100%; margin-top: 8px; padding: 7px 12px;
+  background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.25);
+  border-radius: var(--arrondi-md); color: #ef4444; font-size: 11px;
+  font-weight: 600; cursor: pointer; transition: all .2s;
+  font-family: var(--police-texte);
+}
+#auth-logout-btn:hover {
+  background: rgba(239,68,68,.2); border-color: rgba(239,68,68,.4);
+}
+/* User info in sidebar footer */
+#auth-user-email {
+  font-size: 10px; color: var(--texte-tres-discret);
+  font-family: var(--police-chiffre);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-top: 2px;
+}
+@media (max-width: 768px) {
+  .auth-left { display: none; }
+  .auth-right { padding: 28px 20px; }
+  .auth-sectors { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+
+<div id="auth-overlay">
+  <!-- ── Left: Branding ── -->
+  <div class="auth-left">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">🌿</div>
+      <div class="auth-logo-name">CarbonIQ</div>
+      <div class="auth-logo-tag">MRV Platform · CBAM</div>
+    </div>
+    <p class="auth-desc">
+      Plateforme de conformité CBAM pour exportateurs marocains vers l'Union Européenne.
+      Monitoring, Reporting et Verification selon les exigences réglementaires EU.
+    </p>
+    <div class="auth-badges">
+      <div class="auth-badge"><span class="auth-badge-dot"></span>Règlement UE 2023/956 — CBAM</div>
+      <div class="auth-badge"><span class="auth-badge-dot"></span>IR 2025/2620 · IR 2025/2621</div>
+      <div class="auth-badge"><span class="auth-badge-dot"></span>GHG Protocol Maroc 2026</div>
+      <div class="auth-badge"><span class="auth-badge-dot"></span>ISO 14064 Traçabilité complète</div>
+      <div class="auth-badge"><span class="auth-badge-dot"></span>5 secteurs CBAM — Isolation totale</div>
+    </div>
+  </div>
+
+  <!-- ── Right: Forms ── -->
+  <div class="auth-right">
+
+    <!-- LOGIN FORM -->
+    <div class="auth-card" id="auth-form-login">
+      <div class="auth-card-title">Bon retour 👋</div>
+      <div class="auth-card-sub">Connectez-vous à votre espace entreprise CarbonIQ</div>
+      <div class="auth-error" id="login-error"></div>
+      <form onsubmit="authLogin(event)">
+        <div class="auth-field">
+          <label class="auth-label">Adresse email</label>
+          <input class="auth-input" id="login-email" type="email" placeholder="contact@entreprise.ma" required autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label class="auth-label">Mot de passe</label>
+          <input class="auth-input" id="login-password" type="password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <button class="auth-btn" id="login-btn" type="submit">Se connecter</button>
+      </form>
+      <div class="auth-toggle">
+        Pas encore de compte ?
+        <button class="auth-toggle-link" onclick="authShowRegister()">Créer un compte →</button>
+      </div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div class="auth-card" id="auth-form-register" style="display:none;">
+      <div class="auth-card-title">Créer votre compte</div>
+      <div class="auth-card-sub">Votre espace MRV CBAM dédié — données 100% isolées</div>
+      <div class="auth-error" id="reg-error"></div>
+      <form onsubmit="authRegister(event)">
+        <div class="auth-field">
+          <label class="auth-label">Adresse email</label>
+          <input class="auth-input" id="reg-email" type="email" placeholder="contact@entreprise.ma" required autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label class="auth-label">Mot de passe (min. 6 caractères)</label>
+          <input class="auth-input" id="reg-password" type="password" placeholder="••••••••" required autocomplete="new-password" minlength="6">
+        </div>
+        <div class="auth-field">
+          <label class="auth-label">Nom de l'entreprise</label>
+          <input class="auth-input" id="reg-nom" type="text" placeholder="OCP Group, ArcelorMittal Maroc…" required>
+        </div>
+        <div class="auth-divider">Votre secteur CBAM</div>
+        <div class="auth-sectors">
+          <div class="auth-sector" data-secteur="Acier/Fer" onclick="authSelectSector(this)">
+            <div class="auth-sector-icon">⚙️</div>
+            <div class="auth-sector-name">Acier / Fer</div>
+            <div class="auth-sector-sub">Sidérurgie</div>
+          </div>
+          <div class="auth-sector" data-secteur="Aluminium" onclick="authSelectSector(this)">
+            <div class="auth-sector-icon">🔩</div>
+            <div class="auth-sector-name">Aluminium</div>
+            <div class="auth-sector-sub">Électrolyse</div>
+          </div>
+          <div class="auth-sector" data-secteur="Ciment" onclick="authSelectSector(this)">
+            <div class="auth-sector-icon">🏗️</div>
+            <div class="auth-sector-name">Ciment</div>
+            <div class="auth-sector-sub">Clinker</div>
+          </div>
+          <div class="auth-sector" data-secteur="Engrais" onclick="authSelectSector(this)">
+            <div class="auth-sector-icon">🌱</div>
+            <div class="auth-sector-name">Engrais</div>
+            <div class="auth-sector-sub">Ammoniac · Urée</div>
+          </div>
+          <div class="auth-sector" data-secteur="Hydrogène" onclick="authSelectSector(this)">
+            <div class="auth-sector-icon">⚗️</div>
+            <div class="auth-sector-name">Hydrogène</div>
+            <div class="auth-sector-sub">SMR · Électrolyse</div>
+          </div>
+        </div>
+        <button class="auth-btn" id="reg-btn" type="submit">Créer mon compte</button>
+      </form>
+      <div class="auth-toggle">
+        Déjà inscrit ?
+        <button class="auth-toggle-link" onclick="authShowLogin()">Se connecter →</button>
+      </div>
+    </div>
+
+  </div><!-- /.auth-right -->
+</div><!-- /#auth-overlay -->
+
+<script>
+// ══════════════════════════════════════════════════════════
+// AUTH — Token management + Login / Register / Guard
+// ══════════════════════════════════════════════════════════
+
+// ── Fetch interceptor : injecte token + gère 401 global ───
+var AUTH_API = 'http://localhost:8000';
+(function() {
+  var _fetch = window.fetch.bind(window);  // bind obligatoire (Illegal invocation sinon)
+  window.fetch = function(url, opts) {
+    opts = opts || {};
+    var token = localStorage.getItem('carboniq_token');
+    var isLocal = typeof url === 'string' && (
+      url.startsWith('/') ||
+      url.indexOf(window.location.origin) === 0 ||
+      url.indexOf('http://localhost:8000') === 0
+    );
+    if (token && isLocal) {
+      opts = Object.assign({}, opts);
+      opts.headers = Object.assign({}, opts.headers || {}, { 'Authorization': 'Bearer ' + token });
+    }
+    return _fetch(url, opts).then(function(res) {
+      // Si 401 sur un endpoint non-auth → session expirée, on arrête tout
+      var isAuthUrl = typeof url === 'string' && url.indexOf('/auth/') !== -1;
+      if (res.status === 401 && !isAuthUrl) {
+        localStorage.removeItem('carboniq_token');
+        localStorage.removeItem('carboniq_user');
+        // Arrête les intervalles auto-refresh
+        if (typeof _appIntervals !== 'undefined') {
+          _appIntervals.forEach(function(id) { clearInterval(id); });
+          _appIntervals = [];
+        }
+        document.body.classList.remove('auth-ready');
+        var overlay = document.getElementById('auth-overlay');
+        if (overlay) overlay.style.display = 'flex';
+      }
+      return res;
+    });
+  };
+})();
+
+// ── Helpers ───────────────────────────────────────────────
+function authGetToken() { return localStorage.getItem('carboniq_token'); }
+function authGetUser()  {
+  try { return JSON.parse(localStorage.getItem('carboniq_user') || 'null'); }
+  catch(e) { return null; }
+}
+function authSave(token, user) {
+  localStorage.setItem('carboniq_token', token);
+  localStorage.setItem('carboniq_user',  JSON.stringify(user));
+}
+function authClear() {
+  localStorage.removeItem('carboniq_token');
+  localStorage.removeItem('carboniq_user');
+}
+
+// ── Show / hide overlay ───────────────────────────────────
+function authShowOverlay() {
+  document.getElementById('auth-overlay').style.display = 'flex';
+  document.body.classList.remove('auth-ready');
+}
+function authHideOverlay() {
+  document.getElementById('auth-overlay').style.display = 'none';
+  document.body.classList.add('auth-ready');
+  // Lance les chargements si pas encore démarrés
+  if (typeof lancerApp === 'function') lancerApp();
+  if (typeof allerPage === 'function') allerPage('dashboard');
+}
+
+// ── Update sidebar UI with logged-in user ─────────────────
+function authUpdateUI(user) {
+  var nomEl = document.getElementById('sidebar-footer-nom');
+  if (nomEl) nomEl.textContent = user.nom_entreprise || user.email;
+  var emailEl = document.getElementById('auth-user-email');
+  if (emailEl) emailEl.textContent = user.email;
+  var logoutBtn = document.getElementById('auth-logout-btn');
+  if (logoutBtn) logoutBtn.style.display = 'block';
+}
+
+// ── Verify token on page load ─────────────────────────────
+async function authCheck() {
+  var token = authGetToken();
+  if (!token) { authShowOverlay(); return; }
+  try {
+    var res = await fetch(AUTH_API + '/auth/me', { headers: { 'Authorization': 'Bearer ' + token } });
+    if (!res.ok) throw new Error('invalid');
+    var user = await res.json();
+    authSave(token, user);
+    authUpdateUI(user);
+    authHideOverlay();
+  } catch(e) {
+    authClear();
+    authShowOverlay();
+  }
+}
+
+// ── Login ─────────────────────────────────────────────────
+async function authLogin(e) {
+  e.preventDefault();
+  var email    = document.getElementById('login-email').value.trim();
+  var password = document.getElementById('login-password').value;
+  var errEl    = document.getElementById('login-error');
+  var btn      = document.getElementById('login-btn');
+  errEl.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'Connexion…';
+  try {
+    var res  = await fetch(AUTH_API + '/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: password })
+    });
+    var data = await res.json();
+    if (!res.ok) { errEl.textContent = data.detail || 'Erreur de connexion'; errEl.style.display = 'block'; return; }
+    authSave(data.access_token, data.user);
+    authUpdateUI(data.user);
+    authHideOverlay();
+    if (typeof chargerDashboard === 'function') chargerDashboard();
+  } catch(err) {
+    errEl.textContent = 'Erreur réseau : ' + (err.message || err);
+    errEl.style.display = 'block';
+    console.error('Login error:', err);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Se connecter';
+  }
+}
+
+// ── Register ──────────────────────────────────────────────
+async function authRegister(e) {
+  e.preventDefault();
+  var email    = document.getElementById('reg-email').value.trim();
+  var password = document.getElementById('reg-password').value;
+  var nom      = document.getElementById('reg-nom').value.trim();
+  var selCard  = document.querySelector('.auth-sector.sel');
+  var secteur  = selCard ? selCard.dataset.secteur : null;
+  var errEl    = document.getElementById('reg-error');
+  var btn      = document.getElementById('reg-btn');
+  errEl.style.display = 'none';
+  if (!secteur) {
+    errEl.textContent = 'Veuillez sélectionner votre secteur CBAM.';
+    errEl.style.display = 'block'; return;
+  }
+  btn.disabled = true; btn.textContent = 'Création…';
+  try {
+    var res  = await fetch(AUTH_API + '/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: password, nom_entreprise: nom, secteur: secteur })
+    });
+    var data = await res.json();
+    if (!res.ok) { errEl.textContent = data.detail || "Erreur d'inscription"; errEl.style.display = 'block'; return; }
+    authSave(data.access_token, data.user);
+    authUpdateUI(data.user);
+    authHideOverlay();
+    if (typeof chargerDashboard === 'function') chargerDashboard();
+  } catch(err) {
+    errEl.textContent = 'Erreur réseau : ' + (err.message || err);
+    errEl.style.display = 'block';
+    console.error('Register error:', err);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Créer mon compte';
+  }
+}
+
+// ── Toggle forms ──────────────────────────────────────────
+function authShowLogin() {
+  document.getElementById('auth-form-login').style.display    = 'block';
+  document.getElementById('auth-form-register').style.display = 'none';
+  document.getElementById('login-error').style.display        = 'none';
+}
+function authShowRegister() {
+  document.getElementById('auth-form-login').style.display    = 'none';
+  document.getElementById('auth-form-register').style.display = 'block';
+  document.getElementById('reg-error').style.display          = 'none';
+}
+
+// ── Sector card selection ─────────────────────────────────
+function authSelectSector(card) {
+  document.querySelectorAll('.auth-sector').forEach(function(c) { c.classList.remove('sel'); });
+  card.classList.add('sel');
+}
+
+// ── Logout ────────────────────────────────────────────────
+function authLogout() {
+  authClear();
+  authShowOverlay();
+  authShowLogin();
+}
+
+// ── Boot : vérifie le token dès que le DOM est prêt ──────
+document.addEventListener('DOMContentLoaded', function() {
+  authCheck();
+});
 </script>
 
 </body>
